@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 
+class Note {
+  final int noteId;
+  final String title;
+  final String text;
+  final DateTime creation;
+
+  Note(this.noteId, this.title, this.text, this.creation);
+
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(int.parse(json['noteId']), json['title'], json['text'], DateTime.parse(json['creation']));
+  }
+}
+
 class Book {
   final int bookId;
   final String title;
@@ -7,13 +20,19 @@ class Book {
   final String genre;
   final String readingStatus;
   final int rating;
+  final String visibility;
+  List<Note> journal = [];
 
   Book(this.bookId, this.title, this.author, this.genre, this.readingStatus,
-      this.rating);
+      this.rating, this.visibility);
 
-  factory Book.fromJson(Map<String, dynamic> json) {
+  factory Book.fromJson(Map<String, dynamic> json) {    
     return Book(int.parse(json['bookId']), json['title'], json['author'],
-        json['genre'], json['readingStatus'], json['rating']);
+        json['genre'], json['readingStatus'], json['rating'], json['visibility']);
+  }
+
+  void addNote(Note note) {
+    journal.add(note);
   }
 }
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
 import 'book.dart';
+import 'details.dart';
 
 var logger = Logger();
 
@@ -29,6 +30,9 @@ class _LibraryPageState extends State<LibraryPage> {
       // create the books list from the json data
       for (var book in data["bookCollection"]) {
         books.add(Book.fromJson(book));
+        for (var note in book['journal']) {
+          books[books.length - 1].addNote(Note.fromJson(note));
+        }
       }
     });  
   }
@@ -44,7 +48,18 @@ class _LibraryPageState extends State<LibraryPage> {
           : GridView.count(
               crossAxisCount: 2,
               children: List.generate(books.length, (index) {
-                return BookTile(book: books[index]);
+                return GestureDetector(
+                  child: BookTile(book: books[index]),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DetailsView(),
+                        settings: RouteSettings(arguments: books[index]),
+                      )
+                    );
+                  }
+                );
               }),
             ),
     );
