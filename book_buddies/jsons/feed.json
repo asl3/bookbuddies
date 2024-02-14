@@ -1,0 +1,16 @@
+{
+    "messages": [
+        {
+            "userID": 1,
+            "messageType": "finished",
+            "book": "The Great Gatsby",
+            "time": "2018-11-01T00:00:00"
+        },
+        {
+            "userID": 2,
+            "messageType": "added",
+            "book": "Leviathan Wakes",
+            "time": "2018-11-01T00:00:00"
+        }
+    ]
+}

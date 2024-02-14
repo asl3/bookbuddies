@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'library.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,11 +19,19 @@ class MyApp extends StatelessWidget {
             bottom: const TabBar(
               tabs: [
                 Tab(text: "Search"),
-                Tab(text: "My Books"),
+                Tab(text: "My Library"),
                 Tab(text: "Profile"),
                 Tab(text: "Social"),
               ],
             ),
+          ),
+          body: TabBarView(
+            children: [
+              Center(child: Text("Search")),
+              Center(child: LibraryPage()),
+              Center(child: Text("Profile")),
+              Center(child: Text("Social")),
+            ],
           ),
         ),
       ),

@@ -1,0 +1,28 @@
+{
+    "bookCollection": [
+      {
+        "bookId": "1",
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "genre": "Classic",
+        "readingStatus": "completed",
+        "rating": 5
+      },
+      {
+        "bookId": "2",
+        "title": "1984",
+        "author": "George Orwell",
+        "genre": "Dystopian",
+        "readingStatus": "reading",
+        "rating": 4
+      },
+      {
+        "bookId": "3",
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "genre": "Classic",
+        "readingStatus": "unread",
+        "rating": 0
+      }
+    ]
+}
