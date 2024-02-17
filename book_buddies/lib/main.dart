@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'library.dart';
+import 'profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
             children: [
               Center(child: Text("Search")),
               Center(child: LibraryPage()),
-              Center(child: Text("Profile")),
+              Center(child: ProfilePage()),
               Center(child: Text("Social")),
             ],
           ),
