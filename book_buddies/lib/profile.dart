@@ -7,16 +7,15 @@ class User {
   final String email;
   final String about;
 
-
   const User({
     required this.profilePicture,
     required this.fullName,
     required this.displayName,
     required this.email,
     required this.about,
-
   });
 }
+
 class UserPreferences {
   static const myUser = User(
     profilePicture:
@@ -24,8 +23,7 @@ class UserPreferences {
     fullName: 'Name',
     displayName: 'ireadbooks123',
     email: 'example@umd.edu',
-    about:
-        "I'm currently reading The Great Gatsby!",
+    about: "I'm currently reading The Great Gatsby!",
   );
 }
 
@@ -40,12 +38,13 @@ class _ProfilePageState extends State<ProfilePage> {
     const user = UserPreferences.myUser;
 
     return Scaffold(
-          appBar: AppBar(
-            title: const Text('Profile'),
-          ),
-          body: ListView(
-            children: [
-              Center(child: ClipOval(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: ListView(
+        children: [
+          Center(
+            child: ClipOval(
                 clipper: MyClip(),
                 child: Material(
                   color: Colors.transparent,
@@ -55,18 +54,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     width: 200,
                     height: 200,
                   ),
-                  
                 )),
-                
-              ),
-              const SizedBox(height: 24),
-              buildName(user),
-              const SizedBox(height: 24),
-              //maybe put some metrics regarding books read?
-              const SizedBox(height: 48),
-              buildAbout(user),
-            ],
           ),
+          const SizedBox(height: 24),
+          buildName(user),
+          const SizedBox(height: 24),
+          //maybe put some metrics regarding books read?
+          const SizedBox(height: 48),
+          buildAbout(user),
+        ],
+      ),
     );
   }
 
@@ -113,7 +110,7 @@ class MyClip extends CustomClipper<Rect> {
   Rect getClip(Size size) {
     return const Rect.fromLTWH(0, 0, 200, 200);
   }
- 
+
   @override
   bool shouldReclip(oldClipper) {
     return true;

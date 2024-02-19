@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'library.dart';
 import 'profile.dart';
 import 'search.dart';
+import 'feed.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
               Center(child: SearchPage()),
               Center(child: LibraryPage()),
               Center(child: ProfilePage()),
-              Center(child: Text("Social")),
+              Center(child: FeedPage()),
             ],
           ),
         ),

@@ -23,11 +23,10 @@ class _LibraryPageState extends State<LibraryPage> {
     loadBooks();
   }
 
-  
-  Future<void> loadBooks() async { 
+  Future<void> loadBooks() async {
     final jsonString = await rootBundle.loadString('jsons/collection.json');
     final data = jsonDecode(jsonString);
-    setState(() { 
+    setState(() {
       // create the books list from the json data
       for (var book in data["bookCollection"]) {
         books.add(Book.fromJson(book));
@@ -35,7 +34,7 @@ class _LibraryPageState extends State<LibraryPage> {
           books[books.length - 1].addNote(Note.fromJson(note));
         }
       }
-    });  
+    });
   }
 
   @override
@@ -50,17 +49,15 @@ class _LibraryPageState extends State<LibraryPage> {
               crossAxisCount: 2,
               children: List.generate(books.length, (index) {
                 return GestureDetector(
-                  child: BookTile(book: books[index]),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DetailsView(),
-                        settings: RouteSettings(arguments: books[index]),
-                      )
-                    );
-                  }
-                );
+                    child: BookTile(book: books[index]),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailsView(),
+                            settings: RouteSettings(arguments: books[index]),
+                          ));
+                    });
               }),
             ),
     );

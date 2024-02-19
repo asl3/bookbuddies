@@ -9,7 +9,8 @@ class Note {
   Note(this.noteId, this.title, this.text, this.creation);
 
   factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(int.parse(json['noteId']), json['title'], json['text'], DateTime.parse(json['creation']));
+    return Note(int.parse(json['noteId']), json['title'], json['text'],
+        DateTime.parse(json['creation']));
   }
 }
 
@@ -26,9 +27,15 @@ class Book {
   Book(this.bookId, this.title, this.author, this.genre, this.readingStatus,
       this.rating, this.visibility);
 
-  factory Book.fromJson(Map<String, dynamic> json) {    
-    return Book(int.parse(json['bookId']), json['title'], json['author'],
-        json['genre'], json['readingStatus'], json['rating'], json['visibility']);
+  factory Book.fromJson(Map<String, dynamic> json) {
+    return Book(
+        int.parse(json['bookId']),
+        json['title'],
+        json['author'],
+        json['genre'],
+        json['readingStatus'],
+        json['rating'],
+        json['visibility']);
   }
 
   void addNote(Note note) {

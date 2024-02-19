@@ -17,32 +17,28 @@ class _DetailsViewState extends State<DetailsView> {
     final Book book = ModalRoute.of(context)!.settings.arguments as Book;
 
     return DefaultTabController(
-      length: 2, 
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(book.title),
-          centerTitle: true,
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'Info',
-                icon: Icon(Icons.info),
-              ),
-              Tab(
-                text: 'Journal',
-                icon: Icon(Icons.notes)
-              ),
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(book.title),
+            centerTitle: true,
+            bottom: const TabBar(
+              tabs: [
+                Tab(
+                  text: 'Info',
+                  icon: Icon(Icons.info),
+                ),
+                Tab(text: 'Journal', icon: Icon(Icons.notes)),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              InfoTab(book: book),
+              JournalTab(journal: book.journal),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            InfoTab(book: book),
-            JournalTab(journal: book.journal),
-          ],
-        ),
-      )
-    );
+        ));
   }
 }
 
@@ -64,12 +60,9 @@ class _InfoTabState extends State<InfoTab> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(
-              'Info',
-              style: Theme.of(context).textTheme.headlineLarge
-            )
-          ),
+              padding: const EdgeInsets.all(8),
+              child: Text('Info',
+                  style: Theme.of(context).textTheme.headlineLarge)),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Table(
@@ -77,14 +70,13 @@ class _InfoTabState extends State<InfoTab> {
                 TableRow(
                   children: [
                     const Center(
-                      child: Text(
-                        'Author',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    ),
+                        child: Text(
+                      'Author',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )),
                     Center(
                       child: Text(
-                        widget.book.author, 
+                        widget.book.author,
                       ),
                     ),
                   ],
@@ -144,13 +136,15 @@ class _InfoTabState extends State<InfoTab> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: widget.book.rating > 0 ?
-                        List.generate(
-                          widget.book.rating,
-                          (index) => const Icon(Icons.star, color: Colors.amber),
-                        ) : const [
-                          Text('Not yet rated'),
-                        ],
+                      children: widget.book.rating > 0
+                          ? List.generate(
+                              widget.book.rating,
+                              (index) =>
+                                  const Icon(Icons.star, color: Colors.amber),
+                            )
+                          : const [
+                              Text('Not yet rated'),
+                            ],
                     ),
                   ],
                 ),
@@ -181,12 +175,9 @@ class _JournalTabState extends State<JournalTab> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(
-              'Journal',
-              style: Theme.of(context).textTheme.headlineLarge
-            )
-          ),
+              padding: const EdgeInsets.all(8),
+              child: Text('Journal',
+                  style: Theme.of(context).textTheme.headlineLarge)),
           Padding(
             padding: const EdgeInsets.all(8),
             child: ListView.builder(
@@ -194,20 +185,21 @@ class _JournalTabState extends State<JournalTab> {
               shrinkWrap: true,
               itemCount: widget.journal.length,
               itemBuilder: (context, index) => GestureDetector(
-                child: ListTile(
-                  title: Text(widget.journal[index].title),
-                  subtitle: Text(DateFormat().format(widget.journal[index].creation)),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NoteView(),
-                      settings: RouteSettings(arguments: widget.journal[index]),
-                    ),
-                  );
-                }
-              ),
+                  child: ListTile(
+                    title: Text(widget.journal[index].title),
+                    subtitle: Text(
+                        DateFormat().format(widget.journal[index].creation)),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NoteView(),
+                        settings:
+                            RouteSettings(arguments: widget.journal[index]),
+                      ),
+                    );
+                  }),
             ),
           ),
         ],
