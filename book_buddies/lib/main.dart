@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
               ],
             ),
           ),
-          body: TabBarView(
+          body: const TabBarView(
             children: [
               Center(child: Text("Search")),
               Center(child: LibraryPage()),

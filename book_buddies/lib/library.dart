@@ -7,6 +7,8 @@ import 'book.dart';
 var logger = Logger();
 
 class LibraryPage extends StatefulWidget {
+  const LibraryPage({super.key});
+
   @override
   _LibraryPageState createState() => _LibraryPageState();
 }
