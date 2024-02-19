@@ -27,7 +27,6 @@ class _LibraryPageState extends State<LibraryPage> {
   Future<void> loadBooks() async { 
     final jsonString = await rootBundle.loadString('jsons/collection.json');
     final data = jsonDecode(jsonString);
-    logger.d(data);
     setState(() { 
       // create the books list from the json data
       for (var book in data["bookCollection"]) {
