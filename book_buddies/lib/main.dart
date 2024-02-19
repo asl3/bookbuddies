@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'library.dart';
 import 'profile.dart';
+import 'search.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
+            title: const Text('Book Buddies'),
             bottom: const TabBar(
               tabs: [
                 Tab(text: "Search"),
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              Center(child: Text("Search")),
+              Center(child: SearchPage()),
               Center(child: LibraryPage()),
               Center(child: ProfilePage()),
               Center(child: Text("Social")),
