@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'book.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 /* DETAILS VIEW */
 
@@ -14,7 +17,7 @@ class DetailsView extends StatefulWidget {
 class _DetailsViewState extends State<DetailsView> {
   @override
   Widget build(BuildContext context) {
-    final Book book = ModalRoute.of(context)!.settings.arguments as Book;
+    final Book book = Provider.of<Book>(context);
 
     return DefaultTabController(
         length: 2,
@@ -66,17 +69,22 @@ class _InfoTabState extends State<InfoTab> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
                 TableRow(
                   children: [
                     const Center(
-                        child: Text(
-                      'Author',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
-                    Center(
                       child: Text(
-                        widget.book.author,
+                        'Author',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          widget.book.author,
+                        ),
                       ),
                     ),
                   ],
@@ -89,9 +97,12 @@ class _InfoTabState extends State<InfoTab> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        widget.book.genre,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          widget.book.genre,
+                        ),
                       ),
                     ),
                   ],
@@ -104,9 +115,12 @@ class _InfoTabState extends State<InfoTab> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        widget.book.readingStatus,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          widget.book.readingStatus,
+                        ),
                       ),
                     ),
                   ],
@@ -119,9 +133,18 @@ class _InfoTabState extends State<InfoTab> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        widget.book.visibility,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: ToggleSwitch(
+                          initialLabelIndex: widget.book.isPublic ? 0 : 1,
+                          totalSwitches: 2,
+                          activeBgColors: const [[Colors.green], [Colors.red]],
+                          labels: const ['Public', 'Private'],
+                          onToggle: (index) {
+                            widget.book.toggleVisiblity(index == 0);
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -129,22 +152,29 @@ class _InfoTabState extends State<InfoTab> {
                 TableRow(
                   children: [
                     const Center(
+                      heightFactor: 2,
                       child: Text(
                         'Rating',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: widget.book.rating > 0
-                          ? List.generate(
-                              widget.book.rating,
-                              (index) =>
-                                  const Icon(Icons.star, color: Colors.amber),
-                            )
-                          : const [
-                              Text('Not yet rated'),
-                            ],
+                    Center(
+                      child: RatingBar.builder(
+                        initialRating: widget.book.rating.toDouble(),
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: false,
+                        itemCount: 5,
+                        itemSize: 30,
+                        itemPadding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                          widget.book.toggleRating(rating.toInt());
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -188,7 +218,7 @@ class _JournalTabState extends State<JournalTab> {
                   child: ListTile(
                     title: Text(widget.journal[index].title),
                     subtitle: Text(
-                        DateFormat().format(widget.journal[index].creation)),
+                        DateFormat('yMd').format(widget.journal[index].creation)),
                   ),
                   onTap: () {
                     Navigator.push(
@@ -225,10 +255,6 @@ class _NoteViewState extends State<NoteView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(note.title),
-        bottom: PreferredSize(
-          preferredSize: Size.zero,
-          child: Text(DateFormat().format(note.creation)),
-        ),
         centerTitle: true,
       ),
       body: Center(

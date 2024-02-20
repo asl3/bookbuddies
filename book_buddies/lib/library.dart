@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'book.dart';
 import 'details.dart';
 
@@ -31,7 +32,7 @@ class _LibraryPageState extends State<LibraryPage> {
       for (var book in data["bookCollection"]) {
         books.add(Book.fromJson(book));
         for (var note in book['journal']) {
-          books[books.length - 1].addNote(Note.fromJson(note));
+          books[books.length - 1].addNoteToJournal(Note.fromJson(note));
         }
       }
     });
@@ -49,13 +50,18 @@ class _LibraryPageState extends State<LibraryPage> {
               crossAxisCount: 2,
               children: List.generate(books.length, (index) {
                 return GestureDetector(
-                    child: BookTile(book: books[index]),
+                    child: ChangeNotifierProvider<Book>.value(
+                      value: books[index], 
+                      child: const BookTile(),
+                    ),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DetailsView(),
-                            settings: RouteSettings(arguments: books[index]),
+                            builder: (context) => ChangeNotifierProvider<Book>.value(
+                              value: books[index],
+                              child: const DetailsView(),
+                            ),
                           ));
                     });
               }),

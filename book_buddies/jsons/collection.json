@@ -7,7 +7,7 @@
         "genre": "Classic",
         "readingStatus": "completed",
         "rating": 5,
-        "visibility": "public",
+        "isPublic": true,
         "journal": [
           {
             "noteId": "1",
@@ -30,7 +30,7 @@
         "genre": "Dystopian",
         "readingStatus": "reading",
         "rating": 4,
-        "visibility": "friendly",
+        "isPublic": true,
         "journal": [
           {
             "noteId": "3",
@@ -47,7 +47,7 @@
         "genre": "Classic",
         "readingStatus": "unread",
         "rating": 0,
-        "visibility": "private",
+        "isPublic": false,
         "journal": [
           {
             "noteId": "4",
