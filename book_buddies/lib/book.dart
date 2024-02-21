@@ -1,52 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Note {
+class Note extends ChangeNotifier {
   final int noteId;
-  final String title;
-  final String text;
-  final DateTime creation;
+  String title;
+  String text;
+  DateTime updatedAt;
 
-  Note(this.noteId, this.title, this.text, this.creation);
+  Note(this.noteId, this.title, this.text, this.updatedAt);
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(int.parse(json['noteId']), json['title'], json['text'],
-        DateTime.parse(json['creation']));
+        DateTime.parse(json['updatedAt']));
+  }
+
+  void editNote(String title, String text) {
+    this.title = title;
+    this.text = text;
+    updatedAt = DateTime.now();
+    notifyListeners();
   }
 }
 
-class Book {
+class Book extends ChangeNotifier {
   final int bookId;
   final String title;
   final String author;
   final String genre;
-  final String readingStatus;
-  final int rating;
-  final String visibility;
+  String readingStatus;
+  int rating;
+  bool isPublic;
   List<Note> journal = [];
 
   Book(this.bookId, this.title, this.author, this.genre, this.readingStatus,
-      this.rating, this.visibility);
+      this.rating, this.isPublic);
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-        int.parse(json['bookId']),
-        json['title'],
-        json['author'],
-        json['genre'],
-        json['readingStatus'],
-        json['rating'],
-        json['visibility']);
+      int.parse(json['bookId']),
+      json['title'],
+      json['author'],
+      json['genre'],
+      json['readingStatus'],
+      json['rating'],
+      json['isPublic']
+    );
   }
 
-  void addNote(Note note) {
+  void addNoteToJournal(Note note) {
+    note.addListener(onUpdateNote);
     journal.add(note);
+    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    notifyListeners();
+  }
+
+  void deleteNoteFromJournal(int noteId) {
+    journal.removeWhere((note) => noteId == note.noteId);
+    notifyListeners();
+  }
+
+  void toggleVisiblity(bool isPublic) {
+    this.isPublic = isPublic;
+    notifyListeners();
+  }
+
+  void toggleRating(int rating) {
+    this.rating = rating;
+    notifyListeners();
+  }
+
+  void updateReadingStatus(String readingStatus) {
+    this.readingStatus = readingStatus;
+    notifyListeners();
+  }
+
+  void onUpdateNote() {
+    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    notifyListeners();
   }
 }
 
 class BookTile extends StatelessWidget {
-  final Book book;
-
-  const BookTile({Key? key, required this.book}) : super(key: key);
+  const BookTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,29 +89,31 @@ class BookTile extends StatelessWidget {
       margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              book.title,
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+        child: Consumer<Book>(
+          builder: (context, state, child) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                state.title,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'by ${book.author}',
-              style: const TextStyle(fontSize: 14.0),
-            ),
-            const SizedBox(height: 8.0),
-            Row(
-              children: List.generate(
-                book.rating,
-                (index) => const Icon(Icons.star, color: Colors.amber),
+              const SizedBox(height: 8.0),
+              Text(
+                'by ${state.author}',
+                style: const TextStyle(fontSize: 14.0),
               ),
-            ),
-          ],
+              const SizedBox(height: 8.0),
+              Row(
+                children: List.generate(
+                  state.rating,
+                  (index) => const Icon(Icons.star, color: Colors.amber),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
