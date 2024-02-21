@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
+import 'book.dart';
 
 var logger = Logger();
 
@@ -46,18 +48,37 @@ class _FeedPageState extends State<FeedPage> {
   }
 }
 
+class Comment {
+  final String username;
+  final String comment;
+  final DateTime time;
+
+  const Comment(this.username, this.comment, this.time);
+
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+        json['username'], json['comment'], DateTime.parse(json['time']));
+  }
+}
+
 class Post extends StatelessWidget {
   final String username;
   final String messageType;
-  final String book;
+  final Book book;
   final DateTime time;
+  final List<Comment> comments;
 
-  const Post(this.username, this.messageType, this.book, this.time,
+  const Post(
+      this.username, this.messageType, this.book, this.time, this.comments,
       {super.key});
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(json['username'], json['messageType'], json['book'],
-        DateTime.parse(json['time']));
+    return Post(
+        json['username'],
+        json['messageType'],
+        Book.fromJson(json['book']),
+        DateTime.parse(json['time']),
+        (json['comments'] as List).map((e) => Comment.fromJson(e)).toList());
   }
 
   Icon messageTypeIcon() {
@@ -72,9 +93,9 @@ class Post extends StatelessWidget {
     }
   }
 
-  String timeDelta() {
+  String timeDelta(DateTime other) {
     final now = DateTime.now();
-    final difference = now.difference(time);
+    final difference = now.difference(other);
 
     final seconds = difference.inSeconds;
     if (seconds < 60) {
@@ -113,6 +134,7 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        color: Color.fromRGBO(255, 255, 255, 1),
         child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(children: [
@@ -135,12 +157,53 @@ class Post extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  timeDelta(),
+                  timeDelta(time),
                   style: const TextStyle(color: Colors.grey),
                 )
               ]),
               const SizedBox(height: 8),
-              Text(book),
+              ChangeNotifierProvider<Book>.value(
+                value: book,
+                child: const BookTile(),
+              ),
+              const Divider(),
+              Column(
+                children: comments
+                    .map((comment) => Card(
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(children: [
+                                    Text(comment.username,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const Spacer(),
+                                    Text(
+                                      timeDelta(comment.time),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
+                                    )
+                                  ]),
+                                  Text(comment.comment)
+                                ]))))
+                    .toList(),
+              ),
+              const SizedBox(height: 8),
+              const TextField(
+                  decoration: InputDecoration(
+                labelText: 'Add Comment',
+                border: OutlineInputBorder(),
+              )),
+              const Divider(),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Spacer(),
+                  const Icon(Icons.favorite_border),
+                ],
+              )
             ])));
   }
 }
