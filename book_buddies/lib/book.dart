@@ -47,6 +47,17 @@ class Book extends ChangeNotifier {
     );
   }
 
+  void addNoteToJournalWithParams(String title, String text) {
+    int noteId = journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
+    Note note = Note(
+      noteId,
+      title,
+      text,
+      DateTime.now(),
+    );
+    addNoteToJournal(note);
+  }
+
   void addNoteToJournal(Note note) {
     note.addListener(onUpdateNote);
     journal.add(note);

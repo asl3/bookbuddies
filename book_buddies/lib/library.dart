@@ -4,7 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'book.dart';
-import 'details.dart';
+import 'book_detail_views/details.dart';
 
 var logger = Logger();
 
@@ -15,7 +15,7 @@ class LibraryPage extends StatefulWidget {
   _LibraryPageState createState() => _LibraryPageState();
 }
 
-class _LibraryPageState extends State<LibraryPage> {
+class _LibraryPageState extends State<LibraryPage> with AutomaticKeepAliveClientMixin {
   List<Book> books = [];
 
   @override
@@ -23,6 +23,9 @@ class _LibraryPageState extends State<LibraryPage> {
     super.initState();
     loadBooks();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> loadBooks() async {
     final jsonString = await rootBundle.loadString('jsons/collection.json');
@@ -40,6 +43,7 @@ class _LibraryPageState extends State<LibraryPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Library'),
