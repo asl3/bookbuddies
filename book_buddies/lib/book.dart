@@ -27,7 +27,7 @@ class Book extends ChangeNotifier {
   final String title;
   final String author;
   final String genre;
-  final String readingStatus;
+  String readingStatus;
   int rating;
   bool isPublic;
   List<Note> journal = [];
@@ -66,6 +66,11 @@ class Book extends ChangeNotifier {
 
   void toggleRating(int rating) {
     this.rating = rating;
+    notifyListeners();
+  }
+
+  void updateReadingStatus(String readingStatus) {
+    this.readingStatus = readingStatus;
     notifyListeners();
   }
 

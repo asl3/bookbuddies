@@ -72,6 +72,14 @@ class InfoTab extends StatefulWidget {
 }
 
 class _InfoTabState extends State<InfoTab> {
+  final TextEditingController readingStatusController = TextEditingController();
+
+  @override
+  void dispose() {
+    readingStatusController.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -126,8 +134,18 @@ class _InfoTabState extends State<InfoTab> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Center(
-                  child: Text(
-                    widget.book.readingStatus,
+                  child: DropdownMenu(
+                    initialSelection: widget.book.readingStatus,
+                    controller: readingStatusController,
+                    // label: const Text('Reading Status'),
+                    onSelected: (String? readingStatus) {
+                      widget.book.updateReadingStatus(readingStatusController.text);
+                    },
+                    dropdownMenuEntries: const [
+                      DropdownMenuEntry(value: 'Unread', label: 'Unread'),
+                      DropdownMenuEntry(value: 'Reading', label: 'Reading'),
+                      DropdownMenuEntry(value: 'Completed', label: 'Completed'),
+                    ],
                   ),
                 ),
               ),
