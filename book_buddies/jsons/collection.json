@@ -1,8 +1,9 @@
 {
     "bookCollection": [
       {
-        "bookId": "1",
+        "volumeId": "pGUhydKogaAC",
         "title": "Pride and Prejudice",
+        "smallThumbnail": "http://books.google.com/books/content?id=pGUhydKogaAC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE70pVgJFxsr345VkmKUfumR3EElAnF8WGTHxJFudO4MqFSRKdOj4qX9wEQDAYOHG72O3VVjQ2yrfkDgC9xznGM5iukokOgQPv-567oRgAIsSYTFxJ0Ufr0y7-T1lJ6xMhnTjHzZS&source=gbs_api",
         "author": "Jane Austen",
         "genre": "Classic",
         "readingStatus": "Completed",
@@ -24,8 +25,9 @@
         ]
       },
       {
-        "bookId": "2",
+        "volumeId": "kotPYEqx7kMC",
         "title": "1984",
+        "smallThumbnail": "http://books.google.com/books/content?id=kotPYEqx7kMC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE73AfKZtOIvLryfajNq2jEBgH8oa6xlo0YAbTUONKHYVV9dhr7T1S7uhTJAndtdgcnm46MU_NUJpeijdDCaPtzjdU-7YWjzIfpWVJnfautGtfUt4ifM67QCLyp8FeNv8f_BJ87UL&source=gbs_api",
         "author": "George Orwell",
         "genre": "Dystopian",
         "readingStatus": "Reading",
@@ -41,8 +43,9 @@
         ]
       },
       {
-        "bookId": "3",
+        "volumeId": "iXn5U2IzVH0C",
         "title": "The Great Gatsby",
+        "smallThumbnail": "http://books.google.com/books/content?id=iXn5U2IzVH0C&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE72JXrw_h2GnTgD5i4t3-AMCRnTazmkwtKzCLQhtXJUu_7dT5Kd7BTzXetK21jwFoygzi_lWkSUXzbp3B_yLmyDrCtbHzkVbRgiXINuuXXhyoyUPxlqMrJJwISw9zEfoJSTnCh-f&source=gbs_api",
         "author": "F. Scott Fitzgerald",
         "genre": "Classic",
         "readingStatus": "Unread",

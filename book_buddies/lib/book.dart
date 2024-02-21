@@ -23,32 +23,34 @@ class Note extends ChangeNotifier {
 }
 
 class Book extends ChangeNotifier {
-  final int bookId;
+  final String volumeId;
   final String title;
   final String author;
   final String genre;
+  final String coverUrl;
   String readingStatus;
   int rating;
   bool isPublic;
   List<Note> journal = [];
 
-  Book(this.bookId, this.title, this.author, this.genre, this.readingStatus,
-      this.rating, this.isPublic);
+  Book(this.volumeId, this.title, this.author, this.genre, this.coverUrl,
+      this.readingStatus, this.rating, this.isPublic);
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-      int.parse(json['bookId']),
-      json['title'],
-      json['author'],
-      json['genre'],
-      json['readingStatus'],
-      json['rating'],
-      json['isPublic']
-    );
+        json['volumeId'],
+        json['title'],
+        json['author'],
+        json['genre'],
+        json['smallThumbnail'],
+        json['readingStatus'],
+        json['rating'],
+        json['isPublic']);
   }
 
   void addNoteToJournalWithParams(String title, String text) {
-    int noteId = journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
+    int noteId =
+        journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
     Note note = Note(
       noteId,
       title,
@@ -92,7 +94,9 @@ class Book extends ChangeNotifier {
 }
 
 class BookTile extends StatelessWidget {
-  const BookTile({super.key});
+  final Book book;
+
+  const BookTile({required this.book, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,31 +104,37 @@ class BookTile extends StatelessWidget {
       margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<Book>(
-          builder: (context, state, child) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                state.title,
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            book.coverUrl.isNotEmpty
+                ? Image.network(
+                    book.coverUrl,
+                    height: 60,
+                    width: 40,
+                  )
+                : Container(),
+            const SizedBox(height: 8.0),
+            Text(
+              book.title,
+              style: const TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                'by ${state.author}',
-                style: const TextStyle(fontSize: 14.0),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              'by ${book.author}',
+              style: const TextStyle(fontSize: 14.0),
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              children: List.generate(
+                book.rating,
+                (index) => const Icon(Icons.star, color: Colors.amber),
               ),
-              const SizedBox(height: 8.0),
-              Row(
-                children: List.generate(
-                  state.rating,
-                  (index) => const Icon(Icons.star, color: Colors.amber),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

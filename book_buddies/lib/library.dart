@@ -15,7 +15,8 @@ class LibraryPage extends StatefulWidget {
   _LibraryPageState createState() => _LibraryPageState();
 }
 
-class _LibraryPageState extends State<LibraryPage> with AutomaticKeepAliveClientMixin {
+class _LibraryPageState extends State<LibraryPage>
+    with AutomaticKeepAliveClientMixin {
   List<Book> books = [];
 
   @override
@@ -55,14 +56,15 @@ class _LibraryPageState extends State<LibraryPage> with AutomaticKeepAliveClient
               children: List.generate(books.length, (index) {
                 return GestureDetector(
                     child: ChangeNotifierProvider<Book>.value(
-                      value: books[index], 
-                      child: const BookTile(),
+                      value: books[index],
+                      child: BookTile(book: books[index]),
                     ),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChangeNotifierProvider<Book>.value(
+                            builder: (context) =>
+                                ChangeNotifierProvider<Book>.value(
                               value: books[index],
                               child: const DetailsView(),
                             ),
