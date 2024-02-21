@@ -212,10 +212,17 @@ class _JournalTabState extends State<JournalTab> {
       shrinkWrap: true,
       itemCount: widget.book.journal.length,
       itemBuilder: (context, index) => GestureDetector(
-          child: ChangeNotifierProvider<Note>.value(
-            value: widget.book.journal[index],
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Note>.value(value: widget.book.journal[index]),
+              ChangeNotifierProvider<Book>.value(value: widget.book),
+            ],
             child: const NoteTile(),
           ),
+          // child: ChangeNotifierProvider<Note>.value(
+          //   value: widget.book.journal[index],
+          //   child: const NoteTile(),
+          // ),
           onTap: () {
             Navigator.push(
               context,
@@ -238,11 +245,18 @@ class NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Book book = Provider.of<Book>(context, listen: true);
+
     return Consumer<Note>(
       builder: (context, state, child) => ListTile(
         title: Text(state.title),
-        subtitle: Text(
-            DateFormat('yMd').format(state.updatedAt)),
+        subtitle: Text(DateFormat('yMd').format(state.updatedAt)),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            book.deleteNoteFromJournal(state.noteId);
+          },
+        ),
       ),
     );
   }
@@ -359,7 +373,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     Note note = Note(
-                      book.journal.length,
+                      book.journal.length + 1,
                       titleController.text,
                       descriptionController.text,
                       DateTime.now()

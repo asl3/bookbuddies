@@ -54,6 +54,11 @@ class Book extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteNoteFromJournal(int noteId) {
+    journal.removeWhere((note) => noteId == note.noteId);
+    notifyListeners();
+  }
+
   void toggleVisiblity(bool isPublic) {
     this.isPublic = isPublic;
     notifyListeners();
