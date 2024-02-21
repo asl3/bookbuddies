@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Note {
+class Note extends ChangeNotifier {
   final int noteId;
-  final String title;
-  final String text;
-  final DateTime creation;
+  String title;
+  String text;
+  DateTime updatedAt;
 
-  Note(this.noteId, this.title, this.text, this.creation);
+  Note(this.noteId, this.title, this.text, this.updatedAt);
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(int.parse(json['noteId']), json['title'], json['text'],
-        DateTime.parse(json['creation']));
+        DateTime.parse(json['updatedAt']));
+  }
+
+  void editNote(String title, String text) {
+    this.title = title;
+    this.text = text;
+    updatedAt = DateTime.now();
+    notifyListeners();
   }
 }
 
@@ -41,7 +48,9 @@ class Book extends ChangeNotifier {
   }
 
   void addNoteToJournal(Note note) {
+    note.addListener(onUpdateNote);
     journal.add(note);
+    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     notifyListeners();
   }
 
@@ -52,6 +61,11 @@ class Book extends ChangeNotifier {
 
   void toggleRating(int rating) {
     this.rating = rating;
+    notifyListeners();
+  }
+
+  void onUpdateNote() {
+    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     notifyListeners();
   }
 }
