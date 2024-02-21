@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'library.dart';
-import 'profile.dart';
+import 'profile_view/profile.dart';
+import 'profile_view/profile_edit.dart';
 import 'search.dart';
 import 'feed.dart';
 
