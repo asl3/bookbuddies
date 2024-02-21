@@ -1,13 +1,14 @@
+import 'package:book_buddies/profile_view/profile_edit.dart';
 import 'package:flutter/material.dart';
 
 class User {
-  final String profilePicture;
-  final String fullName;
-  final String displayName;
-  final String email;
-  final String about;
+  final AssetImage profilePicture;
+  String fullName;
+  String displayName;
+  String email;
+  String about;
 
-  const User({
+  User({
     required this.profilePicture,
     required this.fullName,
     required this.displayName,
@@ -17,9 +18,9 @@ class User {
 }
 
 class UserPreferences {
-  static const myUser = User(
+  static final User myUser = User(
     profilePicture:
-        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+        const AssetImage('assets/images/blankpfp.webp'),
     fullName: 'Name',
     displayName: 'ireadbooks123',
     email: 'example@umd.edu',
@@ -37,27 +38,61 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    const user = UserPreferences.myUser;
+    User user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: ListView(
+      body: Center(child:
+      ListView(
         children: [
-          Center(
-            child: ClipOval(
-                clipper: MyClip(),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Ink.image(
-                    image: NetworkImage(user.profilePicture),
-                    fit: BoxFit.fitWidth,
-                    width: 200,
-                    height: 200,
+          Stack(
+            children: [
+              Container(
+                alignment: Alignment.center,
+              child: ClipOval(
+                    clipper: MyClip(),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Image(
+                        image: user.profilePicture,
+                        fit: BoxFit.fitWidth,
+                        width: 200,
+                        height: 200,
+                      ),
+                    )
+                )
+              ),
+              Positioned(
+                bottom: 0,
+                right: 110,
+                child: ClipOval(
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    color: Theme.of(context).colorScheme.primary,
+                    child: SizedBox(
+                      height: 25.0,
+                      width: 25.0,
+                      child: IconButton(
+                        padding: const EdgeInsets.all(0.0),
+                        icon: const Icon(Icons.edit,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                        onPressed: () {
+                                Navigator.push( context, MaterialPageRoute( builder: (context) => 
+                                EditProfilePage()), ).then((value) => setState(() {}));
+                              
+                            },
+                      ),
+                    )
                   ),
-                )),
+                )
+              ),
+            ]
           ),
+
           const SizedBox(height: 24),
           buildName(user),
           const SizedBox(height: 24),
@@ -65,8 +100,9 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 48),
           buildAbout(user),
         ],
+        
       ),
-    );
+    ));
   }
 
   Widget buildName(User user) => Column(
@@ -106,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 }
-
+        
 class MyClip extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
