@@ -163,7 +163,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
-<<<<<<< book_buddies/pubspec.lock
   nested:
     dependency: transitive
     description:
@@ -188,8 +187,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
-=======
->>>>>>> book_buddies/pubspec.lock
   sky_engine:
     dependency: transitive
     description: flutter
