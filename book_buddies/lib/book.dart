@@ -36,19 +36,13 @@ class Book extends ChangeNotifier {
       this.rating, this.isPublic);
 
   factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-      int.parse(json['bookId']),
-      json['title'],
-      json['author'],
-      json['genre'],
-      json['readingStatus'],
-      json['rating'],
-      json['isPublic']
-    );
+    return Book(int.parse(json['bookId']), json['title'], json['author'],
+        json['genre'], json['readingStatus'], json['rating'], json['isPublic']);
   }
 
   void addNoteToJournalWithParams(String title, String text) {
-    int noteId = journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
+    int noteId =
+        journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
     Note note = Note(
       noteId,
       title,
