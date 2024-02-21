@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
-import 'package:intl/intl.dart';
 
 var logger = Logger();
 
 class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
+
   @override
   _FeedPageState createState() => _FeedPageState();
 }
@@ -124,7 +125,7 @@ class Post extends StatelessWidget {
                     children: <TextSpan>[
                       TextSpan(
                         text: username,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
                         text: ' $messageType',
@@ -132,10 +133,10 @@ class Post extends StatelessWidget {
                     ],
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Text(
                   timeDelta(),
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 )
               ]),
               const SizedBox(height: 8),
