@@ -21,9 +21,7 @@ class SearchPageState extends State<SearchPage> {
   List<String> searchResults = [];
 
   void lookupQuery(String query) {
-    print("Query received in SearchPage: $query");
     setState(() {
-      print("Updating search results...");
       searchResults = data
           .where((item) => item.toLowerCase().contains(query.toLowerCase()))
           .toList();
@@ -68,11 +66,10 @@ class SearchBarState extends State<SearchBar> {
   String query = '';
 
   void updateQuery(String newQuery) {
-    print("New query: $newQuery");
-    // this seems to work w print stmt
     setState(() {
       query = newQuery;
     });
+    widget.onQueryChanged(newQuery);
   }
 
   @override
