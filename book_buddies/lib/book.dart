@@ -1,101 +1,45 @@
 import 'package:flutter/material.dart';
 
-class Note extends ChangeNotifier {
+class Note {
   final int noteId;
-  String title;
-  String text;
-  DateTime updatedAt;
+  final String title;
+  final String text;
+  final DateTime creation;
 
-  Note(this.noteId, this.title, this.text, this.updatedAt);
+  Note(this.noteId, this.title, this.text, this.creation);
 
   factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(int.parse(json['noteId']), json['title'], json['text'],
-        DateTime.parse(json['updatedAt']));
-  }
-
-  void editNote(String title, String text) {
-    this.title = title;
-    this.text = text;
-    updatedAt = DateTime.now();
-    notifyListeners();
+    return Note(int.parse(json['noteId']), json['title'], json['text'], DateTime.parse(json['creation']));
   }
 }
 
-class Book extends ChangeNotifier {
-  final String volumeId;
+class Book {
+  final int bookId;
   final String title;
   final String author;
   final String genre;
-  final String coverUrl;
-  String readingStatus;
-  int rating;
-  bool isPublic;
+  final String readingStatus;
+  final int rating;
+  final String visibility;
   List<Note> journal = [];
 
-  Book(this.volumeId, this.title, this.author, this.genre, this.coverUrl,
-      this.readingStatus, this.rating, this.isPublic);
+  Book(this.bookId, this.title, this.author, this.genre, this.readingStatus,
+      this.rating, this.visibility);
 
-  factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-        json['volumeId'],
-        json['title'],
-        json['author'],
-        json['genre'],
-        json['smallThumbnail'],
-        json['readingStatus'],
-        json['rating'],
-        json['isPublic']);
+  factory Book.fromJson(Map<String, dynamic> json) {    
+    return Book(int.parse(json['bookId']), json['title'], json['author'],
+        json['genre'], json['readingStatus'], json['rating'], json['visibility']);
   }
 
-  void addNoteToJournalWithParams(String title, String text) {
-    int noteId =
-        journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
-    Note note = Note(
-      noteId,
-      title,
-      text,
-      DateTime.now(),
-    );
-    addNoteToJournal(note);
-  }
-
-  void addNoteToJournal(Note note) {
-    note.addListener(onUpdateNote);
+  void addNote(Note note) {
     journal.add(note);
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
-  }
-
-  void deleteNoteFromJournal(int noteId) {
-    journal.removeWhere((note) => noteId == note.noteId);
-    notifyListeners();
-  }
-
-  void toggleVisiblity(bool isPublic) {
-    this.isPublic = isPublic;
-    notifyListeners();
-  }
-
-  void toggleRating(int rating) {
-    this.rating = rating;
-    notifyListeners();
-  }
-
-  void updateReadingStatus(String readingStatus) {
-    this.readingStatus = readingStatus;
-    notifyListeners();
-  }
-
-  void onUpdateNote() {
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
   }
 }
 
 class BookTile extends StatelessWidget {
   final Book book;
 
-  const BookTile({required this.book, super.key});
+  const BookTile({Key? key, required this.book}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -104,29 +48,21 @@ class BookTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            book.coverUrl.isNotEmpty
-                ? Image.network(
-                    book.coverUrl,
-                    height: 60,
-                    width: 40,
-                  )
-                : Container(),
-            const SizedBox(height: 8.0),
             Text(
               book.title,
               style: const TextStyle(
-                fontSize: 15.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4.0),
+            const SizedBox(height: 8.0),
             Text(
               'by ${book.author}',
               style: const TextStyle(fontSize: 14.0),
             ),
-            const SizedBox(height: 4.0),
+            const SizedBox(height: 8.0),
             Row(
               children: List.generate(
                 book.rating,
