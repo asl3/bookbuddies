@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_books_api/google_books_api.dart';
+import 'book.dart' as local_book;
+import 'package:google_books_api/src/models/book.dart' as google_book;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -8,23 +11,28 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-  List<String> data = [
-    'apple',
-    'banana',
-    'cherry',
-    'pineapple',
-    'kumquat',
-    'kiwi',
-    'passionfruit',
-  ];
+  // List<String> data = [
+  //   'apple',
+  //   'banana',
+  //   'cherry',
+  //   'pineapple',
+  //   'kumquat',
+  //   'kiwi',
+  //   'passionfruit',
+  // ];
 
-  List<String> searchResults = [];
+  List<Book> searchResults = [];
 
-  void lookupQuery(String query) {
+  void lookupQuery(String query) async {
+    List<Book> results = await GoogleBooksApi().searchBooks(
+      query,
+      maxResults: 20,
+      printType: PrintType.books,
+      orderBy: OrderBy.relevance,
+    );
+
     setState(() {
-      searchResults = data
-          .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      searchResults = results;
     });
   }
 
@@ -44,8 +52,23 @@ class SearchPageState extends State<SearchPage> {
               itemCount: searchResults.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(searchResults[index]),
-                );
+                    title: local_book.BookTile(
+                        book: local_book.Book(
+                            searchResults[index].id,
+                            searchResults[index].volumeInfo.title,
+                            searchResults[index].volumeInfo.authors.first,
+                            "genre placeholder",
+                            searchResults[index]
+                                .volumeInfo
+                                .previewLink
+                                .toString(),
+                            "readingStatus",
+                            searchResults[index]
+                                .volumeInfo
+                                .averageRating
+                                .toInt(),
+                            true)));
+                //return ListTile(title: Text(searchResults[index].volumeInfo.title));
               },
             ),
           ),
