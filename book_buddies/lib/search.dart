@@ -11,16 +11,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-  // List<String> data = [
-  //   'apple',
-  //   'banana',
-  //   'cherry',
-  //   'pineapple',
-  //   'kumquat',
-  //   'kiwi',
-  //   'passionfruit',
-  // ];
-
   List<Book> searchResults = [];
 
   void lookupQuery(String query) async {
@@ -48,29 +38,35 @@ class SearchPageState extends State<SearchPage> {
               onQueryChanged:
                   lookupQuery), // callback to update state once search is entered
           Expanded(
-            child: ListView.builder(
-              itemCount: searchResults.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                    title: local_book.BookTile(
-                        book: local_book.Book(
-                            searchResults[index].id,
-                            searchResults[index].volumeInfo.title,
-                            searchResults[index].volumeInfo.authors.first,
-                            "genre placeholder",
-                            searchResults[index]
-                                .volumeInfo
-                                .previewLink
-                                .toString(),
-                            "readingStatus",
-                            searchResults[index]
-                                .volumeInfo
-                                .averageRating
-                                .toInt(),
-                            true)));
-                //return ListTile(title: Text(searchResults[index].volumeInfo.title));
-              },
-            ),
+            child: searchResults.isEmpty
+                ? Center(
+                    child: Text('No search results found'),
+                  )
+                : ListView.builder(
+                    itemCount: searchResults.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                          title: local_book.BookTile(
+                              book: local_book.Book(
+                                  searchResults[index].id,
+                                  searchResults[index].volumeInfo.title,
+                                  searchResults[index].volumeInfo.authors.first,
+                                  searchResults[index]
+                                      .volumeInfo
+                                      .categories
+                                      .first,
+                                  searchResults[index]
+                                      .volumeInfo
+                                      .imageLinks!["thumbnail"]
+                                      .toString(),
+                                  "Unread", // TODO: use profile info to make this accurate
+                                  searchResults[index]
+                                      .volumeInfo
+                                      .averageRating
+                                      .toInt(),
+                                  true)));
+                    },
+                  ),
           ),
         ],
       ),
