@@ -1,5 +1,7 @@
+import 'package:book_buddies/book_detail_views/details.dart';
 import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
+import 'package:provider/provider.dart';
 import 'book.dart' as local_book;
 import 'package:google_books_api/src/models/book.dart' as google_book;
 
@@ -50,23 +52,32 @@ class SearchPageState extends State<SearchPage> {
                               .imageLinks?["thumbnail"] ??
                           Uri.parse(
                               "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                      return ListTile(
-                          title: local_book.BookTile(
-                              book: local_book.Book(
-                                  searchResults[index].id,
-                                  searchResults[index].volumeInfo.title,
-                                  searchResults[index].volumeInfo.authors.first,
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .categories
-                                      .first,
-                                  link.toString(),
-                                  "Unread", // TODO: use profile info to make this accurate
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .averageRating
-                                      .toInt(),
-                                  true)));
+                      local_book.Book curr_book = local_book.Book(
+                          searchResults[index].id,
+                          searchResults[index].volumeInfo.title,
+                          searchResults[index].volumeInfo.authors.first,
+                          searchResults[index].volumeInfo.categories.first,
+                          link.toString(),
+                          "Unread", // TODO: use profile info to make this accurate
+                          searchResults[index].volumeInfo.averageRating.toInt(),
+                          true);
+                      return GestureDetector(
+                        child: ChangeNotifierProvider<local_book.Book>.value(
+                          value: curr_book,
+                          child: local_book.BookTile(book: curr_book),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeNotifierProvider<
+                                    local_book.Book>.value(
+                                  value: curr_book,
+                                  child: const DetailsView(),
+                                ),
+                              ));
+                        },
+                      );
                     },
                   ),
           ),
