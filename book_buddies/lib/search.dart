@@ -39,12 +39,17 @@ class SearchPageState extends State<SearchPage> {
                   lookupQuery), // callback to update state once search is entered
           Expanded(
             child: searchResults.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text('No search results found'),
                   )
                 : ListView.builder(
                     itemCount: searchResults.length,
                     itemBuilder: (context, index) {
+                      Uri link = searchResults[index]
+                              .volumeInfo
+                              .imageLinks?["thumbnail"] ??
+                          Uri.parse(
+                              "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
                       return ListTile(
                           title: local_book.BookTile(
                               book: local_book.Book(
@@ -55,10 +60,7 @@ class SearchPageState extends State<SearchPage> {
                                       .volumeInfo
                                       .categories
                                       .first,
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .imageLinks!["thumbnail"]
-                                      .toString(),
+                                  link.toString(),
                                   "Unread", // TODO: use profile info to make this accurate
                                   searchResults[index]
                                       .volumeInfo
