@@ -134,7 +134,7 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: Color.fromRGBO(255, 255, 255, 1),
+        color: const Color.fromRGBO(255, 255, 255, 1),
         child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(children: [
@@ -198,10 +198,10 @@ class Post extends StatelessWidget {
               )),
               const Divider(),
               const SizedBox(height: 8),
-              Row(
+              const Row(
                 children: [
-                  const Spacer(),
-                  const Icon(Icons.favorite_border),
+                  Spacer(),
+                  Icon(Icons.favorite_border),
                 ],
               )
             ])));
