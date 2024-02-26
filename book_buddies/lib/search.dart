@@ -1,5 +1,7 @@
+import 'package:book_buddies/book_detail_views/details.dart';
 import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
+import 'package:provider/provider.dart';
 import 'book.dart' as local_book;
 import 'package:google_books_api/src/models/book.dart' as google_book;
 
@@ -39,32 +41,48 @@ class SearchPageState extends State<SearchPage> {
                   lookupQuery), // callback to update state once search is entered
           Expanded(
             child: searchResults.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text('No search results found'),
                   )
                 : ListView.builder(
                     itemCount: searchResults.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                          title: local_book.BookTile(
-                              book: local_book.Book(
-                                  searchResults[index].id,
-                                  searchResults[index].volumeInfo.title,
-                                  searchResults[index].volumeInfo.authors.first,
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .categories
-                                      .first,
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .imageLinks!["thumbnail"]
-                                      .toString(),
-                                  "Unread", // TODO: use profile info to make this accurate
-                                  searchResults[index]
-                                      .volumeInfo
-                                      .averageRating
-                                      .toInt(),
-                                  true)));
+                      Uri link = searchResults[index]
+                              .volumeInfo
+                              .imageLinks?["thumbnail"] ??
+                          Uri.parse(
+                              "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
+                      local_book.Book curr_book = local_book.Book(
+                          searchResults[index].id,
+                          searchResults[index].volumeInfo.title,
+                          searchResults[index].volumeInfo.authors.firstOrNull ??
+                              "Unknown",
+                          searchResults[index]
+                                  .volumeInfo
+                                  .categories
+                                  .firstOrNull ??
+                              "Unknown",
+                          link.toString(),
+                          "Unread", // TODO: use profile info to make this accurate
+                          searchResults[index].volumeInfo.averageRating.toInt(),
+                          true);
+                      return GestureDetector(
+                        child: ChangeNotifierProvider<local_book.Book>.value(
+                          value: curr_book,
+                          child: local_book.BookTile(book: curr_book),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeNotifierProvider<
+                                    local_book.Book>.value(
+                                  value: curr_book,
+                                  child: const DetailsView(),
+                                ),
+                              ));
+                        },
+                      );
                     },
                   ),
           ),
