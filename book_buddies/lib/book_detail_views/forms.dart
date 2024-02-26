@@ -25,7 +25,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
   @override
   Widget build(BuildContext context) {
     final Book book = Provider.of<Book>(context);
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +33,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
         centerTitle: true,
       ),
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           children: [
             Padding(
@@ -67,7 +67,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     Note note = Note(
                       book.journal.length + 1,
                       titleController.text,
@@ -111,7 +111,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
   @override
   Widget build(BuildContext context) {
     final Note note = Provider.of<Note>(context);
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     titleController.text = note.title;
     descriptionController.text = note.text;
@@ -122,7 +122,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
         centerTitle: true,
       ),
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           children: [
             Padding(
@@ -156,7 +156,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     note.editNote(
                       titleController.text, 
                       descriptionController.text,
