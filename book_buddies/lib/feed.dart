@@ -164,7 +164,7 @@ class Post extends StatelessWidget {
               const SizedBox(height: 8),
               ChangeNotifierProvider<Book>.value(
                 value: book,
-                child: const BookTile(),
+                child: BookTile(book: book),
               ),
               const Divider(),
               Column(
