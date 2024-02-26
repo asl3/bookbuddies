@@ -55,8 +55,13 @@ class SearchPageState extends State<SearchPage> {
                       local_book.Book curr_book = local_book.Book(
                           searchResults[index].id,
                           searchResults[index].volumeInfo.title,
-                          searchResults[index].volumeInfo.authors.first,
-                          searchResults[index].volumeInfo.categories.first,
+                          searchResults[index].volumeInfo.authors.firstOrNull ??
+                              "Unknown",
+                          searchResults[index]
+                                  .volumeInfo
+                                  .categories
+                                  .firstOrNull ??
+                              "Unknown",
                           link.toString(),
                           "Unread", // TODO: use profile info to make this accurate
                           searchResults[index].volumeInfo.averageRating.toInt(),
