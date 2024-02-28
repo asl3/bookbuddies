@@ -12,10 +12,10 @@ class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
 
   @override
-  _LibraryPageState createState() => _LibraryPageState();
+  LibraryPageState createState() => LibraryPageState();
 }
 
-class _LibraryPageState extends State<LibraryPage>
+class LibraryPageState extends State<LibraryPage>
     with AutomaticKeepAliveClientMixin {
   List<Book> books = [];
 
@@ -46,32 +46,33 @@ class _LibraryPageState extends State<LibraryPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Library'),
-      ),
-      body: books.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : GridView.count(
-              crossAxisCount: 2,
-              children: List.generate(books.length, (index) {
-                return GestureDetector(
-                    child: ChangeNotifierProvider<Book>.value(
-                      value: books[index],
-                      child: BookTile(book: books[index]),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChangeNotifierProvider<Book>.value(
-                              value: books[index],
-                              child: const DetailsView(),
-                            ),
-                          ));
-                    });
-              }),
-            ),
-    );
+        appBar: AppBar(
+          title: const Text('My Library'),
+        ),
+        body: SafeArea(
+          child: books.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : GridView.count(
+                  crossAxisCount: 2,
+                  children: List.generate(books.length, (index) {
+                    return GestureDetector(
+                        child: ChangeNotifierProvider<Book>.value(
+                          value: books[index],
+                          child: BookTile(book: books[index]),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider<Book>.value(
+                                  value: books[index],
+                                  child: const DetailsView(),
+                                ),
+                              ));
+                        });
+                  }),
+                ),
+        ));
   }
 }

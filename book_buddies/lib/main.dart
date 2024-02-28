@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Book Buddies'),
             bottom: const TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
               tabs: [
                 Tab(text: "Search"),
                 Tab(text: "My Library"),
