@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
 import 'package:provider/provider.dart';
 import 'book.dart' as local_book;
-import 'package:google_books_api/src/models/book.dart' as google_book;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,7 +15,7 @@ class SearchPageState extends State<SearchPage> {
   List<Book> searchResults = [];
 
   void lookupQuery(String query) async {
-    List<Book> results = await GoogleBooksApi().searchBooks(
+    List<Book> results = await const GoogleBooksApi().searchBooks(
       query,
       maxResults: 20,
       printType: PrintType.books,
@@ -52,7 +51,7 @@ class SearchPageState extends State<SearchPage> {
                               .imageLinks?["thumbnail"] ??
                           Uri.parse(
                               "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                      local_book.Book curr_book = local_book.Book(
+                      local_book.Book currBook = local_book.Book(
                           searchResults[index].id,
                           searchResults[index].volumeInfo.title,
                           searchResults[index].volumeInfo.authors.firstOrNull ??
@@ -68,8 +67,8 @@ class SearchPageState extends State<SearchPage> {
                           true);
                       return GestureDetector(
                         child: ChangeNotifierProvider<local_book.Book>.value(
-                          value: curr_book,
-                          child: local_book.BookTile(book: curr_book),
+                          value: currBook,
+                          child: local_book.BookTile(book: currBook),
                         ),
                         onTap: () {
                           Navigator.push(
@@ -77,7 +76,7 @@ class SearchPageState extends State<SearchPage> {
                               MaterialPageRoute(
                                 builder: (context) => ChangeNotifierProvider<
                                     local_book.Book>.value(
-                                  value: curr_book,
+                                  value: currBook,
                                   child: const DetailsView(),
                                 ),
                               ));

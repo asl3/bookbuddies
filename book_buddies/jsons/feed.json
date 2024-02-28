@@ -4,10 +4,11 @@
             "username": "Carl",
             "messageType": "started",
             "book": {
-                "bookId": "1",
+                "volumeId": "1",
                 "title": "Pride and Prejudice",
                 "author": "Jane Austen",
                 "genre": "Classic",
+                "smallThumbnail": "",
                 "readingStatus": "Completed",
                 "rating": 5,
                 "isPublic": true
