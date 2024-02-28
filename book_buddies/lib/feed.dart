@@ -39,11 +39,12 @@ class _FeedPageState extends State<FeedPage> {
       appBar: AppBar(
         title: const Text('Feed'),
       ),
-      body: ListView(
+      body: SafeArea(
+          child: ListView(
         children: posts.isEmpty
             ? const [Center(child: CircularProgressIndicator())]
             : posts,
-      ),
+      )),
     );
   }
 }
