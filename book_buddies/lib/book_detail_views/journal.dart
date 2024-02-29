@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../book.dart';
+import '../models.dart';
 import 'note.dart';
 
 class JournalTab extends StatefulWidget {

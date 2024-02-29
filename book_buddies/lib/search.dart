@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
 import 'package:provider/provider.dart';
 import 'book.dart' as local_book;
+import 'models.dart' as models;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -15,20 +16,28 @@ class SearchPageState extends State<SearchPage> {
   List<Book> searchResults = [];
 
   void lookupQuery(String query) async {
-    List<Book> results = await const GoogleBooksApi().searchBooks(
-      query,
-      maxResults: 20,
-      printType: PrintType.books,
-      orderBy: OrderBy.relevance,
-    );
+    try {
+      List<Book> results = await const GoogleBooksApi().searchBooks(
+        query,
+        maxResults: 20,
+        printType: PrintType.books,
+        orderBy: OrderBy.relevance,
+      );
 
-    setState(() {
-      searchResults = results;
-    });
+      setState(() {
+        searchResults = results;
+      });
+    } catch (_) {
+      setState(() {
+        searchResults = [];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // final models.User myUser = Provider.of<models.User>(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search'),
@@ -51,7 +60,7 @@ class SearchPageState extends State<SearchPage> {
                               .imageLinks?["thumbnail"] ??
                           Uri.parse(
                               "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                      local_book.Book currBook = local_book.Book(
+                      models.Book currBook = models.Book(
                           searchResults[index].id,
                           searchResults[index].volumeInfo.title,
                           searchResults[index].volumeInfo.authors.firstOrNull ??
@@ -63,25 +72,28 @@ class SearchPageState extends State<SearchPage> {
                               "Unknown",
                           link.toString(),
                           "Unread", // TODO: use profile info to make this accurate
-                          searchResults[index].volumeInfo.averageRating.toInt(),
+                          searchResults[index].volumeInfo.averageRating.round(),
                           true);
-                      return GestureDetector(
-                        child: ChangeNotifierProvider<local_book.Book>.value(
-                          value: currBook,
-                          child: local_book.BookTile(book: currBook),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider<
-                                    local_book.Book>.value(
-                                  value: currBook,
-                                  child: const DetailsView(),
-                                ),
-                              ));
-                        },
-                      );
+                      return ChangeNotifierProvider<models.Book>.value(
+                        value: currBook,
+                        child: local_book.BookTile(book: currBook),
+                      ); // IMO we shouldn't allow access to details until user adds book to collection
+                      // return GestureDetector(
+                      //   child: ChangeNotifierProvider<models.Book>.value(
+                      //     value: currBook,
+                      //     child: local_book.BookTile(book: currBook),
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //           builder: (context) => ChangeNotifierProvider<models.Book>.value(
+                      //             value: currBook,
+                      //             child: const DetailsView(),
+                      //           ),
+                      //         ));
+                      //   },
+                      // );
                     },
                   ),
           ),

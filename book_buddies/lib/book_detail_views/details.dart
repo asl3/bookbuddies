@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../book.dart';
+import '../models.dart';
 import 'forms.dart';
 import 'info.dart';
 import 'journal.dart';
