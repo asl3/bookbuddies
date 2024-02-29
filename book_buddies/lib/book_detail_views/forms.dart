@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../book.dart';
+import '../models.dart';
 import 'package:provider/provider.dart';
 
 /* ADD NOTE FORM */

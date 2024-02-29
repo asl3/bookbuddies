@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../book.dart';
+import '../models.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 

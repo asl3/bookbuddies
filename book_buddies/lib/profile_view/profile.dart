@@ -1,32 +1,34 @@
 import 'package:book_buddies/profile_view/profile_edit.dart';
 import 'package:flutter/material.dart';
+import '../models.dart';
+import 'package:provider/provider.dart';
 
-class User {
-  final AssetImage profilePicture;
-  String fullName;
-  String displayName;
-  String email;
-  String about;
+// class User {
+//   final AssetImage profilePicture;
+//   String fullName;
+//   String displayName;
+//   String email;
+//   String about;
 
-  User({
-    required this.profilePicture,
-    required this.fullName,
-    required this.displayName,
-    required this.email,
-    required this.about,
-  });
-}
+//   User({
+//     required this.profilePicture,
+//     required this.fullName,
+//     required this.displayName,
+//     required this.email,
+//     required this.about,
+//   });
+// }
 
-class UserPreferences {
-  static final User myUser = User(
-    profilePicture:
-        const AssetImage('assets/images/blankpfp.webp'),
-    fullName: 'Name',
-    displayName: 'ireadbooks123',
-    email: 'example@umd.edu',
-    about: "I'm currently reading The Great Gatsby!",
-  );
-}
+// class UserPreferences {
+//   static final User myUser = User(
+//     profilePicture:
+//         const AssetImage('assets/images/blankpfp.webp'),
+//     fullName: 'Name',
+//     displayName: 'ireadbooks123',
+//     email: 'example@umd.edu',
+//     about: "I'm currently reading The Great Gatsby!",
+//   );
+// }
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -38,7 +40,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    User user = UserPreferences.myUser;
+    User user = Provider.of<User>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -141,16 +143,4 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       );
-}
-        
-class MyClip extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    return const Rect.fromLTWH(0, 0, 200, 200);
-  }
-
-  @override
-  bool shouldReclip(oldClipper) {
-    return true;
-  }
 }

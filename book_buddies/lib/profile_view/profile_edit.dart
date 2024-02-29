@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'profile.dart';
+// import 'profile.dart';
+import '../models.dart';
+import 'package:provider/provider.dart';
+
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
 
@@ -10,7 +13,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final User user = UserPreferences.myUser;
+    final User user = Provider.of<User>(context, listen: true);
   return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
@@ -51,7 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   labelText: 'Username',
                   floatingLabelBehavior: FloatingLabelBehavior.always),
                   onChanged: (displayName) {
-                    user.displayName = displayName;
+                    user.setDisplayName(displayName);
                   },
                 ),
                 const SizedBox(height: 24),
@@ -61,7 +64,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   labelText: 'Full Name',
                   floatingLabelBehavior: FloatingLabelBehavior.always),
                   onChanged: (fullName) {
-                    user.fullName = fullName;
+                    user.setFullName(fullName);
                   },
                 ),
                 const SizedBox(height: 24),
@@ -72,7 +75,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   labelText: 'About',
                   floatingLabelBehavior: FloatingLabelBehavior.always),
                   onChanged: (about) {
-                    user.about = about;
+                    user.setAbout(about);
                   },
                 ),
                 const SizedBox(height: 10),

@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'library.dart';
 import 'profile_view/profile.dart';
 import 'search.dart';
 import 'feed.dart';
+import 'models.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  User myUser = UserPreferences.myUser;
+  await myUser.loadBooks();
+  runApp(
+    ChangeNotifierProvider<User>.value(
+      value: myUser,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

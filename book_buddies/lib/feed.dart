@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'book.dart';
+import 'models.dart';
 
 var logger = Logger();
 
@@ -134,6 +135,8 @@ class Post extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // User myUser = Provider.of<User>(context, listen: false);
+
     return Card(
         color: const Color.fromRGBO(255, 255, 255, 1),
         child: Padding(
