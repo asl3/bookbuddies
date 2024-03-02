@@ -43,68 +43,66 @@ class _ProfilePageState extends State<ProfilePage> {
     User user = Provider.of<User>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: Center(child:
-      ListView(
-        children: [
-          Stack(
+        appBar: AppBar(
+          title: const Text('Profile'),
+        ),
+        body: SafeArea(
+            child: Center(
+          child: ListView(
             children: [
-              Container(
-                alignment: Alignment.center,
-              child: ClipOval(
-                    clipper: MyClip(),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Image(
-                        image: user.profilePicture,
-                        fit: BoxFit.fitWidth,
-                        width: 200,
-                        height: 200,
-                      ),
-                    )
-                )
-              ),
-              Positioned(
-                bottom: 0,
-                right: 110,
-                child: ClipOval(
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    color: Theme.of(context).colorScheme.primary,
-                    child: SizedBox(
-                      height: 25.0,
-                      width: 25.0,
-                      child: IconButton(
-                        padding: const EdgeInsets.all(0.0),
-                        icon: const Icon(Icons.edit,
-                          color: Colors.white,
-                          size: 25,
-                        ),
-                        onPressed: () {
-                                Navigator.push( context, MaterialPageRoute( builder: (context) => 
-                                const EditProfilePage()), ).then((value) => setState(() {}));
-                              
-                            },
-                      ),
-                    )
-                  ),
-                )
-              ),
-            ]
-          ),
+              Stack(children: [
+                Container(
+                    alignment: Alignment.center,
+                    child: ClipOval(
+                        clipper: MyClip(),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Image(
+                            image: user.profilePicture,
+                            fit: BoxFit.fitWidth,
+                            width: 200,
+                            height: 200,
+                          ),
+                        ))),
+                Positioned(
+                    bottom: 0,
+                    right: 110,
+                    child: ClipOval(
+                      child: Container(
+                          padding: const EdgeInsets.all(8),
+                          color: Theme.of(context).colorScheme.primary,
+                          child: SizedBox(
+                            height: 25.0,
+                            width: 25.0,
+                            child: IconButton(
+                              padding: const EdgeInsets.all(0.0),
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 25,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfilePage()),
+                                ).then((value) => setState(() {}));
+                              },
+                            ),
+                          )),
+                    )),
+              ]),
 
-          const SizedBox(height: 24),
-          buildName(user),
-          const SizedBox(height: 24),
-          //maybe put some metrics regarding books read?
-          const SizedBox(height: 48),
-          buildAbout(user),
-        ],
-        
-      ),
-    ));
+              const SizedBox(height: 24),
+              buildName(user),
+              const SizedBox(height: 24),
+              //maybe put some metrics regarding books read?
+              const SizedBox(height: 48),
+              buildAbout(user),
+            ],
+          ),
+        )));
   }
 
   Widget buildName(User user) => Column(

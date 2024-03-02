@@ -24,58 +24,52 @@ class _InfoTabState extends State<InfoTab> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(30),
         child: SafeArea(
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
               TableRow(
-                children: [
-                  const Center(
-                      child: Text(
+                children: [const Text(
                     'Author',
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Center(
-                      child: Text(
+                    
+                    child: Text(
                         widget.book.author,
                       ),
-                    ),
+                  
                   ),
                 ],
               ),
               TableRow(
                 children: [
-                  const Center(
-                    child: Text(
+                  const  Text(
                       'Genre',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Center(
-                      child: Text(
+                    child:  Text(
                         widget.book.genre,
                       ),
-                    ),
+                    
                   ),
                 ],
               ),
               TableRow(
                 children: [
-                  const Center(
-                    child: Text(
+                  const  Text(
                       'Status',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Center(
-                      child: DropdownMenu(
+                    child: DropdownMenu(
                         initialSelection: widget.book.readingStatus,
                         controller: readingStatusController,
                         // label: const Text('Reading Status'),
@@ -91,22 +85,21 @@ class _InfoTabState extends State<InfoTab> {
                         ],
                       ),
                     ),
-                  ),
+                  
                 ],
               ),
               TableRow(
                 children: [
-                  const Center(
-                    child: Text(
+                  const  Text(
                       'Visibility',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Center(
-                      child: ToggleSwitch(
+                    child:  ToggleSwitch(
                         initialLabelIndex: widget.book.isPublic ? 0 : 1,
+                        minWidth: 87,
                         totalSwitches: 2,
                         activeBgColors: const [
                           [Colors.green],
@@ -118,20 +111,17 @@ class _InfoTabState extends State<InfoTab> {
                         },
                       ),
                     ),
-                  ),
+                  
                 ],
               ),
               TableRow(
                 children: [
-                  const Center(
-                    heightFactor: 2,
-                    child: Text(
+                  const Text(
                       'Rating',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  Center(
-                    child: RatingBar.builder(
+                  
+                  RatingBar.builder(
                       initialRating: widget.book.rating.toDouble(),
                       minRating: 0,
                       direction: Axis.horizontal,
@@ -148,7 +138,7 @@ class _InfoTabState extends State<InfoTab> {
                         widget.book.toggleRating(rating.toInt());
                       },
                     ),
-                  ),
+                  
                 ],
               ),
             ],
