@@ -1,4 +1,4 @@
-import 'package:book_buddies/book_detail_views/details.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +37,8 @@ class SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     // final models.User myUser = Provider.of<models.User>(context, listen: true);
-
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
         title: const Text('Search'),
       ),
@@ -99,7 +99,7 @@ class SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -112,12 +112,15 @@ class SearchBar extends StatefulWidget {
 
 class SearchBarState extends State<SearchBar> {
   String query = '';
+  final _debouncer = Debouncer(milliseconds: 500);
 
   void updateQuery(String newQuery) {
     setState(() {
       query = newQuery;
     });
-    widget.onQueryChanged(newQuery);
+    _debouncer.run(() {
+      widget.onQueryChanged(newQuery);
+    });
   }
 
   @override
@@ -133,6 +136,18 @@ class SearchBarState extends State<SearchBar> {
         ),
       ),
     );
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+  Debouncer({required this.milliseconds});
+  void run(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }
 
