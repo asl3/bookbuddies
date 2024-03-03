@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'dart:convert';
-// import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'book.dart';
@@ -17,31 +15,6 @@ class LibraryPage extends StatefulWidget {
 }
 
 class LibraryPageState extends State<LibraryPage> {
-  // List<Book> books = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   loadBooks();
-  // }
-
-  // @override
-  // bool get wantKeepAlive => true;
-
-  // Future<void> loadBooks() async {
-  //   final jsonString = await rootBundle.loadString('jsons/collection.json');
-  //   final data = jsonDecode(jsonString);
-  //   setState(() {
-  //     // create the books list from the json data
-  //     for (var book in data["bookCollection"]) {
-  //       books.add(Book.fromJson(book));
-  //       for (var note in book['journal']) {
-  //         books[books.length - 1].addNoteToJournal(Note.fromJson(note));
-  //       }
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
