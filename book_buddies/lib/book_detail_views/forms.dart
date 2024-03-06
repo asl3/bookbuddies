@@ -28,63 +28,62 @@ class _AddNoteFormState extends State<AddNoteForm> {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Note'),
-        centerTitle: true,
-      ),
-      body: Form(
-        key: formKey,
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Title',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please provide a title';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Description',
-                  border: InputBorder.none,
-                ),
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    Note note = Note(
-                      book.journal.length + 1,
-                      titleController.text,
-                      descriptionController.text,
-                      DateTime.now()
-                    );
-                    book.addNoteToJournal(note);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ),
-          ],
-        )
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Add Note'),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: TextFormField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                      ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please provide a title';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        hintText: 'Description',
+                        border: InputBorder.none,
+                      ),
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          Note note = Note(
+                              book.journal.length + 1,
+                              titleController.text,
+                              descriptionController.text,
+                              DateTime.now());
+                          book.addNoteToJournal(note);
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ],
+              )),
+        ));
   }
 }
 
@@ -117,59 +116,59 @@ class _EditNoteFormState extends State<EditNoteForm> {
     descriptionController.text = note.text;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Note'),
-        centerTitle: true,
-      ),
-      body: Form(
-        key: formKey,
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Title',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please provide a title';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Description',
-                  border: InputBorder.none,
-                ),
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    note.editNote(
-                      titleController.text, 
-                      descriptionController.text,
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ),
-          ],
-        )
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Edit Note'),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: TextFormField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                      ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please provide a title';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        hintText: 'Description',
+                        border: InputBorder.none,
+                      ),
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          note.editNote(
+                            titleController.text,
+                            descriptionController.text,
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ],
+              )),
+        ));
   }
 }

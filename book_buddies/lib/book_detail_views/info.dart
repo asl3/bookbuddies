@@ -30,8 +30,8 @@ class _InfoTabState extends State<InfoTab> {
           return SingleChildScrollView(
             child: Table(
               columnWidths: const {
-              0: FixedColumnWidth(100),
-              1: FlexColumnWidth(),
+                0: FixedColumnWidth(100),
+                1: FlexColumnWidth(),
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
@@ -95,13 +95,12 @@ class _InfoTabState extends State<InfoTab> {
                       'Visibility',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    MediaQuery.of(context).orientation == Orientation.portrait 
-                    ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Padding(
-                                    padding: const EdgeInsets.only(right: 76),
-                                    child: SizedBox(
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Padding(
+                                padding: const EdgeInsets.only(right: 58),
+                                child: SizedBox(
                                     width: 50.0,
                                     height: 40.0,
                                     child: ToggleSwitch(
@@ -118,30 +117,28 @@ class _InfoTabState extends State<InfoTab> {
                                         widget.book.toggleVisiblity(index == 0);
                                       },
                                     ))))
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Padding(
-                                    padding: const EdgeInsets.only(right: 479.47),
-                                    child: SizedBox(
-                                        width: 50.0,
-                                        height: 40.0,
-                                        child: ToggleSwitch(
-                                          initialLabelIndex:
-                                              widget.book.isPublic ? 0 : 1,
-                                          minWidth: 87,
-                                          totalSwitches: 2,
-                                          activeBgColors: const [
-                                            [Colors.green],
-                                            [Colors.red]
-                                          ],
-                                          labels: const ['Public', 'Private'],
-                                          onToggle: (index) {
-                                            widget.book
-                                                .toggleVisiblity(index == 0);
-                                          },
-                                        ))),
-                              ),
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Padding(
+                                padding: const EdgeInsets.only(right: 399),
+                                child: SizedBox(
+                                    width: 50.0,
+                                    height: 40.0,
+                                    child: ToggleSwitch(
+                                      initialLabelIndex:
+                                          widget.book.isPublic ? 0 : 1,
+                                      minWidth: 87,
+                                      totalSwitches: 2,
+                                      activeBgColors: const [
+                                        [Colors.green],
+                                        [Colors.red]
+                                      ],
+                                      labels: const ['Public', 'Private'],
+                                      onToggle: (index) {
+                                        widget.book.toggleVisiblity(index == 0);
+                                      },
+                                    ))),
+                          ),
                   ],
                 ),
                 TableRow(
