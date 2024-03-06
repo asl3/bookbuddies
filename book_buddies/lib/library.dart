@@ -18,7 +18,6 @@ class LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
-    // super.build(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text('My Library'),
@@ -28,7 +27,7 @@ class LibraryPageState extends State<LibraryPage> {
               ? const Center(child: CircularProgressIndicator())
               : GridView.count(
                   crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 2 : 4,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 3 / 4,
                   children: List.generate(myUser.books.length, (index) {
                     return GestureDetector(
                         child: ChangeNotifierProvider<Book>.value(

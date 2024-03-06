@@ -34,10 +34,10 @@ class _AddNoteFormState extends State<AddNoteForm> {
       ),
       body: Form(
         key: formKey,
-        child: Column(
+        child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
               child: TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
@@ -52,7 +52,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
               child: TextFormField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
@@ -123,10 +123,10 @@ class _EditNoteFormState extends State<EditNoteForm> {
       ),
       body: Form(
         key: formKey,
-        child: Column(
+        child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
               child: TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
@@ -141,7 +141,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
               child: TextFormField(
                 controller: descriptionController,
                 decoration: const InputDecoration(

@@ -77,23 +77,7 @@ class SearchPageState extends State<SearchPage> {
                       return ChangeNotifierProvider<models.Book>.value(
                         value: currBook,
                         child: local_book.BookTile(book: currBook),
-                      ); // IMO we shouldn't allow access to details until user adds book to collection
-                      // return GestureDetector(
-                      //   child: ChangeNotifierProvider<models.Book>.value(
-                      //     value: currBook,
-                      //     child: local_book.BookTile(book: currBook),
-                      //   ),
-                      //   onTap: () {
-                      //     Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //           builder: (context) => ChangeNotifierProvider<models.Book>.value(
-                      //             value: currBook,
-                      //             child: const DetailsView(),
-                      //           ),
-                      //         ));
-                      //   },
-                      // );
+                      ); // Don't allow access to details until user adds book to collection
                     },
                   ),
           ),
