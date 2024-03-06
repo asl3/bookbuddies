@@ -99,7 +99,9 @@ class _InfoTabState extends State<InfoTab> {
                     ? Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8),
-                                child: SizedBox(
+                                child: Padding(
+                                    padding: const EdgeInsets.only(right: 76),
+                                    child: SizedBox(
                                     width: 50.0,
                                     height: 40.0,
                                     child: ToggleSwitch(
@@ -115,12 +117,12 @@ class _InfoTabState extends State<InfoTab> {
                                       onToggle: (index) {
                                         widget.book.toggleVisiblity(index == 0);
                                       },
-                                    )))
+                                    ))))
                             : Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8),
                                 child: Padding(
-                                    padding: const EdgeInsets.only(right: 202),
+                                    padding: const EdgeInsets.only(right: 479.47),
                                     child: SizedBox(
                                         width: 50.0,
                                         height: 40.0,
