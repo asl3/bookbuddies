@@ -120,13 +120,13 @@ class BookTile extends StatelessWidget {
                 : Container(),
             const SizedBox(height: 8.0),
             Text(
-              book.title,
-              style: const TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+            book.title.length <= 20 ? book.title : '${book.title.substring(0, 20)}...',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
+          ),
             const SizedBox(height: 4.0),
             Text(
               'by ${book.author}',

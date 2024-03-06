@@ -29,6 +29,10 @@ class _InfoTabState extends State<InfoTab> {
             (BuildContext context, BoxConstraints viewportConstraints) {
           return SingleChildScrollView(
             child: Table(
+              columnWidths: const {
+              0: FixedColumnWidth(100),
+              1: FlexColumnWidth(),
+              },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
                 TableRow(
