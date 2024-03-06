@@ -24,7 +24,11 @@ class _NoteViewState extends State<NoteView> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16), 
-          child: Text(note.text),
+          child: ListView(
+            children: [
+              Text(note.text),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

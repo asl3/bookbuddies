@@ -28,7 +28,7 @@ class LibraryPageState extends State<LibraryPage> {
               ? const Center(child: CircularProgressIndicator())
               : GridView.count(
                   crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 2 : 4,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.5,
                   children: List.generate(myUser.books.length, (index) {
                     return GestureDetector(
                         child: ChangeNotifierProvider<Book>.value(
