@@ -25,51 +25,49 @@ class _InfoTabState extends State<InfoTab> {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(30),
-        child: SafeArea(
-          child: Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              TableRow(
-                children: [const Text(
-                    'Author',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    
-                    child: Text(
+        child: SafeArea(child: LayoutBuilder(builder:
+            (BuildContext context, BoxConstraints viewportConstraints) {
+          return SingleChildScrollView(
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                TableRow(
+                  children: [
+                    const Text(
+                      'Author',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
                         widget.book.author,
                       ),
-                  
-                  ),
-                ],
-              ),
-              TableRow(
-                children: [
-                  const  Text(
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Text(
                       'Genre',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child:  Text(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
                         widget.book.genre,
                       ),
-                    
-                  ),
-                ],
-              ),
-              TableRow(
-                children: [
-                  const  Text(
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Text(
                       'Status',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: DropdownMenu(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: DropdownMenu(
                         initialSelection: widget.book.readingStatus,
                         controller: readingStatusController,
                         // label: const Text('Reading Status'),
@@ -85,43 +83,68 @@ class _InfoTabState extends State<InfoTab> {
                         ],
                       ),
                     ),
-                  
-                ],
-              ),
-              TableRow(
-                children: [
-                  const  Text(
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Text(
                       'Visibility',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child:  ToggleSwitch(
-                        initialLabelIndex: widget.book.isPublic ? 0 : 1,
-                        minWidth: 87,
-                        totalSwitches: 2,
-                        activeBgColors: const [
-                          [Colors.green],
-                          [Colors.red]
-                        ],
-                        labels: const ['Public', 'Private'],
-                        onToggle: (index) {
-                          widget.book.toggleVisiblity(index == 0);
-                        },
-                      ),
-                    ),
-                  
-                ],
-              ),
-              TableRow(
-                children: [
-                  const Text(
+                    MediaQuery.of(context).orientation == Orientation.portrait 
+                    ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: SizedBox(
+                                    width: 50.0,
+                                    height: 40.0,
+                                    child: ToggleSwitch(
+                                      initialLabelIndex:
+                                          widget.book.isPublic ? 0 : 1,
+                                      minWidth: 87,
+                                      totalSwitches: 2,
+                                      activeBgColors: const [
+                                        [Colors.green],
+                                        [Colors.red]
+                                      ],
+                                      labels: const ['Public', 'Private'],
+                                      onToggle: (index) {
+                                        widget.book.toggleVisiblity(index == 0);
+                                      },
+                                    )))
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: Padding(
+                                    padding: const EdgeInsets.only(right: 202),
+                                    child: SizedBox(
+                                        width: 50.0,
+                                        height: 40.0,
+                                        child: ToggleSwitch(
+                                          initialLabelIndex:
+                                              widget.book.isPublic ? 0 : 1,
+                                          minWidth: 87,
+                                          totalSwitches: 2,
+                                          activeBgColors: const [
+                                            [Colors.green],
+                                            [Colors.red]
+                                          ],
+                                          labels: const ['Public', 'Private'],
+                                          onToggle: (index) {
+                                            widget.book
+                                                .toggleVisiblity(index == 0);
+                                          },
+                                        ))),
+                              ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Text(
                       'Rating',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  
-                  RatingBar.builder(
+                    RatingBar.builder(
                       initialRating: widget.book.rating.toDouble(),
                       minRating: 0,
                       direction: Axis.horizontal,
@@ -138,11 +161,11 @@ class _InfoTabState extends State<InfoTab> {
                         widget.book.toggleRating(rating.toInt());
                       },
                     ),
-                  
-                ],
-              ),
-            ],
-          ),
-        ));
+                  ],
+                ),
+              ],
+            ),
+          );
+        })));
   }
 }
