@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'library.dart';
-import 'profile_view/profile.dart';
-import 'search.dart';
-import 'feed.dart';
-import 'models.dart';
+import 'library_page.dart';
+import 'profile/profile_page.dart';
+import 'search_page.dart';
+import 'feed/feed_page.dart';
+import 'models/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
