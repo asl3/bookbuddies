@@ -1,4 +1,5 @@
 import 'package:book_buddies/profile/edit_profile_page.dart';
+import 'package:book_buddies/library_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
@@ -72,8 +73,10 @@ class _ProfilePageState extends State<ProfilePage> {
               buildName(user),
               const SizedBox(height: 24),
               //maybe put some metrics regarding books read?
-              const SizedBox(height: 48),
+              const SizedBox(height: 30),
               buildAbout(user),
+              const SizedBox(height: 30),
+              // buildLibrary(),
             ],
           ),
         )));
@@ -111,6 +114,24 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               user.about,
               style: const TextStyle(fontSize: 16, height: 1.4),
+            ),
+          ],
+        ),
+      );
+
+  Widget buildLibrary() => Container(
+        padding: const EdgeInsets.all(16.0),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Library',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            SizedBox(
+              height: 1000,
+              child: LibraryPage(),
             ),
           ],
         ),

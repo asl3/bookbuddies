@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'library_page.dart';
+import 'map.dart';
 import 'profile/profile_page.dart';
 import 'search_page.dart';
 import 'feed/feed_page.dart';
@@ -36,8 +37,9 @@ class MyApp extends StatelessWidget {
               tabs: [
                 Tab(text: "Search"),
                 Tab(text: "My Library"),
-                Tab(text: "Profile"),
                 Tab(text: "Social"),
+                Tab(text: "Map"),
+                Tab(text: "Profile"),
               ],
             ),
           ),
@@ -45,8 +47,9 @@ class MyApp extends StatelessWidget {
             children: [
               Center(child: SearchPage()),
               Center(child: LibraryPage()),
-              Center(child: ProfilePage()),
               Center(child: FeedPage()),
+              Center(child: LibraryMapScreen()),
+              Center(child: ProfilePage()),
             ],
           ),
         ),
