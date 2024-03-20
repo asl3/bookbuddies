@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class Note extends ChangeNotifier {
-  final int noteId;
+  final String noteId = const Uuid().v4();
   String title;
   String text;
   DateTime updatedAt;
 
-  Note(this.noteId, this.title, this.text, this.updatedAt);
+  Note(this.title, this.text, this.updatedAt);
 
   factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(int.parse(json['noteId']), json['title'], json['text'],
+    return Note(json['title'], json['text'],
         DateTime.parse(json['updatedAt']));
   }
 

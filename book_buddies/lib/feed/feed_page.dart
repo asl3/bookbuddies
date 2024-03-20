@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+// import 'dart:convert';
+// import 'package:flutter/services.dart' show rootBundle;
 import 'package:logger/logger.dart';
-import 'post.dart';
+import 'post_tile.dart';
+import 'package:provider/provider.dart';
+import 'package:book_buddies/models/user.dart';
+import 'package:book_buddies/models/post.dart';
+import 'package:book_buddies/models/book.dart';
 
 var logger = Logger();
 
@@ -14,26 +18,46 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  List<Post> posts = [];
+  // List<Post> posts = [];
 
-  @override
-  void initState() {
-    super.initState();
-    loadPosts();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   loadPosts();
+  // }
 
-  Future<void> loadPosts() async {
-    final jsonString = await rootBundle.loadString('jsons/feed.json');
-    final data = jsonDecode(jsonString);
-    setState(() {
-      for (var post in data["messages"]) {
-        posts.add(Post.fromJson(post));
-      }
-    });
-  }
+  // Future<void> loadPosts() async {
+  //   final jsonString = await rootBundle.loadString('jsons/feed.json');
+  //   final data = jsonDecode(jsonString);
+  //   setState(() {
+  //     for (var post in data["messages"]) {
+  //       posts.add(Post.fromJson(post));
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    User myUser = Provider.of<User>(context, listen: true);
+
+    List<PostTile> posts = [];
+
+    for (Book book in myUser.books) {
+      for (Post post in book.posts) {
+        posts.add(PostTile(post: post, user: myUser));
+      }
+    }
+
+    for (User friend in myUser.friends) {
+      for (Book book in friend.books) {
+        for (Post post in book.posts) {
+          posts.add(PostTile(post: post, user: friend));
+        }
+      }
+    }
+
+    posts.sort((a, b) => b.post.time.compareTo(a.post.time));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feed'),
@@ -51,7 +75,7 @@ class _FeedPageState extends State<FeedPage> {
 }
 
 class FeedScreen extends StatelessWidget {
-  final List<Post> posts;
+  final List<PostTile> posts;
 
   const FeedScreen({Key? key, required this.posts}) : super(key: key);
 
@@ -60,7 +84,15 @@ class FeedScreen extends StatelessWidget {
     return ListView(
       children: posts.isEmpty
           ? const [Center(child: CircularProgressIndicator())]
-          : posts,
+          : List.generate(posts.length, (index) {
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<User>.value(value: posts[index].user),
+                ChangeNotifierProvider<Post>.value(value: posts[index].post),
+              ],
+              child: posts[index],
+            );
+          }),
     );
   }
 }

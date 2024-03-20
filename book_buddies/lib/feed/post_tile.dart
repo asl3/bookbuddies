@@ -2,34 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../book_detail_views/book_tile.dart';
 import 'package:book_buddies/models/book.dart';
-import 'comment.dart';
+import '../models/post.dart';
+import '../models/user.dart';
+import '../models/comment.dart';
 
-class Post extends StatelessWidget {
-  final String username;
-  final String messageType;
-  final Book book;
-  final DateTime time;
-  final List<Comment> comments;
+class PostTile extends StatelessWidget {
+  final User user;
+  final Post post;
 
-  const Post(
-      this.username, this.messageType, this.book, this.time, this.comments,
-      {super.key});
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-        json['username'],
-        json['messageType'],
-        Book.fromJson(json['book']),
-        DateTime.parse(json['time']),
-        (json['comments'] as List).map((e) => Comment.fromJson(e)).toList());
-  }
+  const PostTile({required this.post, required this.user, super.key});
 
   Icon messageTypeIcon() {
-    if (messageType == 'reading') {
+    if (post.messageType == 'reading') {
       return const Icon(Icons.book, color: Colors.orange);
-    } else if (messageType == 'finished') {
+    } else if (post.messageType == 'finished') {
       return const Icon(Icons.check, color: Colors.green);
-    } else if (messageType == 'added') {
+    } else if (post.messageType == 'added') {
       return const Icon(Icons.add, color: Colors.blue);
     } else {
       return const Icon(Icons.error, color: Colors.red);
@@ -76,8 +64,6 @@ class Post extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // User myUser = Provider.of<User>(context, listen: false);
-
     return Card(
         color: const Color.fromRGBO(255, 255, 255, 1),
         child: Padding(
@@ -91,37 +77,39 @@ class Post extends StatelessWidget {
                         .copyWith(fontSize: 12),
                     children: <TextSpan>[
                       TextSpan(
-                        text: username,
+                        text: user.displayName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: ' $messageType',
+                        text: ' ${post.messageType}',
                       ),
                     ],
                   ),
                 ),
                 const Spacer(),
                 Text(
-                  timeDelta(time),
+                  timeDelta(post.time),
                   style: const TextStyle(color: Colors.grey),
                 )
               ]),
               const SizedBox(height: 8),
               ChangeNotifierProvider<Book>.value(
-                value: book,
-                child: BookTile(book: book),
+                value: post.book,
+                child: BookTile(book: post.book),
               ),
               const Divider(),
               Column(
-                children: comments
-                    .map((comment) => Card(
+                children: post.comments
+                    .map((comment) => ChangeNotifierProvider<Comment>.value(
+                      value: comment,
+                      child:  Card(
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(children: [
-                                    Text(comment.username,
+                                    Text(comment.user.displayName,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold)),
                                     const Spacer(),
@@ -133,6 +121,7 @@ class Post extends StatelessWidget {
                                   ]),
                                   Text(comment.comment)
                                 ]))))
+                    )
                     .toList(),
               ),
               const SizedBox(height: 8),
