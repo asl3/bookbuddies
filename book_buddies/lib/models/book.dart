@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'note.dart';
+import 'post.dart';
 
 class Book extends ChangeNotifier {
   final String volumeId;
@@ -11,6 +14,7 @@ class Book extends ChangeNotifier {
   int rating;
   bool isPublic;
   List<Note> journal = [];
+  List<Post> posts = []; // easier to update posts list when updating book
 
   Book(this.volumeId, this.title, this.author, this.genre, this.coverUrl,
       this.readingStatus, this.rating, this.isPublic);
@@ -27,11 +31,16 @@ class Book extends ChangeNotifier {
         json['isPublic']);
   }
 
+  Future<void> loadPosts() async {
+    final jsonString = await rootBundle.loadString('jsons/feed.json');
+    final data = jsonDecode(jsonString);
+    for (var post in data["messages"]) {
+      addPost(Post.fromJson(post));
+    }
+  }
+
   void addNoteToJournalWithParams(String title, String text) {
-    int noteId =
-        journal.reduce((a, b) => a.noteId > b.noteId ? a : b).noteId + 1;
     Note note = Note(
-      noteId,
       title,
       text,
       DateTime.now(),
@@ -46,7 +55,7 @@ class Book extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteNoteFromJournal(int noteId) {
+  void deleteNoteFromJournal(String noteId) {
     journal.removeWhere((note) => noteId == note.noteId);
     notifyListeners();
   }
@@ -63,11 +72,27 @@ class Book extends ChangeNotifier {
 
   void updateReadingStatus(String readingStatus) {
     this.readingStatus = readingStatus;
+
+    // Add new post for reading status change
+    Post newPost = Post(
+      Post.getMessageTypeForBook(this),
+      this,
+      DateTime.now(),
+    );
+    addPost(newPost);
+
+    // Notify listeners
     notifyListeners();
   }
 
   void onUpdateNote() {
     journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    notifyListeners();
+  }
+
+  void addPost(Post post) {
+    post.addListener(notifyListeners);
+    posts.add(post);
     notifyListeners();
   }
 }

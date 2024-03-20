@@ -1,5 +1,4 @@
 {
-    "userId": "12345",
     "username": "BookLover",
     "email": "booklover@example.com",
     "preferences": {
@@ -13,24 +12,33 @@
         "viewMode": "list"
       }
     },
-    "friends": {
-      "count": 3,
-      "list": [
-        {
-          "userId": "67890",
-          "username": "BookEnjoyer",
-          "email": "bookenjoyer@example.com"
-        },
-        {
-          "userId": "13579",
-          "username": "BookFan",
-          "email": "bookfan@example.com"
-        },
-        {
-          "userId": "24680",
-          "username": "BookAddict",
-          "email": "bookaddict@example.com"
-        }
-      ]
-    }
+    "profilePicture": "assets/images/blankpfp.webp",
+    "fullName": "BookLover",
+    "about": "I'm currently reading The Great Gatsby!",
+    "friends": [
+      {
+        "username": "BookEnjoyer",
+        "email": "bookenjoyer@example.com",
+        "profilePicture": "assets/images/blankpfp.webp",
+        "fullName": "BookEnjoyer",
+        "about": "I'm currently reading The Great Gatsby!",
+        "friends": []
+      },
+      {
+        "username": "BookFan",
+        "email": "bookfan@example.com",
+        "profilePicture": "assets/images/blankpfp.webp",
+        "fullName": "BookFan",
+        "about": "I'm currently reading The Great Gatsby!",
+        "friends": []
+      },
+      {
+        "username": "BookAddict",
+        "email": "bookaddict@example.com",
+        "profilePicture": "assets/images/blankpfp.webp",
+        "fullName": "BookAddict",
+        "about": "I'm currently reading The Great Gatsby!",
+        "friends": []
+      }
+    ]
 }

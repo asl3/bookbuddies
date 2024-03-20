@@ -6,11 +6,20 @@ import 'profile/profile_page.dart';
 import 'search_page.dart';
 import 'feed/feed_page.dart';
 import 'models/user.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  User myUser = UserPreferences.myUser;
+  final jsonString = await rootBundle.loadString('jsons/user.json');
+  final data = jsonDecode(jsonString);
+  User myUser = User.fromJson(data);
   await myUser.loadBooks();
+
+  // Now going to test friend posts
+  await myUser.friends[2].loadBooks();
+  await myUser.friends[2].books[0].loadPosts();
+  
   runApp(
     ChangeNotifierProvider<User>.value(
       value: myUser,
