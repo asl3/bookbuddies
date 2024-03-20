@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
-import 'user.dart';
 import 'package:uuid/uuid.dart';
 
 class Post extends ChangeNotifier {
@@ -10,7 +9,7 @@ class Post extends ChangeNotifier {
   final Book book;
   final DateTime time;
   List<Comment> comments = [];
-  List<User> likers = [];
+  List<String> likers = []; // store user ids of likers to avoid StackOverflowError
 
   Post(this.messageType, this.book, this.time);
 
@@ -31,20 +30,19 @@ class Post extends ChangeNotifier {
 
     // Add likers
     for (var liker in json['likers']) {
-      post.addLiker(User.fromJson(liker));
+      post.addLiker(liker);
     }
 
     return post;
   }
 
-  void addLiker(User user) {
-    user.addListener(notifyListeners);
-    likers.add(user);
+  void addLiker(String userId) {
+    likers.add(userId);
     notifyListeners();
   }
 
   void removeLiker(String userId) {
-    likers.removeWhere((user) => user.userId == userId);
+    likers.remove(userId);
     notifyListeners();
   }
 
@@ -52,6 +50,10 @@ class Post extends ChangeNotifier {
     comment.addListener(notifyListeners);
     comments.add(comment);
     notifyListeners();
+  }
+
+  bool isUserLiking(String userId) {
+    return likers.contains(userId);
   }
 
   static String getMessageTypeForBook(Book book) {

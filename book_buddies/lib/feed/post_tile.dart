@@ -152,10 +152,21 @@ class _PostTileState extends State<PostTile> {
               ),
               const Divider(),
               const SizedBox(height: 8),
-              const Row(
+              Row(
                 children: [
-                  Spacer(),
-                  Icon(Icons.favorite_border),
+                  const Spacer(),
+                  IconButton(
+                    icon: widget.post.isUserLiking(widget.user.userId) ?
+                      const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
+                    onPressed: () {
+                      if (widget.post.isUserLiking(widget.user.userId)) {
+                        widget.post.removeLiker(widget.user.userId);
+                      } else {
+                        widget.post.addLiker(widget.user.userId);
+                      }
+                    },
+                  ),
+                  Text('${widget.post.likers.length}')
                 ],
               )
             ])));
