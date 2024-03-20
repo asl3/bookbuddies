@@ -6,18 +6,31 @@ import '../models/post.dart';
 import '../models/user.dart';
 import '../models/comment.dart';
 
-class PostTile extends StatelessWidget {
+class PostTile extends StatefulWidget {
   final User user;
   final Post post;
 
-  const PostTile({required this.post, required this.user, super.key});
+  const PostTile({required this.post, required this.user, super.key}); 
+
+  @override
+  State<PostTile> createState() => _PostTileState();
+}
+
+class _PostTileState extends State<PostTile> {
+  final textController = TextEditingController();
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   Icon messageTypeIcon() {
-    if (post.messageType == 'reading') {
+    if (widget.post.messageType == 'reading') {
       return const Icon(Icons.book, color: Colors.orange);
-    } else if (post.messageType == 'finished') {
+    } else if (widget.post.messageType == 'finished') {
       return const Icon(Icons.check, color: Colors.green);
-    } else if (post.messageType == 'added') {
+    } else if (widget.post.messageType == 'added') {
       return const Icon(Icons.add, color: Colors.blue);
     } else {
       return const Icon(Icons.error, color: Colors.red);
@@ -77,29 +90,29 @@ class PostTile extends StatelessWidget {
                         .copyWith(fontSize: 12),
                     children: <TextSpan>[
                       TextSpan(
-                        text: user.displayName,
+                        text: widget.user.displayName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: ' ${post.messageType}',
+                        text: ' ${widget.post.messageType}',
                       ),
                     ],
                   ),
                 ),
                 const Spacer(),
                 Text(
-                  timeDelta(post.time),
+                  timeDelta(widget.post.time),
                   style: const TextStyle(color: Colors.grey),
                 )
               ]),
               const SizedBox(height: 8),
               ChangeNotifierProvider<Book>.value(
-                value: post.book,
-                child: BookTile(book: post.book),
+                value: widget.post.book,
+                child: BookTile(book: widget.post.book),
               ),
               const Divider(),
               Column(
-                children: post.comments
+                children: widget.post.comments
                     .map((comment) => ChangeNotifierProvider<Comment>.value(
                       value: comment,
                       child:  Card(
@@ -125,11 +138,18 @@ class PostTile extends StatelessWidget {
                     .toList(),
               ),
               const SizedBox(height: 8),
-              const TextField(
-                  decoration: InputDecoration(
-                labelText: 'Add Comment',
-                border: OutlineInputBorder(),
-              )),
+              TextField(
+                controller: textController,
+                decoration: const InputDecoration(
+                  labelText: 'Add Comment',
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (value) {
+                  String text = textController.text;
+                  textController.clear();
+                  widget.post.addComment(Comment(widget.user, text, DateTime.now()));
+                },
+              ),
               const Divider(),
               const SizedBox(height: 8),
               const Row(
