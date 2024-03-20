@@ -77,6 +77,8 @@ class _PostTileState extends State<PostTile> {
 
   @override
   Widget build(BuildContext context) {
+    User myUser = Provider.of<User>(context, listen: true);
+
     return Card(
         color: const Color.fromRGBO(255, 255, 255, 1),
         child: Padding(
@@ -112,7 +114,7 @@ class _PostTileState extends State<PostTile> {
               ),
               const Divider(),
               Column(
-                children: widget.post.comments
+                children: widget.post.comments.reversed
                     .map((comment) => ChangeNotifierProvider<Comment>.value(
                       value: comment,
                       child:  Card(
@@ -147,7 +149,7 @@ class _PostTileState extends State<PostTile> {
                 onSubmitted: (value) {
                   String text = textController.text;
                   textController.clear();
-                  widget.post.addComment(Comment(widget.user, text, DateTime.now()));
+                  widget.post.addComment(Comment(myUser, text, DateTime.now()));
                 },
               ),
               const Divider(),
@@ -156,13 +158,13 @@ class _PostTileState extends State<PostTile> {
                 children: [
                   const Spacer(),
                   IconButton(
-                    icon: widget.post.isUserLiking(widget.user.userId) ?
+                    icon: widget.post.isUserLiking(myUser.userId) ?
                       const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
                     onPressed: () {
-                      if (widget.post.isUserLiking(widget.user.userId)) {
-                        widget.post.removeLiker(widget.user.userId);
+                      if (widget.post.isUserLiking(myUser.userId)) {
+                        widget.post.removeLiker(myUser.userId);
                       } else {
-                        widget.post.addLiker(widget.user.userId);
+                        widget.post.addLiker(myUser.userId);
                       }
                     },
                   ),

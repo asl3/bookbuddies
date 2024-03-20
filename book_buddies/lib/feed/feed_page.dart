@@ -85,11 +85,8 @@ class FeedScreen extends StatelessWidget {
       children: posts.isEmpty
           ? const [Center(child: CircularProgressIndicator())]
           : List.generate(posts.length, (index) {
-            return MultiProvider(
-              providers: [
-                ChangeNotifierProvider<User>.value(value: posts[index].user),
-                ChangeNotifierProvider<Post>.value(value: posts[index].post),
-              ],
+            return ChangeNotifierProvider<Post>.value(
+              value: posts[index].post,
               child: posts[index],
             );
           }),

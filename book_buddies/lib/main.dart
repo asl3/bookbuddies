@@ -15,7 +15,11 @@ Future<void> main() async {
   final data = jsonDecode(jsonString);
   User myUser = User.fromJson(data);
   await myUser.loadBooks();
-  // await myUser.books[0].loadPosts();
+
+  // Now going to test friend posts
+  await myUser.friends[2].loadBooks();
+  await myUser.friends[2].books[0].loadPosts();
+  
   runApp(
     ChangeNotifierProvider<User>.value(
       value: myUser,
