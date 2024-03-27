@@ -22,17 +22,49 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email, password: password);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
+      if (e.code == "invalid-credential") {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Login Error"),
-              content: const Text("No user found for that email"),
+              title: const Text("Login Failed"),
+              content: const Text("Incorrect password or user does not exist"),
               actions: [
                 TextButton(
                   child: const Text("OK"),
-                  onPressed: () {},
+                  onPressed: () {Navigator.pop(context);},
+                ),
+              ],
+            );
+          },
+        );
+      } else if (e.code == "invalid-email") {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Login Failed"),
+              content: const Text("Invalid Email"),
+              actions: [
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {Navigator.pop(context);},
+                ),
+              ],
+            );
+          },
+        );
+      } else if (e.code == "channel-error") {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Login Failed"),
+              content: const Text("Please enter both an email and password"),
+              actions: [
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {Navigator.pop(context);},
                 ),
               ],
             );
