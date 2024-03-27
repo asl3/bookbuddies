@@ -3,11 +3,14 @@ import 'package:provider/provider.dart';
 import 'library_page.dart';
 import 'map.dart';
 import 'profile/profile_page.dart';
+import 'profile/login.dart';
 import 'search_page.dart';
 import 'feed/feed_page.dart';
 import 'models/user.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +22,7 @@ Future<void> main() async {
   // Now going to test friend posts
   await myUser.friends[2].loadBooks();
   await myUser.friends[2].books[0].loadPosts();
-  
+
   runApp(
     ChangeNotifierProvider<User>.value(
       value: myUser,
@@ -30,8 +33,29 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  Future<FirebaseApp> _initializeFirebase() async {
+    return await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            body: FutureBuilder(
+                future: _initializeFirebase(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return const LoginScreen();
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                })));
+  }
+}
+
+class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
