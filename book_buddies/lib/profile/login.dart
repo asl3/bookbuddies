@@ -48,8 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
     return Scaffold(
-        body: Padding(
+        body: SafeArea(child: SingleChildScrollView(child: Padding(
             padding: const EdgeInsets.all(16.0),
+            child: Padding(
+            padding: const EdgeInsets.only(top: 100),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                           builder: (context) => MainScreen()));
                                 }
                               },)))
-                ])));
+                ]))))));
   }
 }

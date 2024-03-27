@@ -46,11 +46,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _usernameController = TextEditingController();
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
     return Scaffold(
-        body: Padding(
+        body: SafeArea(child: SingleChildScrollView(child: Padding(
             padding: const EdgeInsets.all(16.0),
+            child: Padding(
+            padding: const EdgeInsets.only(top: 100),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +69,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: 38,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 44),
+                  TextField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                        hintText: "Username", prefixIcon: Icon(Icons.alternate_email)),
+                  ),
+                  const SizedBox(height: 26),
                   TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -89,7 +98,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       const LoginScreen())))),
-                  const SizedBox(height: 88),
+                  const SizedBox(height:70),
                   Center(
                       child: Container(
                           width: 120,
@@ -109,11 +118,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                     password: _passwordController.text,
                                     context: context);
                                 if (user != null) {
+                                  await user.updateDisplayName(_usernameController.text);
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                           builder: (context) => MainScreen()));
                                 }
                               },)))
-                ])));
+                ]))))));
   }
 }

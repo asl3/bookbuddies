@@ -109,10 +109,10 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
           ),
           const SizedBox(height: 4),
-          Text(
+          /*Text(
             user.fullName,
             style: const TextStyle(fontSize: 24),
-          ),
+          ),*/
           const SizedBox(height: 4),
           Text(
             user.email,
