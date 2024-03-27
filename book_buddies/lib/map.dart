@@ -19,19 +19,21 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchUserLocation();
-    // hardcoded library and friend locations for now
-    if (userLocation != null) {
-      libraryLocations = [
-        LatLng(userLocation!.latitude + 0.05, userLocation!.longitude + 0.05),
-        LatLng(userLocation!.latitude - 0.07, userLocation!.longitude + 0.02),
-        LatLng(userLocation!.latitude - 0.068, userLocation!.longitude - 0.017),
-      ];
-      friendLocations = [
-        LatLng(userLocation!.latitude + 0.20, userLocation!.longitude + 0.064),
-        LatLng(userLocation!.latitude - 0.12, userLocation!.longitude + 0.03),
-      ];
-    }
+    _fetchUserLocation().then((_) {
+      if (userLocation != null) {
+        libraryLocations = [
+          LatLng(userLocation!.latitude + 0.05, userLocation!.longitude + 0.05),
+          LatLng(userLocation!.latitude - 0.07, userLocation!.longitude + 0.02),
+          LatLng(
+              userLocation!.latitude - 0.068, userLocation!.longitude - 0.017),
+        ];
+        friendLocations = [
+          LatLng(
+              userLocation!.latitude + 0.20, userLocation!.longitude + 0.064),
+          LatLng(userLocation!.latitude - 0.12, userLocation!.longitude + 0.03),
+        ];
+      }
+    });
   }
 
   Future<void> _fetchUserLocation() async {
