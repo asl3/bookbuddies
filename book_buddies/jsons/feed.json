@@ -1,14 +1,13 @@
 {
     "messages": [
         {
-            "username": "Carl",
             "messageType": "started",
             "book": {
-                "volumeId": "1",
+                "volumeId": "pGUhydKogaAC",
                 "title": "Pride and Prejudice",
+                "smallThumbnail": "http://books.google.com/books/content?id=pGUhydKogaAC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE70pVgJFxsr345VkmKUfumR3EElAnF8WGTHxJFudO4MqFSRKdOj4qX9wEQDAYOHG72O3VVjQ2yrfkDgC9xznGM5iukokOgQPv-567oRgAIsSYTFxJ0Ufr0y7-T1lJ6xMhnTjHzZS&source=gbs_api",
                 "author": "Jane Austen",
                 "genre": "Classic",
-                "smallThumbnail": "",
                 "readingStatus": "Completed",
                 "rating": 5,
                 "isPublic": true
@@ -16,16 +15,31 @@
             "time": "2024-02-10T16:32:59",
             "comments": [
                 {
-                    "username": "Bob",
+                    "user": {
+                        "username": "BookEnjoyer",
+                        "email": "bookenjoyer@example.com",
+                        "profilePicture": "assets/images/blankpfp.webp",
+                        "fullName": "BookEnjoyer",
+                        "about": "I'm currently reading The Great Gatsby!",
+                        "friends": []
+                    },
                     "comment": "Wow!",
                     "time": "2024-02-19T16:33:59"
                 },
                 {
-                    "username": "Alice",
+                    "user": {
+                        "username": "BookFan",
+                        "email": "bookfan@example.com",
+                        "profilePicture": "assets/images/blankpfp.webp",
+                        "fullName": "BookFan",
+                        "about": "I'm currently reading The Great Gatsby!",
+                        "friends": []
+                    },
                     "comment": "I love this book!",
                     "time": "2024-02-20T16:34:59"
                 }
-            ]
+            ],
+            "likers": []
         }
     ]
 }

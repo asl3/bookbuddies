@@ -69,7 +69,6 @@ class _AddNoteFormState extends State<AddNoteForm> {
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
                           Note note = Note(
-                              book.journal.length + 1,
                               titleController.text,
                               descriptionController.text,
                               DateTime.now());

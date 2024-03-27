@@ -36,6 +36,12 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchUserLocation() async {
     try {
       LocationPermission permission = await Geolocator.requestPermission();
