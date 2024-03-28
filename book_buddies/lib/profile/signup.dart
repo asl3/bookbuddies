@@ -132,12 +132,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                           if (user != null) {
                                             await user.updateDisplayName(
                                                 usernameController.text);
-                                            Provider.of(context, listen: false)
-                                                .setUser(
-                                                    bb_user.User(id: user.uid));
-                                            Provider.of<bb_user.User?>(context,
-                                                    listen: false)!
+                                            Provider.of<bb_user.User>(context,
+                                                    listen: false)
+                                                .setId(user.uid);
+                                            Provider.of<bb_user.User>(context,
+                                                    listen: false)
                                                 .loadFull();
+                                            Provider.of<bb_user.User>(context,
+                                                    listen: false)
+                                                .setDisplayName(
+                                                    usernameController.text);
 
                                             Navigator.of(context)
                                                 .pushReplacement(
