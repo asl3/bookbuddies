@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
 import '../utils.dart';
 import 'login.dart';
+import 'friends_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -73,6 +74,44 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24),
               buildName(user),
               const SizedBox(height: 24),
+              // Display the number of friends and navigate to FriendsPage onTap
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            FriendsPage()), // Assuming you have created a FriendsPage widget
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            'Friends',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'You have ${user.friends.length} friends',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               //maybe put some metrics regarding books read?
               const SizedBox(height: 30),
               buildAbout(user),
