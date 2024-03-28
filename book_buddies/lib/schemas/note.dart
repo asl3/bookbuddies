@@ -1,6 +1,5 @@
 import 'base.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'book.dart';
 
 class Note extends BaseSchema {
   String title;

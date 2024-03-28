@@ -6,7 +6,6 @@ import 'firestore_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import '../schemas/user.dart' as schemas;
-import '../schemas/note.dart' as schemas_note;
 
 class User extends FirestoreModel<schemas.User> with ChangeNotifier {
   List<Book> books = [];

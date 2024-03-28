@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 .pushReplacement(
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            MainScreen()));
+                                                            const MainScreen()));
                                           }
                                         },
                                       )))

@@ -49,9 +49,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _usernameController = TextEditingController();
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
+    TextEditingController usernameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
         body: SafeArea(
             child: SingleChildScrollView(
@@ -75,14 +75,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                       fontWeight: FontWeight.bold)),
                               const SizedBox(height: 44),
                               TextField(
-                                controller: _usernameController,
+                                controller: usernameController,
                                 decoration: const InputDecoration(
                                     hintText: "Username",
                                     prefixIcon: Icon(Icons.alternate_email)),
                               ),
                               const SizedBox(height: 26),
                               TextField(
-                                controller: _emailController,
+                                controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: const InputDecoration(
                                     hintText: "Email",
@@ -90,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               const SizedBox(height: 26),
                               TextField(
-                                controller: _passwordController,
+                                controller: passwordController,
                                 obscureText: true,
                                 decoration: const InputDecoration(
                                     hintText: "Password",
@@ -125,13 +125,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                         onPressed: () async {
                                           User? user =
                                               await signupUsingEmailPassword(
-                                                  email: _emailController.text,
+                                                  email: emailController.text,
                                                   password:
-                                                      _passwordController.text,
+                                                      passwordController.text,
                                                   context: context);
                                           if (user != null) {
                                             await user.updateDisplayName(
-                                                _usernameController.text);
+                                                usernameController.text);
                                             Provider.of(context, listen: false)
                                                 .setUser(
                                                     bb_user.User(id: user.uid));
@@ -143,7 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                 .pushReplacement(
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            MainScreen()));
+                                                            const MainScreen()));
                                           }
                                         },
                                       )))
