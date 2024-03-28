@@ -1,54 +1,49 @@
 import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
+import 'firestore_model.dart';
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../schemas/post.dart' as schemas;
+import '../schemas/book.dart' as schema_book;
 
-class Post extends ChangeNotifier {
-  final String postId = const Uuid().v4();
-  final String messageType;
-  final Book book;
-  final DateTime time;
-  List<Comment> comments = [];
-  List<String> likers = []; // store user ids of likers to avoid StackOverflowError
+class Post extends FirestoreModel<schemas.Post> with ChangeNotifier {
+  Post({required super.id})
+      : super(collection: "posts", creator: schemas.Post.fromMap);
 
-  Post(this.messageType, this.book, this.time);
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    Post post = Post(
-      json['messageType'],
-      Book.fromJson(json['book']),
-      DateTime.parse(json['time']),
-    );
-
-    // Listen to changes in book!
-    post.book.addListener(post.notifyListeners);
-
-    // Add comments
-    for (var comment in json['comments']) {
-      post.addComment(Comment.fromJson(comment));
-    }
-
-    // Add likers
-    for (var liker in json['likers']) {
-      post.addLiker(liker);
-    }
-
-    return post;
+  factory Post.fromInfo(schemas.Post value) {
+    return FirestoreModel.fromInfo(value, "posts") as Post;
   }
 
+  @override
+  create() async {
+    super.createWithMap(value.toMap());
+  }
+
+  String get messageType => value.messageType;
+  DateTime get time => value.time;
+  Book get book => Book.fromInfo(value.book);
+  List<Comment> get comments =>
+      value.comments.map((comment) => Comment.fromInfo(comment)).toList();
+  List<String> get likers => value.likers;
+
   void addLiker(String userId) {
-    likers.add(userId);
+    value.likers.add(userId);
+    doc?.update({"likers": value.likers});
     notifyListeners();
   }
 
   void removeLiker(String userId) {
-    likers.remove(userId);
+    value.likers.remove(userId);
+    doc?.update({"likers": value.likers});
     notifyListeners();
   }
 
   void addComment(Comment comment) {
+    comment.create();
     comment.addListener(notifyListeners);
-    comments.add(comment);
+    value.comments.add(comment.value);
+    doc?.update({"comments": value.comments});
     notifyListeners();
   }
 

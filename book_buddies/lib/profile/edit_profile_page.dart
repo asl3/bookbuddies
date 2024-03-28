@@ -13,7 +13,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<User>(context, listen: true);
+    final User user = Provider.of<User>(context, listen: true)!;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Edit Profile'),
@@ -32,7 +32,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: Image(
-                                    image: user.profilePicture,
+                                    image: user.profilePicture ??
+                                        const AssetImage(
+                                            'assets/images/default_profile.png'),
                                     fit: BoxFit.fitWidth,
                                     width: 200,
                                     height: 200,
@@ -55,17 +57,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 FloatingLabelBehavior.always),
                         onChanged: (displayName) {
                           user.setDisplayName(displayName);
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      TextField(
-                        decoration: InputDecoration(
-                            hintText: user.fullName,
-                            labelText: 'Full Name',
-                            floatingLabelBehavior:
-                                FloatingLabelBehavior.always),
-                        onChanged: (fullName) {
-                          user.setFullName(fullName);
                         },
                       ),
                       const SizedBox(height: 24),

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
 import 'package:provider/provider.dart';
 import 'book_detail_views/book_tile.dart' as local_book_tile;
-import 'models/book.dart' as book;
+import 'schemas/book.dart' as schemas;
+import 'models/book.dart' as models;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -60,21 +61,28 @@ class SearchPageState extends State<SearchPage> {
                               .imageLinks?["thumbnail"] ??
                           Uri.parse(
                               "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                      book.Book currBook = book.Book(
-                          searchResults[index].id,
-                          searchResults[index].volumeInfo.title,
-                          searchResults[index].volumeInfo.authors.firstOrNull ??
+                      models.Book currBook = models.Book.fromInfo(schemas.Book(
+                          volumeId: searchResults[index].id,
+                          title: searchResults[index].volumeInfo.title,
+                          author: searchResults[index]
+                                  .volumeInfo
+                                  .authors
+                                  .firstOrNull ??
                               "Unknown",
-                          searchResults[index]
+                          genre: searchResults[index]
                                   .volumeInfo
                                   .categories
                                   .firstOrNull ??
                               "Unknown",
-                          link.toString(),
-                          "Unread", // TODO: use profile info to make this accurate
-                          searchResults[index].volumeInfo.averageRating.round(),
-                          true);
-                      return ChangeNotifierProvider<book.Book>.value(
+                          coverUrl: link.toString(),
+                          readingStatus:
+                              "Unread", // TODO: use profile info to make this accurate
+                          rating: searchResults[index]
+                              .volumeInfo
+                              .averageRating
+                              .round(),
+                          isPublic: true));
+                      return ChangeNotifierProvider<models.Book>.value(
                         value: currBook,
                         child: local_book_tile.BookTile(book: currBook),
                       ); // Don't allow access to details until user adds book to collection

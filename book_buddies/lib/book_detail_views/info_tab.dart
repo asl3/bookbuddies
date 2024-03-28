@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:book_buddies/models/book.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:book_buddies/models/user.dart';
 
 class InfoTab extends StatefulWidget {
   const InfoTab({super.key, required this.book});
@@ -23,6 +25,8 @@ class _InfoTabState extends State<InfoTab> {
 
   @override
   Widget build(BuildContext context) {
+    User myUser = Provider.of<User>(context, listen: true)!;
+
     return Padding(
       padding: const EdgeInsets.all(30),
       child: SafeArea(
@@ -78,8 +82,8 @@ class _InfoTabState extends State<InfoTab> {
                             initialSelection: widget.book.readingStatus,
                             controller: readingStatusController,
                             onSelected: (String? readingStatus) {
-                              widget.book.updateReadingStatus(
-                                  readingStatusController.text);
+                              myUser.updateReadingStatus(
+                                  readingStatusController.text, widget.book);
                             },
                             dropdownMenuEntries: const [
                               DropdownMenuEntry(

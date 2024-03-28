@@ -1,94 +1,177 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'book.dart';
-import 'note.dart';
 import 'post.dart';
-import 'package:uuid/uuid.dart';
+import 'note.dart';
+import 'firestore_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import '../schemas/user.dart' as schemas;
+import '../schemas/post.dart' as schemas_post;
+import '../schemas/note.dart' as schemas_note;
 
-class User extends ChangeNotifier {
-  final AssetImage profilePicture;
-  final String userId = const Uuid().v4();
-  String fullName;
-  String displayName;
-  String email;
-  String about;
+class User extends FirestoreModel<schemas.User> with ChangeNotifier {
   List<Book> books = [];
   List<User> friends = [];
+  List<Post> posts = [];
+  List<Note> notes = [];
 
-  User({
-    required this.profilePicture,
-    required this.fullName,
-    required this.displayName,
-    required this.email,
-    required this.about,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    User myUser = User(
-      profilePicture: AssetImage(json['profilePicture']),
-      fullName: json['fullName'],
-      displayName: json['username'],
-      email: json['email'],
-      about: json['about']
-    );
-
-    // Add friends
-    for (var friend in json['friends']) {
-      myUser.addFriend(User.fromJson(friend));
-    }
-
-    return myUser;
+  static createUser(auth.User? user, String email) {
+    FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
+      "username": user.displayName ?? email,
+      "email": email,
+      "preferences": {
+        "theme": "dark",
+        "notification": {"email": true, "push": false},
+        "displayOptions": {"sortBy": "author", "viewMode": "list"}
+      },
+      "profilePicture": user.photoURL ?? "",
+      "fullName": "",
+      "about": "",
+      "friends": [],
+      "library": [],
+      "posts": [],
+    });
   }
 
-  Future<void> loadBooks() async {
-    final jsonString = await rootBundle.loadString('jsons/collection.json');
-    final data = jsonDecode(jsonString);
-    for (var book in data["bookCollection"]) {
-      addBook(Book.fromJson(book));
-      for (var note in book['journal']) {
-        books[books.length - 1].addNoteToJournal(Note.fromJson(note));
+  User({required super.id})
+      : super(collection: "users", creator: schemas.User.fromMap);
+
+  factory User.fromInfo(schemas.User value) {
+    return FirestoreModel.fromInfo(value, "users") as User;
+  }
+
+  AssetImage get profilePicture => value.profilePicture;
+  String get displayName => value.displayName;
+  String get email => value.email;
+  String get about => value.about;
+  String get userId => value.userId;
+  List<Note> journal(Book book) {
+    return notes.where((note) => note.book.id == book.id).toList();
+  }
+
+  loadFull() {
+    if (id == null) return;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    doc = db.collection("users").doc(id);
+    doc?.get().then((event) {
+      Map<String, dynamic> data = event.data()!;
+
+      for (DocumentReference<Map<String, dynamic>> book in data["library"]) {
+        books.add(Book(id: book.id));
       }
-    }
+
+      for (DocumentReference<Map<String, dynamic>> friend in data["friends"]) {
+        friends.add(User(id: friend.id));
+      }
+
+      for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
+        posts.add(Post(id: post.id));
+      }
+
+      notifyListeners();
+    });
   }
 
   void setDisplayName(String displayName) {
-    this.displayName = displayName;
-    notifyListeners();
-  }
-
-  void setFullName(String fullName) {
-    this.fullName = fullName;
+    value.displayName = displayName;
+    doc?.update({"username": displayName});
     notifyListeners();
   }
 
   void setAbout(String about) {
-    this.about = about;
+    value.about = about;
+    doc?.update({"about": about});
     notifyListeners();
   }
 
   void addBook(Book book) {
+    book.create();
     book.addListener(notifyListeners);
-    Post newPost = Post(Post.getMessageTypeForBook(book), book, DateTime.now());
-    book.addPost(newPost);
+    Post newPost = Post.fromInfo(schemas_post.Post(
+        messageType: Post.getMessageTypeForBook(book),
+        book: book.value,
+        time: DateTime.now(),
+        comments: [],
+        likers: []));
+    posts.add(newPost);
     books.add(book);
     books.sort((a, b) => a.title.compareTo(b.title));
+    doc?.update({
+      "library": books.map((book) => book.doc).toList(),
+      "posts": posts.map((post) => post.doc).toList()
+    });
     notifyListeners();
   }
 
   void deleteBook(String volumeId) {
     books.removeWhere((book) => book.volumeId == volumeId);
+    doc?.update({
+      "library": books.map((book) => book.doc).toList(),
+    });
     notifyListeners();
   }
 
   void addFriend(User friend) {
     friend.addListener(notifyListeners);
     friends.add(friend);
+    doc?.update({"friends": friends.map((friend) => friend.doc).toList()});
     notifyListeners();
   }
 
   void removeFriend(String userId) {
     friends.removeWhere((friend) => friend.userId == userId);
+    doc?.update({"friends": friends.map((friend) => friend.doc).toList()});
+    notifyListeners();
+  }
+
+  void addNoteToJournalWithParams(String title, String text, Book book) {
+    Note note = Note.fromInfo(schemas_note.Note(
+        title: title, text: text, updatedAt: DateTime.now(), book: book.value));
+    addNoteToJournal(note);
+  }
+
+  void addNoteToJournal(Note note) {
+    note.create();
+    note.addListener(onUpdateNote);
+    notes.add(note);
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    doc?.update({"notes": notes.map((note) => note.doc).toList()});
+    notifyListeners();
+  }
+
+  void deleteNoteFromJournal(String noteId) {
+    notes.removeWhere((note) => noteId == note.id);
+    doc?.update({"notes": notes.map((note) => note.doc).toList()});
+    notifyListeners();
+  }
+
+  void updateReadingStatus(String readingStatus, Book book) {
+    book.setReadingStatus(readingStatus);
+
+    // Add new post for reading status change
+    Post newPost = Post.fromInfo(schemas_post.Post(
+      messageType: Post.getMessageTypeForBook(book),
+      book: book.value,
+      time: DateTime.now(),
+      comments: [],
+      likers: [],
+    ));
+    addPost(newPost);
+
+    // Notify listeners
+    notifyListeners();
+  }
+
+  void onUpdateNote() {
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    notifyListeners();
+  }
+
+  void addPost(Post post) {
+    post.create();
+    post.addListener(notifyListeners);
+    posts.add(post);
+    doc?.update({"posts": posts.map((post) => post.doc).toList()});
     notifyListeners();
   }
 }

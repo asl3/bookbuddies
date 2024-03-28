@@ -3,13 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:book_buddies/models/note.dart';
 import 'package:book_buddies/models/book.dart';
+import 'package:book_buddies/models/user.dart';
 
 class NoteTile extends StatelessWidget {
   const NoteTile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Book book = Provider.of<Book>(context, listen: true);
+    final Book book = Provider.of<Book?>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true)!;
 
     return Consumer<Note>(
       builder: (context, state, child) => ListTile(
@@ -18,7 +20,7 @@ class NoteTile extends StatelessWidget {
         trailing: IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            book.deleteNoteFromJournal(state.noteId);
+            myUser.deleteNoteFromJournal(state.id!);
           },
         ),
       ),

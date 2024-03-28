@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:book_buddies/models/book.dart';
 import 'package:book_buddies/models/note.dart';
 import 'package:provider/provider.dart';
+import 'package:book_buddies/schemas/note.dart' as schema_note;
+import 'package:book_buddies/models/user.dart';
 
 class AddNoteForm extends StatefulWidget {
   const AddNoteForm({super.key});
@@ -25,6 +27,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
   Widget build(BuildContext context) {
     final Book book = Provider.of<Book>(context);
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    User myUser = Provider.of<User>(context, listen: true)!;
 
     return Scaffold(
         appBar: AppBar(
@@ -68,11 +71,12 @@ class _AddNoteFormState extends State<AddNoteForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          Note note = Note(
-                              titleController.text,
-                              descriptionController.text,
-                              DateTime.now());
-                          book.addNoteToJournal(note);
+                          Note note = Note.fromInfo(schema_note.Note(
+                              title: titleController.text,
+                              text: descriptionController.text,
+                              updatedAt: DateTime.now(),
+                              book: book.value));
+                          myUser.addNoteToJournal(note);
                           Navigator.pop(context);
                         }
                       },
