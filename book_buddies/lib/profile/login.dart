@@ -24,17 +24,49 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email, password: password);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
+      if (e.code == "invalid-credential") {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Login Error"),
-              content: const Text("No user found for that email"),
+              title: const Text("Login Failed"),
+              content: const Text("Incorrect password or user does not exist"),
               actions: [
                 TextButton(
                   child: const Text("OK"),
-                  onPressed: () {},
+                  onPressed: () {Navigator.pop(context);},
+                ),
+              ],
+            );
+          },
+        );
+      } else if (e.code == "invalid-email") {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Login Failed"),
+              content: const Text("Invalid Email"),
+              actions: [
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {Navigator.pop(context);},
+                ),
+              ],
+            );
+          },
+        );
+      } else if (e.code == "channel-error") {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Login Failed"),
+              content: const Text("Please enter both an email and password"),
+              actions: [
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {Navigator.pop(context);},
                 ),
               ],
             );
@@ -50,8 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
-        body: Padding(
+        body: SafeArea(child: SingleChildScrollView(child: Padding(
             padding: const EdgeInsets.all(16.0),
+            child: Padding(
+            padding: const EdgeInsets.only(top: 100),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,35 +129,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: SizedBox(
                           width: 120,
                           child: TextButton(
-                            style: TextButton.styleFrom(
-                                backgroundColor: Colors.deepPurple,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 25)),
-                            child: const Text("Login",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20)),
-                            onPressed: () async {
-                              User? user = await loginUsingEmailPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  context: context);
-
-                              if (user != null) {
-                                Provider.of<bb_user.User>(context,
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.deepPurple,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 25)),
+                              child: const Text("Login",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                              onPressed: () async {
+                                User? user = await loginUsingEmailPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                    context: context);
+                                if (user != null) {
+                                  Provider.of<bb_user.User>(context,
                                         listen: false)
                                     .setId(user.uid);
                                 Provider.of<bb_user.User>(context,
                                         listen: false)
                                     .loadFull();
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MainScreen()));
-                              }
-                            },
-                          )))
-                ])));
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => MainScreen()));
+                                }
+                              },)))
+                ]))))));
   }
 }
