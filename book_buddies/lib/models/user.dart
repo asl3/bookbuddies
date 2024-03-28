@@ -59,15 +59,21 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
       Map<String, dynamic> data = event.data()!;
 
       for (DocumentReference<Map<String, dynamic>> book in data["library"]) {
-        books.add(Book(id: book.id));
+        Book b = Book(id: book.id);
+        b.addListener(notifyListeners);
+        books.add(b);
       }
 
       for (DocumentReference<Map<String, dynamic>> friend in data["friends"]) {
-        friends.add(User(id: friend.id));
+        User u = User(id: friend.id);
+        u.addListener(notifyListeners);
+        friends.add(u);
       }
 
       for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
-        posts.add(Post(id: post.id));
+        Post p = Post(id: post.id);
+        p.addListener(notifyListeners);
+        posts.add(p);
       }
 
       notifyListeners();
