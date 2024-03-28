@@ -51,7 +51,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
     return notes.where((note) => note.book.id == book.id).toList();
   }
 
-  loadFull() {
+  loadFull({bool deep = false}) {
     if (id == null) return;
     FirebaseFirestore db = FirebaseFirestore.instance;
     doc = db.collection("users").doc(id);
@@ -67,7 +67,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
       for (DocumentReference<Map<String, dynamic>> friend in data["friends"]) {
         User u = User(id: friend.id);
         u.addListener(notifyListeners);
-        u.loadFull();
+        if (!deep) u.loadFull(deep: true); // prevent recursion
         friends.add(u);
       }
 
