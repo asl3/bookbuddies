@@ -28,6 +28,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
       "friends": [],
       "library": [],
       "posts": [],
+      "notes": [],
     });
   }
 
@@ -75,6 +76,12 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
         Post p = Post(id: post.id);
         p.addListener(notifyListeners);
         posts.add(p);
+      }
+
+      for (DocumentReference<Map<String, dynamic>> note in data["notes"]) {
+        Note n = Note(id: note.id);
+        n.addListener(notifyListeners);
+        notes.add(n);
       }
 
       notifyListeners();
