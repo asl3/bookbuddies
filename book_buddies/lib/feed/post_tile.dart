@@ -78,7 +78,7 @@ class _PostTileState extends State<PostTile> {
 
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
 
     return Card(
         color: const Color.fromRGBO(255, 255, 255, 1),

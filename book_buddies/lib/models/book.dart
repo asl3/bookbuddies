@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'note.dart';
-import 'post.dart';
 import 'firestore_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../schemas/book.dart' as schemas;
 
 class Book extends FirestoreModel<schemas.Book> with ChangeNotifier {

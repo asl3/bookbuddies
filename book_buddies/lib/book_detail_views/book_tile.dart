@@ -10,7 +10,7 @@ class BookTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<User>(context, listen: true)!;
+    final User user = Provider.of<User>(context, listen: true);
     final bool contains =
         user.books.where((elt) => elt.volumeId == book.volumeId).isNotEmpty;
 

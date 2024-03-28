@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
 import 'firestore_model.dart';
-import 'package:uuid/uuid.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../schemas/post.dart' as schemas;
-import '../schemas/book.dart' as schema_book;
 
 class Post extends FirestoreModel<schemas.Post> with ChangeNotifier {
   Post({required super.id})

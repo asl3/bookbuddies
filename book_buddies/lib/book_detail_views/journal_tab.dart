@@ -18,7 +18,7 @@ class JournalTab extends StatefulWidget {
 class _JournalTabState extends State<JournalTab> {
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
     List<Note> journal = myUser.journal(widget.book);
 
     return ListView.builder(

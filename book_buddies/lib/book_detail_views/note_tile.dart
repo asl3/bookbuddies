@@ -11,7 +11,7 @@ class NoteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Book book = Provider.of<Book?>(context, listen: true)!;
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
 
     return Consumer<Note>(
       builder: (context, state, child) => ListTile(

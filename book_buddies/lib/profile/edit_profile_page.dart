@@ -13,7 +13,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<User>(context, listen: true)!;
+    final User user = Provider.of<User>(context, listen: true);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Edit Profile'),

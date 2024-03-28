@@ -7,8 +7,6 @@ import 'profile/login.dart';
 import 'search_page.dart';
 import 'feed/feed_page.dart';
 import 'models/user.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

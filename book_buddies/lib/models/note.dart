@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'firestore_model.dart';
 import 'book.dart';
 import '../schemas/note.dart' as schemas;

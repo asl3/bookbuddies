@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'firestore_model.dart';
-import 'package:uuid/uuid.dart';
 import '../schemas/comment.dart' as schemas;
 
 class Comment extends FirestoreModel<schemas.Comment> with ChangeNotifier {

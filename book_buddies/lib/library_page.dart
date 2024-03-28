@@ -18,7 +18,7 @@ class LibraryPage extends StatefulWidget {
 class LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
     return Scaffold(
       body: SafeArea(
         child: myUser.books.isEmpty

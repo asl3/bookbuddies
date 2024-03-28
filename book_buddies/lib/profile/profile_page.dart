@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context, listen: false)!;
+    User user = Provider.of<User>(context, listen: false);
 
     return Scaffold(
         appBar: AppBar(

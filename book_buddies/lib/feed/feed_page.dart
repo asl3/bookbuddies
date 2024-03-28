@@ -6,7 +6,6 @@ import 'post_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
 import 'package:book_buddies/models/post.dart';
-import 'package:book_buddies/models/book.dart';
 
 var logger = Logger();
 
@@ -20,7 +19,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
 
     List<PostTile> posts = [];
 
@@ -34,7 +33,7 @@ class _FeedPageState extends State<FeedPage> {
       }
     }
 
-    posts.sort((a, b) => b.post.time!.compareTo(a.post.time!));
+    posts.sort((a, b) => b.post.time.compareTo(a.post.time));
 
     return Scaffold(
       appBar: AppBar(

@@ -27,7 +27,7 @@ class _AddNoteFormState extends State<AddNoteForm> {
   Widget build(BuildContext context) {
     final Book book = Provider.of<Book>(context);
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
 
     return Scaffold(
         appBar: AppBar(

@@ -25,7 +25,7 @@ class _InfoTabState extends State<InfoTab> {
 
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true)!;
+    User myUser = Provider.of<User>(context, listen: true);
 
     return Padding(
       padding: const EdgeInsets.all(30),
