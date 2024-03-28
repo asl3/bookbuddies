@@ -101,12 +101,11 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
         comments: [],
         time: DateTime.now(),
         likers: []);
-    posts.add(newPost);
+    addPost(newPost);
     books.add(book);
     books.sort((a, b) => a.title.compareTo(b.title));
     doc?.update({
       "library": books.map((book) => book.doc).toList(),
-      "posts": posts.map((post) => post.doc).toList()
     });
     notifyListeners();
   }
