@@ -13,6 +13,21 @@ class Note extends FirestoreModel<schemas.Note> with ChangeNotifier {
     return model;
   }
 
+  factory Note.fromArgs({
+    required String title,
+    required String text,
+    required DateTime updatedAt,
+    required Book book,
+  }) {
+    Note n = Note.fromInfo(schemas.Note(
+      title: title,
+      text: text,
+      updatedAt: updatedAt,
+    ));
+    n.book = book;
+    return n;
+  }
+
   @override
   create() async {
     Map<String, dynamic> map = value.toMap();
@@ -23,7 +38,16 @@ class Note extends FirestoreModel<schemas.Note> with ChangeNotifier {
   String get title => value.title;
   String get text => value.text;
   DateTime get updatedAt => value.updatedAt;
-  Book get book => Book.fromInfo(value.book);
+  // Book get book => Book.fromInfo(value.book);
+  late Book book;
+
+  @override
+  loadData() {
+    super.loadData();
+    doc?.get().then((event) {
+      book = Book(id: event.data()!["book"].id);
+    });
+  }
 
   void editNote(String title, String text) {
     value.title = title;

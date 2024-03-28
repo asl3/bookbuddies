@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:book_buddies/models/book.dart';
 import 'package:book_buddies/models/note.dart';
 import 'package:provider/provider.dart';
-import 'package:book_buddies/schemas/note.dart' as schema_note;
 import 'package:book_buddies/models/user.dart';
 
 class AddNoteForm extends StatefulWidget {
@@ -71,11 +70,11 @@ class _AddNoteFormState extends State<AddNoteForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          Note note = Note.fromInfo(schema_note.Note(
+                          Note note = Note.fromArgs(
                               title: titleController.text,
                               text: descriptionController.text,
                               updatedAt: DateTime.now(),
-                              book: book.value));
+                              book: book);
                           myUser.addNoteToJournal(note);
                           Navigator.pop(context);
                         }
