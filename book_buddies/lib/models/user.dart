@@ -128,8 +128,8 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
   }
 
   void addNoteToJournalWithParams(String title, String text, Book book) {
-    Note note = Note.fromInfo(schemas_note.Note(
-        title: title, text: text, updatedAt: DateTime.now(), book: book.value));
+    Note note = Note.fromArgs(
+        title: title, text: text, updatedAt: DateTime.now(), book: book);
     addNoteToJournal(note);
   }
 
