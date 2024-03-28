@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import 'login.dart';
@@ -16,6 +17,7 @@ class _SignupScreenState extends State<SignupScreen> {
   static Future<User?> signupUsingEmailPassword(
       {required String email,
       required String password,
+      required String displayName,
       required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -24,7 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
           email: email, password: password);
       user = userCredential.user;
 
-      bb_user.User.createUser(user, email);
+      bb_user.User.createUser(user, email, displayName);
     } on FirebaseAuthException catch (e) {
       if (e.code == "email-already-in-use" || e.code == "invalid-email") {
         showDialog(
@@ -128,20 +130,18 @@ class _SignupScreenState extends State<SignupScreen> {
                                                   email: emailController.text,
                                                   password:
                                                       passwordController.text,
+                                                  displayName:
+                                                      usernameController.text,
                                                   context: context);
                                           if (user != null) {
-                                            await user.updateDisplayName(
-                                                usernameController.text);
+                                            // await user.updateDisplayName(
+                                            //     usernameController.text);
                                             Provider.of<bb_user.User>(context,
                                                     listen: false)
                                                 .setId(user.uid);
                                             Provider.of<bb_user.User>(context,
                                                     listen: false)
                                                 .loadFull();
-                                            Provider.of<bb_user.User>(context,
-                                                    listen: false)
-                                                .setDisplayName(
-                                                    usernameController.text);
 
                                             Navigator.of(context)
                                                 .pushReplacement(

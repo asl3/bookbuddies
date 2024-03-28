@@ -13,7 +13,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
   List<Post> posts = [];
   List<Note> notes = [];
 
-  static createUser(auth.User? user, String email) {
+  static createUser(auth.User? user, String email, String displayName) {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
       "username": user.displayName ?? email,
       "email": email,
@@ -23,7 +23,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
         "displayOptions": {"sortBy": "author", "viewMode": "list"}
       },
       "profilePicture": user.photoURL ?? "",
-      "displayName": "",
+      "displayName": displayName,
       "about": "",
       "friends": [],
       "library": [],
