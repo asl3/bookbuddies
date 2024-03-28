@@ -1,54 +1,81 @@
 import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
-import 'package:uuid/uuid.dart';
+import 'firestore_model.dart';
+import '../schemas/post.dart' as schemas;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Post extends ChangeNotifier {
-  final String postId = const Uuid().v4();
-  final String messageType;
-  final Book book;
-  final DateTime time;
+class Post extends FirestoreModel<schemas.Post> with ChangeNotifier {
+  Post({required super.id})
+      : super(collection: "posts", creator: schemas.Post.fromMap);
+
+  factory Post.fromInfo(schemas.Post value) {
+    var model = Post(id: null);
+    model.value = value;
+    return model;
+  }
+
+  factory Post.fromArgs({
+    required String messageType,
+    required Book book,
+    required DateTime time,
+    required List<Comment> comments,
+    required List<String> likers,
+  }) {
+    Post p = Post.fromInfo(schemas.Post(
+      messageType: messageType,
+      time: time,
+      likers: likers,
+    ));
+    p.book = book;
+    p.comments = comments;
+    return p;
+  }
+
+  @override
+  create() async {
+    Map<String, dynamic> map = value.toMap();
+    map["book"] = book.doc;
+    map["comments"] = comments.map((comment) => comment.doc).toList();
+    super.createWithMap(map);
+  }
+
+  String get messageType => value.messageType;
+  DateTime get time => value.time;
+  List<String> get likers => value.likers;
+  late Book book;
   List<Comment> comments = [];
-  List<String> likers = []; // store user ids of likers to avoid StackOverflowError
 
-  Post(this.messageType, this.book, this.time);
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    Post post = Post(
-      json['messageType'],
-      Book.fromJson(json['book']),
-      DateTime.parse(json['time']),
-    );
-
-    // Listen to changes in book!
-    post.book.addListener(post.notifyListeners);
-
-    // Add comments
-    for (var comment in json['comments']) {
-      post.addComment(Comment.fromJson(comment));
-    }
-
-    // Add likers
-    for (var liker in json['likers']) {
-      post.addLiker(liker);
-    }
-
-    return post;
+  @override
+  loadData() {
+    super.loadData();
+    doc?.get().then((event) {
+      Map data = event.data()!;
+      book = Book(id: data["book"].id);
+      for (DocumentReference<Map<String, dynamic>> comment
+          in data["comments"]) {
+        comments.add(Comment(id: comment.id));
+      }
+    });
   }
 
   void addLiker(String userId) {
-    likers.add(userId);
+    value.likers.add(userId);
+    doc?.update({"likers": value.likers});
     notifyListeners();
   }
 
   void removeLiker(String userId) {
-    likers.remove(userId);
+    value.likers.remove(userId);
+    doc?.update({"likers": value.likers});
     notifyListeners();
   }
 
   void addComment(Comment comment) {
+    comment.create();
     comment.addListener(notifyListeners);
     comments.add(comment);
+    doc?.update({"comments": comments.map((comment) => comment.doc).toList()});
     notifyListeners();
   }
 

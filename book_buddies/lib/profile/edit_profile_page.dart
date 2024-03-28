@@ -60,17 +60,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       const SizedBox(height: 24),
                       TextField(
                         decoration: InputDecoration(
-                            hintText: user.fullName,
-                            labelText: 'Full Name',
-                            floatingLabelBehavior:
-                                FloatingLabelBehavior.always),
-                        onChanged: (fullName) {
-                          user.setFullName(fullName);
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      TextField(
-                        decoration: InputDecoration(
                             hintText: user.about,
                             labelText: 'About',
                             floatingLabelBehavior:

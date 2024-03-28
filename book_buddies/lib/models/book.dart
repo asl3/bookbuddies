@@ -1,98 +1,77 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'note.dart';
-import 'post.dart';
+import 'firestore_model.dart';
+import '../schemas/book.dart' as schemas;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Book extends ChangeNotifier {
-  final String volumeId;
-  final String title;
-  final String author;
-  final String genre;
-  final String coverUrl;
-  String readingStatus;
-  int rating;
-  bool isPublic;
-  List<Note> journal = [];
-  List<Post> posts = []; // easier to update posts list when updating book
+class Book extends FirestoreModel<schemas.Book> with ChangeNotifier {
+  Book({required super.id})
+      : super(collection: "books", creator: schemas.Book.fromMap);
 
-  Book(this.volumeId, this.title, this.author, this.genre, this.coverUrl,
-      this.readingStatus, this.rating, this.isPublic);
-
-  factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-        json['volumeId'],
-        json['title'],
-        json['author'],
-        json['genre'],
-        json['smallThumbnail'],
-        json['readingStatus'],
-        json['rating'],
-        json['isPublic']);
+  factory Book.fromInfo(schemas.Book value) {
+    var model = Book(id: null);
+    model.value = value;
+    return model;
   }
 
-  Future<void> loadPosts() async {
-    final jsonString = await rootBundle.loadString('jsons/feed.json');
-    final data = jsonDecode(jsonString);
-    for (var post in data["messages"]) {
-      addPost(Post.fromJson(post));
-    }
+  factory Book.fromArgs({
+    required String volumeId,
+    required String title,
+    required String author,
+    required String genre,
+    required String coverUrl,
+    required String readingStatus,
+    required int rating,
+    required bool isPublic,
+  }) {
+    return Book.fromInfo(schemas.Book(
+      volumeId: volumeId,
+      title: title,
+      author: author,
+      genre: genre,
+      coverUrl: coverUrl,
+      readingStatus: readingStatus,
+      rating: rating,
+      isPublic: isPublic,
+    ));
   }
 
-  void addNoteToJournalWithParams(String title, String text) {
-    Note note = Note(
-      title,
-      text,
-      DateTime.now(),
-    );
-    addNoteToJournal(note);
+  @override
+  create() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    id = volumeId;
+    doc = db.collection(collection).doc(id);
+    await doc?.get().then((event) {
+      if (!event.exists) {
+        doc?.set(value.toMap());
+      }
+    });
+    value.doc = doc;
   }
 
-  void addNoteToJournal(Note note) {
-    note.addListener(onUpdateNote);
-    journal.add(note);
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
-  }
-
-  void deleteNoteFromJournal(String noteId) {
-    journal.removeWhere((note) => noteId == note.noteId);
-    notifyListeners();
-  }
+  String get volumeId => value.volumeId;
+  String get title => value.title;
+  String get author => value.author;
+  String get genre => value.genre;
+  String get coverUrl => value.coverUrl;
+  String get readingStatus => value.readingStatus;
+  int get rating => value.rating;
+  bool get isPublic => value.isPublic;
 
   void toggleVisiblity(bool isPublic) {
-    this.isPublic = isPublic;
+    value.isPublic = isPublic;
+    doc?.update({"isPublic": isPublic});
     notifyListeners();
   }
 
   void toggleRating(int rating) {
-    this.rating = rating;
+    value.rating = rating;
+    doc?.update({"rating": rating});
     notifyListeners();
   }
 
-  void updateReadingStatus(String readingStatus) {
-    this.readingStatus = readingStatus;
-
-    // Add new post for reading status change
-    Post newPost = Post(
-      Post.getMessageTypeForBook(this),
-      this,
-      DateTime.now(),
-    );
-    addPost(newPost);
-
-    // Notify listeners
-    notifyListeners();
-  }
-
-  void onUpdateNote() {
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
-  }
-
-  void addPost(Post post) {
-    post.addListener(notifyListeners);
-    posts.add(post);
+  void setReadingStatus(String readingStatus) {
+    value.readingStatus = readingStatus;
+    doc?.update({"readingStatus": readingStatus});
     notifyListeners();
   }
 }

@@ -6,7 +6,6 @@ import 'package:book_buddies/models/user.dart';
 import '../utils.dart';
 import 'login.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -15,8 +14,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context, listen: false);
@@ -82,25 +79,26 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 30),
               // buildLibrary(),
               buildLogout()
-
             ],
           ),
         )));
   }
-  Widget buildLogout() => FittedBox(fit: BoxFit.scaleDown,child: TextButton(
+
+  Widget buildLogout() => FittedBox(
+      fit: BoxFit.scaleDown,
+      child: TextButton(
         onPressed: () => Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LoginScreen())),
+            MaterialPageRoute(builder: (context) => const LoginScreen())),
         style: TextButton.styleFrom(
-        backgroundColor: Colors.redAccent.shade700,
-        shape: RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(5)),
-               padding: const EdgeInsets.symmetric(
-                    vertical: 15, horizontal: 25)),
-        child: const Text('Logout',
-          style: TextStyle(color: Colors.white),           ),
-        ));
+            backgroundColor: Colors.redAccent.shade700,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25)),
+        child: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.white),
+        ),
+      ));
 
   Widget buildName(User user) => Column(
         children: [
