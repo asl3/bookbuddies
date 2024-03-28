@@ -6,7 +6,6 @@ import 'firestore_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import '../schemas/user.dart' as schemas;
-import '../schemas/post.dart' as schemas_post;
 import '../schemas/note.dart' as schemas_note;
 
 class User extends FirestoreModel<schemas.User> with ChangeNotifier {
@@ -25,7 +24,7 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
         "displayOptions": {"sortBy": "author", "viewMode": "list"}
       },
       "profilePicture": user.photoURL ?? "",
-      "fullName": "",
+      "displayName": "",
       "about": "",
       "friends": [],
       "library": [],
@@ -37,10 +36,14 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
       : super(collection: "users", creator: schemas.User.fromMap);
 
   factory User.fromInfo(schemas.User value) {
-    return FirestoreModel.fromInfo(value, "users") as User;
+    var model = User(id: null);
+    model.value = value;
+    return model;
   }
 
-  AssetImage get profilePicture => value.profilePicture;
+  // AssetImage get profilePicture => value.profilePicture; // todo
+  AssetImage get profilePicture =>
+      const AssetImage("assets/images/blankpfp.webp");
   String get displayName => value.displayName;
   String get email => value.email;
   String get about => value.about;
@@ -87,12 +90,12 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
   void addBook(Book book) {
     book.create();
     book.addListener(notifyListeners);
-    Post newPost = Post.fromInfo(schemas_post.Post(
+    Post newPost = Post.fromArgs(
         messageType: Post.getMessageTypeForBook(book),
-        book: book.value,
-        time: DateTime.now(),
+        book: book,
         comments: [],
-        likers: []));
+        time: DateTime.now(),
+        likers: []);
     posts.add(newPost);
     books.add(book);
     books.sort((a, b) => a.title.compareTo(b.title));
@@ -149,13 +152,13 @@ class User extends FirestoreModel<schemas.User> with ChangeNotifier {
     book.setReadingStatus(readingStatus);
 
     // Add new post for reading status change
-    Post newPost = Post.fromInfo(schemas_post.Post(
+    Post newPost = Post.fromArgs(
       messageType: Post.getMessageTypeForBook(book),
-      book: book.value,
+      book: book,
       time: DateTime.now(),
       comments: [],
       likers: [],
-    ));
+    );
     addPost(newPost);
 
     // Notify listeners

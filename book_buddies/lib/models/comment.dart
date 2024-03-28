@@ -8,15 +8,41 @@ class Comment extends FirestoreModel<schemas.Comment> with ChangeNotifier {
       : super(collection: "comments", creator: schemas.Comment.fromMap);
 
   factory Comment.fromInfo(schemas.Comment value) {
-    return FirestoreModel.fromInfo(value, "comments") as Comment;
+    var model = Comment(id: null);
+    model.value = value;
+    return model;
+  }
+
+  factory Comment.fromArgs({
+    required String text,
+    required DateTime time,
+    required User user,
+  }) {
+    Comment c = Comment.fromInfo(schemas.Comment(
+      text: text,
+      time: time,
+    ));
+    c.user = user;
+    return c;
   }
 
   @override
   create() async {
-    super.createWithMap(value.toMap());
+    Map<String, dynamic> map = value.toMap();
+    map["user"] = user.doc;
+    super.createWithMap(map);
   }
 
   String get text => value.text;
   DateTime get time => value.time;
-  User get user => User.fromInfo(value.user);
+
+  late User user;
+
+  @override
+  loadData() {
+    super.loadData();
+    doc?.get().then((event) {
+      user = User(id: event.data()!["user"].id);
+    });
+  }
 }

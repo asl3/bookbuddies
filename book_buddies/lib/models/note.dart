@@ -8,12 +8,16 @@ class Note extends FirestoreModel<schemas.Note> with ChangeNotifier {
       : super(collection: "notes", creator: schemas.Note.fromMap);
 
   factory Note.fromInfo(schemas.Note value) {
-    return FirestoreModel.fromInfo(value, "notes") as Note;
+    var model = Note(id: null);
+    model.value = value;
+    return model;
   }
 
   @override
   create() async {
-    super.createWithMap(value.toMap());
+    Map<String, dynamic> map = value.toMap();
+    map["book"] = book.doc;
+    super.createWithMap(map);
   }
 
   String get title => value.title;

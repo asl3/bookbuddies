@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_books_api/google_books_api.dart';
 import 'package:provider/provider.dart';
 import 'book_detail_views/book_tile.dart' as local_book_tile;
-import 'schemas/book.dart' as schemas;
 import 'models/book.dart' as models;
 
 class SearchPage extends StatefulWidget {
@@ -61,7 +60,7 @@ class SearchPageState extends State<SearchPage> {
                               .imageLinks?["thumbnail"] ??
                           Uri.parse(
                               "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                      models.Book currBook = models.Book.fromInfo(schemas.Book(
+                      models.Book currBook = models.Book.fromArgs(
                           volumeId: searchResults[index].id,
                           title: searchResults[index].volumeInfo.title,
                           author: searchResults[index]
@@ -81,7 +80,7 @@ class SearchPageState extends State<SearchPage> {
                               .volumeInfo
                               .averageRating
                               .round(),
-                          isPublic: true));
+                          isPublic: true);
                       return ChangeNotifierProvider<models.Book>.value(
                         value: currBook,
                         child: local_book_tile.BookTile(book: currBook),

@@ -5,7 +5,6 @@ import 'package:book_buddies/models/book.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 import '../models/comment.dart';
-import '../schemas/comment.dart' as schema_comment;
 
 class PostTile extends StatefulWidget {
   final User user;
@@ -150,11 +149,8 @@ class _PostTileState extends State<PostTile> {
                 onSubmitted: (value) {
                   String text = textController.text;
                   textController.clear();
-                  widget.post.addComment(Comment.fromInfo(
-                      schema_comment.Comment(
-                          text: text,
-                          user: myUser.value,
-                          time: DateTime.now())));
+                  widget.post.addComment(Comment.fromArgs(
+                      text: text, user: myUser, time: DateTime.now()));
                 },
               ),
               const Divider(),
