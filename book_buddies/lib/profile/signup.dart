@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import 'login.dart';
