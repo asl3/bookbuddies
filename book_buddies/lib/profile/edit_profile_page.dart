@@ -32,9 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: Image(
-                                    image: user.profilePicture ??
-                                        const AssetImage(
-                                            'assets/images/default_profile.png'),
+                                    image: user.profilePicture,
                                     fit: BoxFit.fitWidth,
                                     width: 200,
                                     height: 200,

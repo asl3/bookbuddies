@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:book_buddies/models/note.dart';
-import 'package:book_buddies/models/book.dart';
 import 'package:book_buddies/models/user.dart';
 
 class NoteTile extends StatelessWidget {
@@ -10,7 +9,6 @@ class NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Book book = Provider.of<Book?>(context, listen: true)!;
     User myUser = Provider.of<User>(context, listen: true);
 
     return Consumer<Note>(
