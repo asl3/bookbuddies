@@ -139,10 +139,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                             Provider.of<bb_user.User>(context,
                                                     listen: false)
                                                 .setId(user.uid);
-                                            Provider.of<bb_user.User>(context,
-                                                    listen: false)
-                                                .loadFull();
-
                                             Navigator.of(context)
                                                 .pushReplacement(
                                                     MaterialPageRoute(

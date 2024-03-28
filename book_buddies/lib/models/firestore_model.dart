@@ -1,26 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../schemas/base.dart';
 import 'package:uuid/uuid.dart';
 
-class FirestoreModel<T extends BaseSchema> {
+abstract class FirestoreModel {
   String? id;
   String collection;
-  late T value;
-  Function(Map<String, dynamic>, DocumentReference<Map<String, dynamic>>?)
-      creator;
 
   DocumentReference<Map<String, dynamic>>? doc;
 
-  FirestoreModel(
-      {required this.id, required this.collection, required this.creator}) {
-    if (id == null) return;
-    this.id = id;
-    this.collection = collection;
-    this.creator = creator;
-    loadData();
+  fromMap(Map<String, dynamic> data);
+  Map<String, dynamic> toMap();
+
+  FirestoreModel({required this.id, required this.collection}) {
+    collection = collection;
+
+    setId(id);
   }
 
-  void setId(String id) {
+  void setId(String? id) {
     this.id = id;
     loadData();
   }
@@ -29,25 +25,22 @@ class FirestoreModel<T extends BaseSchema> {
     if (id == null) return;
     FirebaseFirestore db = FirebaseFirestore.instance;
     doc = db.collection(collection).doc(id);
+    // print("GOT DOC $doc FOR $collection $id");
     doc?.get().then((event) {
       Map<String, dynamic> data = event.data()!;
-      value = creator(data, doc);
+      // print("GOT DATA $data");
+      fromMap(data);
     });
-  }
-
-  createWithMap(Map<String, dynamic> map) async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    id = const Uuid().v4();
-    doc = db.collection(collection).doc(id);
-    await doc?.get().then((event) {
-      if (!event.exists) {
-        doc?.set(map);
-      }
-    });
-    value.doc = doc;
   }
 
   create() async {
-    throw UnimplementedError();
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    id ??= const Uuid().v4();
+    doc = db.collection(collection).doc(id);
+    await doc?.get().then((event) {
+      if (!event.exists) {
+        doc?.set(toMap());
+      }
+    });
   }
 }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'firestore_model.dart';
-import '../schemas/book.dart' as schemas;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Book extends FirestoreModel<schemas.Book> with ChangeNotifier {
-  Book({required super.id})
-      : super(collection: "books", creator: schemas.Book.fromMap);
+class Book extends FirestoreModel with ChangeNotifier {
+  late String volumeId;
+  late String title;
+  late String author;
+  late String genre;
+  late String coverUrl;
+  late String readingStatus;
+  late int rating;
+  late bool isPublic;
 
-  factory Book.fromInfo(schemas.Book value) {
-    var model = Book(id: null);
-    model.value = value;
-    return model;
-  }
+  Book({required super.id}) : super(collection: "books");
 
   factory Book.fromArgs({
     required String volumeId,
@@ -23,54 +24,62 @@ class Book extends FirestoreModel<schemas.Book> with ChangeNotifier {
     required int rating,
     required bool isPublic,
   }) {
-    return Book.fromInfo(schemas.Book(
-      volumeId: volumeId,
-      title: title,
-      author: author,
-      genre: genre,
-      coverUrl: coverUrl,
-      readingStatus: readingStatus,
-      rating: rating,
-      isPublic: isPublic,
-    ));
+    Book b = Book(id: null);
+    b.volumeId = volumeId;
+    b.title = title;
+    b.author = author;
+    b.genre = genre;
+    b.coverUrl = coverUrl;
+    b.readingStatus = readingStatus;
+    b.rating = rating;
+    b.isPublic = isPublic;
+
+    b.id = volumeId;
+
+    return b;
   }
 
   @override
-  create() async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
+  fromMap(Map<String, dynamic> data) {
+    volumeId = doc!.id;
     id = volumeId;
-    doc = db.collection(collection).doc(id);
-    await doc?.get().then((event) {
-      if (!event.exists) {
-        doc?.set(value.toMap());
-      }
-    });
-    value.doc = doc;
+    title = data["title"];
+    author = data["author"];
+    genre = data["genre"];
+    coverUrl = data["coverUrl"];
+    readingStatus = data["readingStatus"];
+    rating = data["rating"];
+    isPublic = data["isPublic"];
   }
 
-  String get volumeId => value.volumeId;
-  String get title => value.title;
-  String get author => value.author;
-  String get genre => value.genre;
-  String get coverUrl => value.coverUrl;
-  String get readingStatus => value.readingStatus;
-  int get rating => value.rating;
-  bool get isPublic => value.isPublic;
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      // "volumeId": volumeId,
+      "title": title,
+      "author": author,
+      "genre": genre,
+      "coverUrl": coverUrl,
+      "readingStatus": readingStatus,
+      "rating": rating,
+      "isPublic": isPublic,
+    };
+  }
 
   void toggleVisiblity(bool isPublic) {
-    value.isPublic = isPublic;
+    isPublic = isPublic;
     doc?.update({"isPublic": isPublic});
     notifyListeners();
   }
 
   void toggleRating(int rating) {
-    value.rating = rating;
+    rating = rating;
     doc?.update({"rating": rating});
     notifyListeners();
   }
 
   void setReadingStatus(String readingStatus) {
-    value.readingStatus = readingStatus;
+    readingStatus = readingStatus;
     doc?.update({"readingStatus": readingStatus});
     notifyListeners();
   }

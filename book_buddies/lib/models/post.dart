@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
 import 'firestore_model.dart';
-import '../schemas/post.dart' as schemas;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Post extends FirestoreModel<schemas.Post> with ChangeNotifier {
-  Post({required super.id})
-      : super(collection: "posts", creator: schemas.Post.fromMap);
+class Post extends FirestoreModel with ChangeNotifier {
+  late String messageType;
+  late Book book;
+  late DateTime time;
+  List<Comment> comments = [];
+  List<String> likers = [];
 
-  factory Post.fromInfo(schemas.Post value) {
-    var model = Post(id: null);
-    model.value = value;
-    return model;
-  }
+  Post({required super.id}) : super(collection: "posts");
 
   factory Post.fromArgs({
     required String messageType,
@@ -22,52 +20,52 @@ class Post extends FirestoreModel<schemas.Post> with ChangeNotifier {
     required List<Comment> comments,
     required List<String> likers,
   }) {
-    Post p = Post.fromInfo(schemas.Post(
-      messageType: messageType,
-      time: time,
-      likers: likers,
-    ));
+    Post p = Post(id: null);
+    p.messageType = messageType;
     p.book = book;
+    p.time = time;
     p.comments = comments;
+    p.likers = likers;
     return p;
   }
 
   @override
-  create() async {
-    Map<String, dynamic> map = value.toMap();
-    map["book"] = book.doc;
-    map["comments"] = comments.map((comment) => comment.doc).toList();
-    super.createWithMap(map);
+  fromMap(Map<String, dynamic> data) {
+    messageType = data["messageType"];
+    book = Book(id: data["book"].id);
+    time = data["time"].toDate();
+
+    comments = [];
+    for (DocumentReference<Map<String, dynamic>> comment in data["comments"]) {
+      comments.add(Comment(id: comment.id));
+    }
+
+    likers = [];
+    for (String liker in data["likers"]) {
+      likers.add(liker);
+    }
   }
 
-  String get messageType => value.messageType;
-  DateTime get time => value.time;
-  List<String> get likers => value.likers;
-  late Book book;
-  List<Comment> comments = [];
-
   @override
-  loadData() {
-    super.loadData();
-    doc?.get().then((event) {
-      Map data = event.data()!;
-      book = Book(id: data["book"].id);
-      for (DocumentReference<Map<String, dynamic>> comment
-          in data["comments"]) {
-        comments.add(Comment(id: comment.id));
-      }
-    });
+  Map<String, dynamic> toMap() {
+    return {
+      "messageType": messageType,
+      "book": book.doc,
+      "time": Timestamp.fromDate(time),
+      "comments": comments.map((comment) => comment.doc).toList(),
+      "likers": likers,
+    };
   }
 
   void addLiker(String userId) {
-    value.likers.add(userId);
-    doc?.update({"likers": value.likers});
+    likers.add(userId);
+    doc?.update({"likers": likers});
     notifyListeners();
   }
 
   void removeLiker(String userId) {
-    value.likers.remove(userId);
-    doc?.update({"likers": value.likers});
+    likers.remove(userId);
+    doc?.update({"likers": likers});
     notifyListeners();
   }
 

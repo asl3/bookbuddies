@@ -163,8 +163,6 @@ class _PostTileState extends State<PostTile> {
                         ? const Icon(Icons.favorite)
                         : const Icon(Icons.favorite_border),
                     onPressed: () {
-                      print("pressed like button ${myUser.userId}");
-                      print(widget.post.isUserLiking(myUser.userId));
                       if (widget.post.isUserLiking(myUser.userId)) {
                         widget.post.removeLiker(myUser.userId);
                       } else {

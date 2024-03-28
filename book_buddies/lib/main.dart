@@ -13,7 +13,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   runApp(
     ChangeNotifierProvider<User>.value(
-      value: User(id: null),
+      value: User(id: null, loadFull: true),
       child: const MyApp(),
     ),
   );
