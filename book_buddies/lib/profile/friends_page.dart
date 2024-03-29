@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:book_buddies/models/user.dart';
 import 'package:provider/provider.dart';
+import 'friends_search_page.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -10,12 +11,14 @@ class FriendsPage extends StatefulWidget {
 class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context, listen: false);
+    User user = Provider.of<User>(context, listen: true);
+    print(user.friends.map((e) => e.displayName));
     return Scaffold(
       appBar: AppBar(
         title: Text('Friends'),
       ),
-      body: Center(
+      body: SafeArea(
+          child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -28,21 +31,21 @@ class _FriendsPageState extends State<FriendsPage> {
               child: ListView.builder(
                 itemCount: user.friends.length,
                 itemBuilder: (context, index) {
-                  String name = 
                   return ListTile(
-                    title: Text("Friend 1"),
-                    // You can add more information here like profile picture, etc.
+                    title: Text(user.friends[index].displayName),
                   );
                 },
               ),
             ),
           ],
         ),
-      ),
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to a page where users can search for new friends
-          // You can implement this as per your application flow
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FriendsSearchPage()),
+          );
         },
         child: const Icon(Icons.person_add),
       ),

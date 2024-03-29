@@ -17,7 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context, listen: false);
+    User user = Provider.of<User>(context, listen: true);
 
     return Scaffold(
         appBar: AppBar(
@@ -74,14 +74,14 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24),
               buildName(user),
               const SizedBox(height: 24),
-              // Display the number of friends and navigate to FriendsPage onTap
+              
               InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            FriendsPage()), // Assuming you have created a FriendsPage widget
+                            FriendsPage()),
                   );
                 },
                 child: Container(

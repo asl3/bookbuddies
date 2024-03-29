@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:book_buddies/models/user.dart';
+import 'package:provider/provider.dart'; // Import Provider
 
 class FriendsSearchPage extends StatefulWidget {
-  const FriendsSearchPage({Key? key}) : super(key: key);
+  const FriendsSearchPage({super.key});
 
   @override
   _FriendsSearchPageState createState() => _FriendsSearchPageState();
@@ -14,16 +14,20 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
   List<User> searchResults = [];
 
   void searchFriends(String query) {
+    User currentUser = Provider.of<User>(context, listen: false);
     FirebaseFirestore.instance
         .collection('users')
-        .where('displayName', isGreaterThanOrEqualTo: query)
-        .where('displayName', isLessThan: query + 'z')
+        .where('email', isGreaterThanOrEqualTo: query)
+        .where('email', isLessThan: '${query}z')
+        .where('email', isNotEqualTo: currentUser.email)
         .get()
         .then((querySnapshot) {
       setState(() {
-        searchResults = querySnapshot.docs
-            .map((doc) => User.fromMap(doc.data(), doc.reference))
-            .toList();
+        searchResults = querySnapshot.docs.map((doc) {
+          final user = User(id: doc.id, loadFull: false);
+          user.fromMap(doc.data());
+          return user;
+        }).toList();
       });
     }).catchError((error) {
       print("Failed to search for friends: $error");
@@ -33,14 +37,23 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
     });
   }
 
+  bool isFriend(User friend, User currentUser) {
+    print(friend.email);
+    print(currentUser.email);
+    return currentUser.friends.contains(friend);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Find Friends'),
-        ),
-        body: Column(
+    // Get the current user
+    User currentUser = Provider.of<User>(context, listen: true);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Find Friends'),
+      ),
+      body: SafeArea(
+        child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -61,16 +74,31 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
                   return ListTile(
                     title: Text(friend.displayName),
                     subtitle: Text(friend.email),
-                    // You can add more information here like profile picture, etc.
                     onTap: () {
-                      // Handle friend selection (e.g., add friend to the user's friend list)
-                      // This could involve updating database records, etc.
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content:
-                                Text('You selected: ${friend.displayName}')),
+                          content: Text(
+                              'You selected: ${friend.displayName} (${friend.email})'),
+                        ),
                       );
                     },
+                    trailing: isFriend(friend, currentUser)
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Remove friend
+                              currentUser.removeFriend(friend.userId);
+                              friend.removeFriend(currentUser.userId);
+                            },
+                            child: Text('Remove Friend'),
+                          )
+                        : ElevatedButton(
+                            onPressed: () {
+                              // Add friend
+                              currentUser.addFriend(friend);
+                              friend.addFriend(currentUser);
+                            },
+                            child: Text('Add Friend'),
+                          ),
                   );
                 },
               ),
