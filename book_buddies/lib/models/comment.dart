@@ -10,17 +10,11 @@ class Comment extends FirestoreModel with ChangeNotifier {
 
   Comment({required super.id}) : super(collection: "comments");
 
-  factory Comment.fromArgs({
+  Comment.fromArgs({
     required String text,
     required DateTime time,
     required User user,
-  }) {
-    Comment c = Comment(id: null);
-    c.text = text;
-    c.time = time;
-    c.user = user;
-    return c;
-  }
+  }) : super(id: null, collection: "comments");
 
   @override
   fromMap(Map<String, dynamic> data) {

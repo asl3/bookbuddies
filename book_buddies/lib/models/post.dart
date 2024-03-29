@@ -13,21 +13,13 @@ class Post extends FirestoreModel with ChangeNotifier {
 
   Post({required super.id}) : super(collection: "posts");
 
-  factory Post.fromArgs({
-    required String messageType,
-    required Book book,
-    required DateTime time,
-    required List<Comment> comments,
-    required List<String> likers,
-  }) {
-    Post p = Post(id: null);
-    p.messageType = messageType;
-    p.book = book;
-    p.time = time;
-    p.comments = comments;
-    p.likers = likers;
-    return p;
-  }
+  Post.fromArgs({
+    required this.messageType,
+    required this.book,
+    required this.time,
+    required this.comments,
+    required this.likers,
+  }) : super(id: null, collection: "posts");
 
   @override
   fromMap(Map<String, dynamic> data) {
