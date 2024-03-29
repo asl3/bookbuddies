@@ -11,8 +11,6 @@ abstract class FirestoreModel {
   Map<String, dynamic> toMap();
 
   FirestoreModel({required this.id, required this.collection}) {
-    collection = collection;
-
     setId(id);
   }
 

@@ -13,30 +13,16 @@ class Book extends FirestoreModel with ChangeNotifier {
 
   Book({required super.id}) : super(collection: "books");
 
-  factory Book.fromArgs({
-    required String volumeId,
-    required String title,
-    required String author,
-    required String genre,
-    required String coverUrl,
-    required String readingStatus,
-    required int rating,
-    required bool isPublic,
-  }) {
-    Book b = Book(id: null);
-    b.volumeId = volumeId;
-    b.title = title;
-    b.author = author;
-    b.genre = genre;
-    b.coverUrl = coverUrl;
-    b.readingStatus = readingStatus;
-    b.rating = rating;
-    b.isPublic = isPublic;
-
-    b.id = volumeId;
-
-    return b;
-  }
+  Book.fromArgs({
+    required this.volumeId,
+    required this.title,
+    required this.author,
+    required this.genre,
+    required this.coverUrl,
+    required this.readingStatus,
+    required this.rating,
+    required this.isPublic,
+  }) : super(id: null, collection: "books");
 
   @override
   fromMap(Map<String, dynamic> data) {
@@ -66,19 +52,19 @@ class Book extends FirestoreModel with ChangeNotifier {
   }
 
   void toggleVisiblity(bool isPublic) {
-    isPublic = isPublic;
+    this.isPublic = isPublic;
     doc?.update({"isPublic": isPublic});
     notifyListeners();
   }
 
   void toggleRating(int rating) {
-    rating = rating;
+    this.rating = rating;
     doc?.update({"rating": rating});
     notifyListeners();
   }
 
   void setReadingStatus(String readingStatus) {
-    readingStatus = readingStatus;
+    this.readingStatus = readingStatus;
     doc?.update({"readingStatus": readingStatus});
     notifyListeners();
   }

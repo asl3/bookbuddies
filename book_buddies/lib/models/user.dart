@@ -90,13 +90,13 @@ class User extends FirestoreModel with ChangeNotifier {
   }
 
   void setDisplayName(String displayName) {
-    displayName = displayName;
+    this.displayName = displayName;
     doc?.update({"username": displayName});
     notifyListeners();
   }
 
   void setAbout(String about) {
-    about = about;
+    this.about = about;
     doc?.update({"about": about});
     notifyListeners();
   }

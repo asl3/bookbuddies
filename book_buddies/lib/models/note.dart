@@ -11,19 +11,12 @@ class Note extends FirestoreModel with ChangeNotifier {
 
   Note({required super.id}) : super(collection: "notes");
 
-  factory Note.fromArgs({
+  Note.fromArgs({
     required String title,
     required String text,
     required DateTime updatedAt,
     required Book book,
-  }) {
-    Note n = Note(id: null);
-    n.title = title;
-    n.text = text;
-    n.updatedAt = updatedAt;
-    n.book = book;
-    return n;
-  }
+  }) : super(id: null, collection: "notes");
 
   @override
   fromMap(Map<String, dynamic> data) {
@@ -44,8 +37,8 @@ class Note extends FirestoreModel with ChangeNotifier {
   }
 
   void editNote(String title, String text) {
-    title = title;
-    text = text;
+    this.title = title;
+    this.text = text;
     updatedAt = DateTime.now();
     doc?.update({"title": title, "text": text, "updatedAt": updatedAt});
     notifyListeners();
