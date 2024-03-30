@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:book_buddies/models/user.dart';
-import 'package:provider/provider.dart'; // Import Provider
+import 'package:provider/provider.dart';
 
 class FriendsSearchPage extends StatefulWidget {
   const FriendsSearchPage({super.key});
@@ -38,19 +38,16 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
   }
 
   bool isFriend(User friend, User currentUser) {
-    print(friend.email);
-    print(currentUser.email);
     return currentUser.friends.contains(friend);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get the current user
     User currentUser = Provider.of<User>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find Friends'),
+        title: const Text('Find Friends'),
       ),
       body: SafeArea(
         child: Column(
@@ -59,7 +56,7 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
               padding: const EdgeInsets.all(16),
               child: TextField(
                 onChanged: searchFriends,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Search for friends',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.search),
@@ -71,6 +68,7 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
                 itemCount: searchResults.length,
                 itemBuilder: (context, index) {
                   final friend = searchResults[index];
+                  bool alreadyFriend = isFriend(friend, currentUser);
                   return ListTile(
                     title: Text(friend.displayName),
                     subtitle: Text(friend.email),
@@ -82,23 +80,22 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
                         ),
                       );
                     },
-                    trailing: isFriend(friend, currentUser)
-                        ? ElevatedButton(
-                            onPressed: () {
-                              // Remove friend
-                              currentUser.removeFriend(friend.userId);
-                              friend.removeFriend(currentUser.userId);
-                            },
-                            child: Text('Remove Friend'),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              // Add friend
-                              currentUser.addFriend(friend);
-                              friend.addFriend(currentUser);
-                            },
-                            child: Text('Add Friend'),
-                          ),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (alreadyFriend) {
+                            currentUser.removeFriend(friend.userId);
+                            friend.removeFriend(currentUser.userId);
+                          } else {
+                            currentUser.addFriend(friend);
+                            friend.addFriend(currentUser);
+                          }
+                        });
+                      },
+                      child: Text(
+                        alreadyFriend ? 'Remove Friend' : 'Add Friend',
+                      ),
+                    ),
                   );
                 },
               ),

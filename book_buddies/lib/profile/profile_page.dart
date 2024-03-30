@@ -74,14 +74,13 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24),
               buildName(user),
               const SizedBox(height: 24),
-              
+
               InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            FriendsPage()),
+                        builder: (context) => const FriendsPage()),
                   );
                 },
                 child: Container(
@@ -105,7 +104,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'You have ${user.friends.length} friends',
+                        user.friends.length == 1
+                            ? 'You have 1 friend'
+                            : 'You have ${user.friends.length} friends',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
