@@ -128,10 +128,11 @@ class User extends FirestoreModel with ChangeNotifier {
   }
 
   void addFriend(User friend) {
-    friend.addListener(notifyListeners);
-    friends.add(friend);
-    doc?.update({"friends": friends.map((friend) => friend.doc).toList()});
-    notifyListeners();
+    if (!friends.contains(friend)) {
+      friends.add(friend);
+      doc?.update({"friends": friends.map((friend) => friend.doc).toList()});
+      notifyListeners();
+    }
   }
 
   void removeFriend(String userId) {
@@ -190,4 +191,14 @@ class User extends FirestoreModel with ChangeNotifier {
     doc?.update({"posts": posts.map((post) => post.doc).toList()});
     notifyListeners();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is User && other.userId == userId;
+  }
+
+  @override
+  int get hashCode => userId.hashCode;
 }
