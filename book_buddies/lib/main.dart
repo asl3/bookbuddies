@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'library_page.dart';
@@ -35,10 +36,14 @@ class MyApp extends StatelessWidget {
             body: FutureBuilder(
                 future: _initializeFirebase(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return const LoginScreen();
+                  if (auth.FirebaseAuth.instance.currentUser != null) {
+                    return const MainScreen();
+                  } else {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return const LoginScreen();
+                    }
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  return const Center(child: CircularProgressIndicator());
                 })));
   }
 }
