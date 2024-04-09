@@ -36,7 +36,12 @@ class MyApp extends StatelessWidget {
             body: FutureBuilder(
                 future: _initializeFirebase(),
                 builder: (context, snapshot) {
+                  if (Firebase.apps.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   if (auth.FirebaseAuth.instance.currentUser != null) {
+                    Provider.of<User>(context, listen: false)
+                        .setId(auth.FirebaseAuth.instance.currentUser!.uid);
                     return const MainScreen();
                   } else {
                     if (snapshot.connectionState == ConnectionState.done) {
