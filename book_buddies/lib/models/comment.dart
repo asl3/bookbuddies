@@ -11,9 +11,9 @@ class Comment extends FirestoreModel with ChangeNotifier {
   Comment({required super.id}) : super(collection: "comments");
 
   Comment.fromArgs({
-    required String text,
-    required DateTime time,
-    required User user,
+    required this.text,
+    required this.time,
+    required this.user,
   }) : super(id: null, collection: "comments");
 
   @override

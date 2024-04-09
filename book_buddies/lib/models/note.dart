@@ -12,10 +12,10 @@ class Note extends FirestoreModel with ChangeNotifier {
   Note({required super.id}) : super(collection: "notes");
 
   Note.fromArgs({
-    required String title,
-    required String text,
-    required DateTime updatedAt,
-    required Book book,
+    required this.title,
+    required this.text,
+    required this.updatedAt,
+    required this.book,
   }) : super(id: null, collection: "notes");
 
   @override
