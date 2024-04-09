@@ -23,6 +23,7 @@ class User extends FirestoreModel with ChangeNotifier {
   }
 
   bool loadFull;
+  DateTime? lastUpdatedFeed;
 
   static createUser(auth.User? user, String email, String displayName) {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
@@ -83,6 +84,46 @@ class User extends FirestoreModel with ChangeNotifier {
     }
   }
 
+  Future<void> loadPosts(User user) async {
+    DocumentSnapshot<Map<String, dynamic>> doc;
+    Map<String, dynamic> data;
+
+    user.posts.clear();
+
+    doc = await FirebaseFirestore.instance
+      .collection("users")
+      .doc(user.id)
+      .get();
+    data = doc.data()!;
+
+    for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
+      doc = await FirebaseFirestore.instance
+        .collection("posts")
+        .doc(post.id)
+        .get();
+      Post p = Post(id: doc.id);
+      p.fromMap(doc.data()!);
+      p.addListener(notifyListeners);
+      user.posts.add(p);
+    }
+  }
+
+  Future<int> updateFeed() async {
+    DateTime current = DateTime.now();
+    int diff = lastUpdatedFeed == null ? 120 : current.difference(lastUpdatedFeed!).inSeconds;
+    if (diff < 120) return 0; // update every two minutes
+
+    await loadPosts(this);
+    for (User friend in friends) {
+      await loadPosts(friend);
+    }
+
+    lastUpdatedFeed = DateTime.now();
+    notifyListeners();
+    
+    return 1;
+  }
+
   // never call .create() on a user object, use CreateUser
   @override
   Map<String, dynamic> toMap() {
@@ -91,7 +132,7 @@ class User extends FirestoreModel with ChangeNotifier {
 
   void setDisplayName(String displayName) {
     this.displayName = displayName;
-    doc?.update({"username": displayName});
+    doc?.update({"displayName": displayName});
     notifyListeners();
   }
 

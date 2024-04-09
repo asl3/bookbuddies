@@ -37,7 +37,9 @@ class _SignupScreenState extends State<SignupScreen> {
               actions: [
                 TextButton(
                   child: const Text("OK"),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             );
