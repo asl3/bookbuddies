@@ -11,7 +11,7 @@ import 'package:book_buddies/models/book.dart';
 var logger = Logger();
 
 class FeedPage extends StatefulWidget {
-  const FeedPage({Key? key}) : super(key: key);
+  const FeedPage({super.key});
 
   @override
   _FeedPageState createState() => _FeedPageState();
@@ -66,7 +66,7 @@ class _FeedPageState extends State<FeedPage> {
         child: PageView(
           children: [
             FeedScreen(posts: posts),
-            MapScreen(),
+            const MapScreen(),
           ],
         ),
       ),
@@ -77,7 +77,7 @@ class _FeedPageState extends State<FeedPage> {
 class FeedScreen extends StatelessWidget {
   final List<PostTile> posts;
 
-  const FeedScreen({Key? key, required this.posts}) : super(key: key);
+  const FeedScreen({super.key, required this.posts});
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +95,8 @@ class FeedScreen extends StatelessWidget {
 }
 
 class MapScreen extends StatelessWidget {
+  const MapScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

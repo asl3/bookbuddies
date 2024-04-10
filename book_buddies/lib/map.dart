@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LibraryMapScreen extends StatefulWidget {
-  const LibraryMapScreen({Key? key}) : super(key: key);
+  const LibraryMapScreen({super.key});
 
   @override
   _LibraryMapScreenState createState() => _LibraryMapScreenState();

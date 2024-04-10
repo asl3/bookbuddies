@@ -5,7 +5,7 @@ import 'login.dart';
 
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -46,8 +46,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
         body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -67,14 +67,14 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 44),
                   TextField(
-                    controller: _emailController,
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         hintText: "Email", prefixIcon: Icon(Icons.mail)),
                   ),
                   const SizedBox(height: 26),
                   TextField(
-                    controller: _passwordController,
+                    controller: passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
@@ -91,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       const LoginScreen())))),
                   const SizedBox(height: 88),
                   Center(
-                      child: Container(
+                      child: SizedBox(
                           width: 120,
                           child: TextButton(
                               style: TextButton.styleFrom(
@@ -105,13 +105,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                       color: Colors.black, fontSize: 20)),
                               onPressed: () async {
                                 User? user = await signupUsingEmailPassword(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
                                     context: context);
                                 if (user != null) {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                          builder: (context) => MainScreen()));
+                                          builder: (context) => const MainScreen()));
                                 }
                               },)))
                 ])));

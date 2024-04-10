@@ -4,7 +4,7 @@ import '../main.dart';
 import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -45,8 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
         body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -66,14 +66,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 44),
                   TextField(
-                    controller: _emailController,
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         hintText: "Email", prefixIcon: Icon(Icons.mail)),
                   ),
                   const SizedBox(height: 26),
                   TextField(
-                    controller: _passwordController,
+                    controller: passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SignupScreen())))),
                   const SizedBox(height: 88),
                   Center(
-                      child: Container(
+                      child: SizedBox(
                           width: 120,
                           child: TextButton(
                               style: TextButton.styleFrom(
@@ -104,13 +104,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Colors.black, fontSize: 20)),
                               onPressed: () async {
                                 User? user = await loginUsingEmailPassword(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
                                     context: context);
                                 if (user != null) {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                          builder: (context) => MainScreen()));
+                                          builder: (context) => const MainScreen()));
                                 }
                               },)))
                 ])));
