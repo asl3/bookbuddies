@@ -3,9 +3,10 @@ import 'package:book_buddies/library_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../utils.dart';
 import 'login.dart';
-
+import 'friends_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,11 +16,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context, listen: false);
+    User user = Provider.of<User>(context, listen: true);
 
     return Scaffold(
         appBar: AppBar(
@@ -76,31 +75,76 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24),
               buildName(user),
               const SizedBox(height: 24),
+
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FriendsPage()),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            'Friends',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        user.friends.length == 1
+                            ? 'You have 1 friend'
+                            : 'You have ${user.friends.length} friends',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               //maybe put some metrics regarding books read?
               const SizedBox(height: 30),
               buildAbout(user),
               const SizedBox(height: 30),
               // buildLibrary(),
               buildLogout()
-
             ],
           ),
         )));
   }
-  Widget buildLogout() => FittedBox(fit: BoxFit.scaleDown,child: TextButton(
-        onPressed: () => Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LoginScreen())),
+
+  Widget buildLogout() => FittedBox(
+      fit: BoxFit.scaleDown,
+      child: TextButton(
+        onPressed: () async {
+          fb.FirebaseAuth auth = fb.FirebaseAuth.instance;
+          await auth.signOut();
+          Provider.of<User>(context, listen: false).setId(null);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        },
         style: TextButton.styleFrom(
-        backgroundColor: Colors.redAccent.shade700,
-        shape: RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(5)),
-               padding: const EdgeInsets.symmetric(
-                    vertical: 15, horizontal: 25)),
-        child: const Text('Logout',
-          style: TextStyle(color: Colors.white),           ),
-        ));
+            backgroundColor: Colors.redAccent.shade700,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25)),
+        child: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.white),
+        ),
+      ));
 
   Widget buildName(User user) => Column(
         children: [
@@ -109,10 +153,10 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
           ),
           const SizedBox(height: 4),
-          Text(
+          /*Text(
             user.fullName,
             style: const TextStyle(fontSize: 24),
-          ),
+          ),*/
           const SizedBox(height: 4),
           Text(
             user.email,

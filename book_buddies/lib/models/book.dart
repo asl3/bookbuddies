@@ -1,98 +1,81 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'note.dart';
-import 'post.dart';
+import 'firestore_model.dart';
 
-class Book extends ChangeNotifier {
-  final String volumeId;
-  final String title;
-  final String author;
-  final String genre;
-  final String coverUrl;
-  String readingStatus;
-  int rating;
-  bool isPublic;
-  List<Note> journal = [];
-  List<Post> posts = []; // easier to update posts list when updating book
+class Book extends FirestoreModel with ChangeNotifier {
+  late String volumeId;
+  late String title;
+  late String author;
+  late String genre;
+  late String coverUrl;
+  late String readingStatus;
+  late int rating;
+  late bool isPublic;
 
-  Book(this.volumeId, this.title, this.author, this.genre, this.coverUrl,
-      this.readingStatus, this.rating, this.isPublic);
+  Book({required super.id}) : super(collection: "books");
 
-  factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-        json['volumeId'],
-        json['title'],
-        json['author'],
-        json['genre'],
-        json['smallThumbnail'],
-        json['readingStatus'],
-        json['rating'],
-        json['isPublic']);
+  Book.fromArgs({
+    required this.volumeId,
+    required this.title,
+    required this.author,
+    required this.genre,
+    required this.coverUrl,
+    required this.readingStatus,
+    required this.rating,
+    required this.isPublic,
+  }) : super(id: null, collection: "books");
+
+  @override
+  Future<void> fromMap(Map<String, dynamic> data) async {
+    volumeId = doc!.id;
+    id = volumeId;
+    title = data["title"];
+    author = data["author"];
+    genre = data["genre"];
+    coverUrl = data["coverUrl"];
+    readingStatus = data["readingStatus"];
+    rating = data["rating"];
+    isPublic = data["isPublic"];
   }
 
-  Future<void> loadPosts() async {
-    final jsonString = await rootBundle.loadString('jsons/feed.json');
-    final data = jsonDecode(jsonString);
-    for (var post in data["messages"]) {
-      addPost(Post.fromJson(post));
-    }
-  }
-
-  void addNoteToJournalWithParams(String title, String text) {
-    Note note = Note(
-      title,
-      text,
-      DateTime.now(),
-    );
-    addNoteToJournal(note);
-  }
-
-  void addNoteToJournal(Note note) {
-    note.addListener(onUpdateNote);
-    journal.add(note);
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
-  }
-
-  void deleteNoteFromJournal(String noteId) {
-    journal.removeWhere((note) => noteId == note.noteId);
-    notifyListeners();
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      // "volumeId": volumeId,
+      "title": title,
+      "author": author,
+      "genre": genre,
+      "coverUrl": coverUrl,
+      "readingStatus": readingStatus,
+      "rating": rating,
+      "isPublic": isPublic,
+    };
   }
 
   void toggleVisiblity(bool isPublic) {
     this.isPublic = isPublic;
+    doc?.update({"isPublic": isPublic});
     notifyListeners();
   }
 
   void toggleRating(int rating) {
     this.rating = rating;
+    doc?.update({"rating": rating});
     notifyListeners();
   }
 
-  void updateReadingStatus(String readingStatus) {
+  void setReadingStatus(String readingStatus) {
     this.readingStatus = readingStatus;
-
-    // Add new post for reading status change
-    Post newPost = Post(
-      Post.getMessageTypeForBook(this),
-      this,
-      DateTime.now(),
-    );
-    addPost(newPost);
-
-    // Notify listeners
+    doc?.update({"readingStatus": readingStatus});
     notifyListeners();
   }
 
-  void onUpdateNote() {
-    journal.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    notifyListeners();
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Book && other.volumeId == volumeId;
   }
 
-  void addPost(Post post) {
-    post.addListener(notifyListeners);
-    posts.add(post);
-    notifyListeners();
-  }
+  @override
+  int get hashCode => volumeId.hashCode;
 }

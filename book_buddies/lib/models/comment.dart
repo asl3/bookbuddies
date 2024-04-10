@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 import 'user.dart';
-import 'package:uuid/uuid.dart';
+import 'firestore_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Comment extends ChangeNotifier {
-  final String commentId = const Uuid().v4();
-  final User user;
-  final String comment;
-  final DateTime time;
+class Comment extends FirestoreModel with ChangeNotifier {
+  late String text;
+  late DateTime time;
+  late User user;
 
-  Comment(this.user, this.comment, this.time);
+  Comment({required super.id}) : super(collection: "comments");
 
-  factory Comment.fromJson(Map<String, dynamic> json) {
-    Comment comment = Comment(
-        User.fromJson(json['user']), 
-        json['comment'], 
-        DateTime.parse(json['time'])
-    );
+  Comment.fromArgs({
+    required this.text,
+    required this.time,
+    required this.user,
+  }) : super(id: null, collection: "comments");
 
-    comment.user.addListener(comment.notifyListeners);
+  @override
+  Future<void> fromMap(Map<String, dynamic> data) async {
+    text = data["text"];
+    time = data["time"].toDate();
+    user = User(id: data["user"].id, loadFull: false);
+    await user.loadData();
+  }
 
-    return comment;
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      "text": text,
+      "user": user.doc,
+      "time": Timestamp.fromDate(time),
+    };
   }
 }

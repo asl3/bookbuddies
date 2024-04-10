@@ -10,7 +10,7 @@ class PostTile extends StatefulWidget {
   final User user;
   final Post post;
 
-  const PostTile({required this.post, required this.user, super.key}); 
+  const PostTile({required this.post, required this.user, super.key});
 
   @override
   State<PostTile> createState() => _PostTileState();
@@ -116,27 +116,27 @@ class _PostTileState extends State<PostTile> {
               Column(
                 children: widget.post.comments.reversed
                     .map((comment) => ChangeNotifierProvider<Comment>.value(
-                      value: comment,
-                      child:  Card(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(children: [
-                                    Text(comment.user.displayName,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    const Spacer(),
-                                    Text(
-                                      timeDelta(comment.time),
-                                      style:
-                                          const TextStyle(color: Colors.grey),
-                                    )
-                                  ]),
-                                  Text(comment.comment)
-                                ]))))
-                    )
+                        value: comment,
+                        child: Card(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(children: [
+                                        Text(comment.user.displayName,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        const Spacer(),
+                                        Text(
+                                          timeDelta(comment.time),
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        )
+                                      ]),
+                                      Text(comment.text)
+                                    ])))))
                     .toList(),
               ),
               const SizedBox(height: 8),
@@ -149,7 +149,8 @@ class _PostTileState extends State<PostTile> {
                 onSubmitted: (value) {
                   String text = textController.text;
                   textController.clear();
-                  widget.post.addComment(Comment(myUser, text, DateTime.now()));
+                  widget.post.addComment(Comment.fromArgs(
+                      text: text, user: myUser, time: DateTime.now()));
                 },
               ),
               const Divider(),
@@ -158,8 +159,9 @@ class _PostTileState extends State<PostTile> {
                 children: [
                   const Spacer(),
                   IconButton(
-                    icon: widget.post.isUserLiking(myUser.userId) ?
-                      const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
+                    icon: widget.post.isUserLiking(myUser.userId)
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_border),
                     onPressed: () {
                       if (widget.post.isUserLiking(myUser.userId)) {
                         widget.post.removeLiker(myUser.userId);

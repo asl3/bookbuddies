@@ -1,54 +1,74 @@
 import 'package:flutter/material.dart';
 import 'book.dart';
 import 'comment.dart';
-import 'package:uuid/uuid.dart';
+import 'firestore_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Post extends ChangeNotifier {
-  final String postId = const Uuid().v4();
-  final String messageType;
-  final Book book;
-  final DateTime time;
+class Post extends FirestoreModel with ChangeNotifier {
+  late String messageType;
+  late Book book;
+  late DateTime time;
   List<Comment> comments = [];
-  List<String> likers = []; // store user ids of likers to avoid StackOverflowError
+  List<String> likers = [];
 
-  Post(this.messageType, this.book, this.time);
+  Post({required super.id}) : super(collection: "posts");
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    Post post = Post(
-      json['messageType'],
-      Book.fromJson(json['book']),
-      DateTime.parse(json['time']),
-    );
+  Post.fromArgs({
+    required this.messageType,
+    required this.book,
+    required this.time,
+    required this.comments,
+    required this.likers,
+  }) : super(id: null, collection: "posts");
 
-    // Listen to changes in book!
-    post.book.addListener(post.notifyListeners);
+  @override
+  Future<void> fromMap(Map<String, dynamic> data) async {
+    messageType = data["messageType"];
+    book = Book(id: data["book"].id);
+    await book.loadData();
+    time = data["time"].toDate();
 
-    // Add comments
-    for (var comment in json['comments']) {
-      post.addComment(Comment.fromJson(comment));
+    comments = [];
+    for (DocumentReference<Map<String, dynamic>> comment in data["comments"]) {
+      Comment c = Comment(id: comment.id);
+      await c.loadData();
+      comments.add(c);
     }
 
-    // Add likers
-    for (var liker in json['likers']) {
-      post.addLiker(liker);
+    likers = [];
+    for (String liker in data["likers"]) {
+      likers.add(liker);
     }
+  }
 
-    return post;
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      "messageType": messageType,
+      "book": book.doc,
+      "time": Timestamp.fromDate(time),
+      "comments": comments.map((comment) => comment.doc).toList(),
+      "likers": likers,
+    };
   }
 
   void addLiker(String userId) {
     likers.add(userId);
+    doc?.update({"likers": likers});
     notifyListeners();
   }
 
   void removeLiker(String userId) {
     likers.remove(userId);
+    doc?.update({"likers": likers});
     notifyListeners();
   }
 
   void addComment(Comment comment) {
+    comment.create();
     comment.addListener(notifyListeners);
     comments.add(comment);
+    doc?.update({"comments": comments.map((comment) => comment.doc).toList()});
     notifyListeners();
   }
 
