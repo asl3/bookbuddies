@@ -31,6 +31,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    User myUser = Provider.of<User>(context, listen: true);
+
+    Future<int> initializeUser(String uid) async {
+      if (myUser.id == uid) return 1;
+      myUser.setId(uid);
+      await myUser.loadData();
+      return 1;
+    }
+
     return MaterialApp(
         home: Scaffold(
             body: FutureBuilder(
@@ -40,9 +49,16 @@ class MyApp extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (auth.FirebaseAuth.instance.currentUser != null) {
-                    Provider.of<User>(context, listen: false)
-                        .setId(auth.FirebaseAuth.instance.currentUser!.uid);
-                    return const MainScreen();
+                    return FutureBuilder(
+                      future: initializeUser(auth.FirebaseAuth.instance.currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return const MainScreen();
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    );
                   } else {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return const LoginScreen();

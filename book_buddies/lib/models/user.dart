@@ -23,7 +23,7 @@ class User extends FirestoreModel with ChangeNotifier {
   }
 
   bool loadFull;
-  DateTime? lastUpdatedFeed;
+  bool refreshFeed = true;
 
   static createUser(auth.User? user, String email, String displayName) {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
@@ -48,7 +48,7 @@ class User extends FirestoreModel with ChangeNotifier {
       : super(collection: "users");
 
   @override
-  fromMap(Map<String, dynamic> data) {
+  Future<void> fromMap(Map<String, dynamic> data) async {
     // profilePicture = AssetImage(data["profilePicture"]);
     // use default profile picture for now
     profilePicture = const AssetImage("assets/images/blankpfp.webp");
@@ -59,66 +59,61 @@ class User extends FirestoreModel with ChangeNotifier {
 
     if (!loadFull) return;
 
+    // restore defaults in case of logout/login
+    books.clear();
+    friends.clear();
+    posts.clear();
+    notes.clear();
+    refreshFeed = true;
+
     for (DocumentReference<Map<String, dynamic>> book in data["library"]) {
       Book b = Book(id: book.id);
+      await b.loadData();
       b.addListener(notifyListeners);
       books.add(b);
     }
 
     for (DocumentReference<Map<String, dynamic>> friend in data["friends"]) {
       User u = User(id: friend.id, loadFull: false);
+      await u.loadData();
       u.addListener(notifyListeners);
       friends.add(u);
     }
 
-    for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
-      Post p = Post(id: post.id);
-      p.addListener(notifyListeners);
-      posts.add(p);
-    }
-
     for (DocumentReference<Map<String, dynamic>> note in data["notes"]) {
       Note n = Note(id: note.id);
+      await n.loadData();
       n.addListener(notifyListeners);
       notes.add(n);
     }
   }
 
-  Future<void> loadPosts(User user) async {
-    DocumentSnapshot<Map<String, dynamic>> doc;
-    Map<String, dynamic> data;
+  Future<void> refreshPosts(User user) async {
+    user.posts.clear(); // Need to pass in user to use native notifyListeners
 
-    user.posts.clear();
-
-    doc = await FirebaseFirestore.instance
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore.instance
       .collection("users")
       .doc(user.id)
       .get();
-    data = doc.data()!;
+    Map<String, dynamic> data = doc.data()!;
 
-    for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
-      doc = await FirebaseFirestore.instance
-        .collection("posts")
-        .doc(post.id)
-        .get();
-      Post p = Post(id: doc.id);
-      p.fromMap(doc.data()!);
+    for (DocumentReference<Map<String, dynamic>> post in data['posts']) {
+      Post p = Post(id: post.id);
+      await p.loadData();
       p.addListener(notifyListeners);
       user.posts.add(p);
     }
   }
 
-  Future<int> updateFeed() async {
-    DateTime current = DateTime.now();
-    int diff = lastUpdatedFeed == null ? 120 : current.difference(lastUpdatedFeed!).inSeconds;
-    if (diff < 120) return 0; // update every two minutes
+  Future<int> updateFeed({bool force = false}) async {
+    if (!(force || refreshFeed)) return 0;
 
-    await loadPosts(this);
+    await refreshPosts(this);
     for (User friend in friends) {
-      await loadPosts(friend);
+      await refreshPosts(friend);
     }
 
-    lastUpdatedFeed = DateTime.now();
+    refreshFeed = false;
     notifyListeners();
     
     return 1;
@@ -133,6 +128,7 @@ class User extends FirestoreModel with ChangeNotifier {
   void setDisplayName(String displayName) {
     this.displayName = displayName;
     doc?.update({"displayName": displayName});
+    refreshFeed = true;
     notifyListeners();
   }
 
@@ -143,27 +139,33 @@ class User extends FirestoreModel with ChangeNotifier {
   }
 
   void addBook(Book book) {
-    book.create();
-    book.addListener(notifyListeners);
-    Post newPost = Post.fromArgs(
-        messageType: Post.getMessageTypeForBook(book),
-        book: book,
-        comments: [],
-        time: DateTime.now(),
-        likers: []);
-    addPost(newPost);
-    books.add(book);
-    books.sort((a, b) => a.title.compareTo(b.title));
-    doc?.update({
-      "library": books.map((book) => book.doc).toList(),
-    });
-    notifyListeners();
+    if (!books.contains(book)) {
+      book.create();
+      book.addListener(notifyListeners);
+      Post newPost = Post.fromArgs(
+          messageType: Post.getMessageTypeForBook(book),
+          book: book,
+          comments: [],
+          time: DateTime.now(),
+          likers: []);
+      addPost(newPost);
+      books.add(book);
+      books.sort((a, b) => a.title.compareTo(b.title));
+      doc?.update({
+        "library": books.map((book) => book.doc).toList(),
+      });
+      notifyListeners();
+    }
   }
 
   void deleteBook(String volumeId) {
     books.removeWhere((book) => book.volumeId == volumeId);
+    posts.removeWhere((post) => post.book.volumeId == volumeId);
     doc?.update({
       "library": books.map((book) => book.doc).toList(),
+    });
+    doc?.update({
+      "posts": posts.map((post) => post.doc).toList(),
     });
     notifyListeners();
   }
@@ -172,6 +174,7 @@ class User extends FirestoreModel with ChangeNotifier {
     if (!friends.contains(friend)) {
       friends.add(friend);
       doc?.update({"friends": friends.map((friend) => friend.doc).toList()});
+      refreshFeed = true;
       notifyListeners();
     }
   }

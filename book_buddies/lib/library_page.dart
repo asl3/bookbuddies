@@ -22,7 +22,7 @@ class LibraryPageState extends State<LibraryPage> {
     return Scaffold(
       body: SafeArea(
         child: myUser.books.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: Text('Nothing in your library'))
             : SingleChildScrollView(
                 child: Column(
                   children: [

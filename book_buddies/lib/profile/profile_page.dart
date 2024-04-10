@@ -3,6 +3,7 @@ import 'package:book_buddies/library_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../utils.dart';
 import 'login.dart';
 import 'friends_page.dart';
@@ -127,8 +128,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildLogout() => FittedBox(
       fit: BoxFit.scaleDown,
       child: TextButton(
-        onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen())),
+        onPressed: () async {
+          fb.FirebaseAuth auth = fb.FirebaseAuth.instance;
+          await auth.signOut();
+          Provider.of<User>(context, listen: false).setId(null);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        },
         style: TextButton.styleFrom(
             backgroundColor: Colors.redAccent.shade700,
             shape:

@@ -19,11 +19,12 @@ class Note extends FirestoreModel with ChangeNotifier {
   }) : super(id: null, collection: "notes");
 
   @override
-  fromMap(Map<String, dynamic> data) {
+  Future<void> fromMap(Map<String, dynamic> data) async {
     title = data["title"];
     text = data["text"];
     updatedAt = data["updatedAt"].toDate();
     book = Book(id: data["book"].id);
+    await book.loadData();
   }
 
   @override

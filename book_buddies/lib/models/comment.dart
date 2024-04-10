@@ -17,10 +17,11 @@ class Comment extends FirestoreModel with ChangeNotifier {
   }) : super(id: null, collection: "comments");
 
   @override
-  fromMap(Map<String, dynamic> data) {
+  Future<void> fromMap(Map<String, dynamic> data) async {
     text = data["text"];
     time = data["time"].toDate();
     user = User(id: data["user"].id, loadFull: false);
+    await user.loadData();
   }
 
   @override

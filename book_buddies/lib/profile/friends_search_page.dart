@@ -25,7 +25,13 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
       setState(() {
         searchResults = querySnapshot.docs.map((doc) {
           final user = User(id: doc.id, loadFull: false);
-          user.fromMap(doc.data());
+          user.updateDoc();
+          Map<String, dynamic> data = doc.data();
+          user.profilePicture = const AssetImage("assets/images/blankpfp.webp");
+          user.displayName = data["displayName"];
+          user.email = data["email"];
+          user.about = data["about"];
+          user.userId = doc.id;
           return user;
         }).toList();
       });

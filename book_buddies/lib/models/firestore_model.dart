@@ -7,7 +7,7 @@ abstract class FirestoreModel {
 
   DocumentReference<Map<String, dynamic>>? doc;
 
-  fromMap(Map<String, dynamic> data);
+  Future<void> fromMap(Map<String, dynamic> data);
   Map<String, dynamic> toMap();
 
   FirestoreModel({required this.id, required this.collection}) {
@@ -16,19 +16,28 @@ abstract class FirestoreModel {
 
   void setId(String? id) {
     this.id = id;
-    loadData();
+    // loadData(); // Commented this out to handle async issues with loading feed
   }
 
-  loadData() {
+  void updateDoc() {
+    if (id == null) return;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    doc = db.collection(collection).doc(id);
+  }
+
+  loadData() async {
     if (id == null) return;
     FirebaseFirestore db = FirebaseFirestore.instance;
     doc = db.collection(collection).doc(id);
     // print("GOT DOC $doc FOR $collection $id");
-    doc?.get().then((event) {
-      Map<String, dynamic> data = event.data()!;
-      // print("GOT DATA $data");
-      fromMap(data);
-    });
+    DocumentSnapshot<Map<String, dynamic>>? event = await doc?.get();
+    Map<String, dynamic> data = event!.data()!;
+    await fromMap(data);
+    // await doc?.get().then((event) {
+    //   Map<String, dynamic> data = event.data()!;
+    //   // print("GOT DATA $data");
+    //   fromMap(data);
+    // });
   }
 
   create() async {
