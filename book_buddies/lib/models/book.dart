@@ -25,7 +25,7 @@ class Book extends FirestoreModel with ChangeNotifier {
   }) : super(id: null, collection: "books");
 
   @override
-  fromMap(Map<String, dynamic> data) {
+  Future<void> fromMap(Map<String, dynamic> data) async {
     volumeId = doc!.id;
     id = volumeId;
     title = data["title"];
@@ -68,4 +68,14 @@ class Book extends FirestoreModel with ChangeNotifier {
     doc?.update({"readingStatus": readingStatus});
     notifyListeners();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Book && other.volumeId == volumeId;
+  }
+
+  @override
+  int get hashCode => volumeId.hashCode;
 }

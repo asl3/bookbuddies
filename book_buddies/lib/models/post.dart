@@ -22,14 +22,17 @@ class Post extends FirestoreModel with ChangeNotifier {
   }) : super(id: null, collection: "posts");
 
   @override
-  fromMap(Map<String, dynamic> data) {
+  Future<void> fromMap(Map<String, dynamic> data) async {
     messageType = data["messageType"];
     book = Book(id: data["book"].id);
+    await book.loadData();
     time = data["time"].toDate();
 
     comments = [];
     for (DocumentReference<Map<String, dynamic>> comment in data["comments"]) {
-      comments.add(Comment(id: comment.id));
+      Comment c = Comment(id: comment.id);
+      await c.loadData();
+      comments.add(c);
     }
 
     likers = [];

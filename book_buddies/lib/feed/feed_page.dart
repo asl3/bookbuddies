@@ -21,7 +21,7 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
 
-    List<PostTile> loadPosts() {
+    List<PostTile> _loadPosts() {
       List<PostTile> posts = [];
 
       for (Post post in myUser.posts) {
@@ -43,8 +43,7 @@ class _FeedPageState extends State<FeedPage> {
       future: myUser.updateFeed(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<PostTile> posts = loadPosts();
-
+          List<PostTile> posts = _loadPosts();
           return Scaffold(
             appBar: AppBar(
               title: const Text('Feed'),
@@ -57,7 +56,7 @@ class _FeedPageState extends State<FeedPage> {
                 ],
               ),
             ),
-          ); 
+          );
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -75,15 +74,24 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: posts.isEmpty
-          ? const [Center(child: CircularProgressIndicator())]
-          : List.generate(posts.length, (index) {
-              return ChangeNotifierProvider<Post>.value(
-                value: posts[index].post,
-                child: posts[index],
-              );
-            }),
+    User myUser = Provider.of<User>(context, listen: true);
+
+    Future<void> onRefresh() async {
+      await myUser.updateFeed(force: true);
+    }
+
+    return RefreshIndicator(
+      onRefresh: onRefresh, 
+      child: ListView(
+        children: posts.isNotEmpty ? List.generate(posts.length, (index) {
+          return ChangeNotifierProvider<Post>.value(
+            value: posts[index].post,
+            child: posts[index],
+          );
+        }) : const [Center(
+          child: Text('Nothing in your feed'),
+        )],
+      ),
     );
   }
 }
