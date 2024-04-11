@@ -60,7 +60,32 @@ class _StatsPageState extends State<StatsPage> {
                           child: AspectRatio(
                         aspectRatio: 1,
                         child: BarChart(
-                          BarChartData(barGroups: monthData),
+                          BarChartData(
+                            barGroups: monthData,
+                            titlesData: FlTitlesData(
+                              show: true,
+                              rightTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: getMonths,
+                                  reservedSize: 38,
+                                ),
+                              ),
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: getHeights,
+                                  reservedSize: 38,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ))
                     ]))));
@@ -130,5 +155,41 @@ class _StatsPageState extends State<StatsPage> {
 
     return BarChartGroupData(
         x: x, barRods: [BarChartRodData(toY: y, rodStackItems: stack)]);
+  }
+
+  Widget getMonths(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+
+    final String months = 'JFMAMJJASOND';
+    final String month = months.substring(value.toInt(), value.toInt() + 1);
+
+    Widget text = Text(month, style: style);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
+    );
+  }
+
+  Widget getHeights(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+
+    int v = value.toInt();
+
+    final String height = v < value ? '' : v.toString();
+    Widget text = Text(height, style: style);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+      space: 10,
+    );
   }
 }
