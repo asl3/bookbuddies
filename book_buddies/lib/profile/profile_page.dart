@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../utils.dart';
 import 'login.dart';
 import 'friends_page.dart';
+import 'stats_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -207,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const FriendsPage()),
+            MaterialPageRoute(builder: (context) => const StatsPage()),
           );
         },
         child: Container(
