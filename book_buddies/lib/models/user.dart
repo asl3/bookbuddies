@@ -80,6 +80,13 @@ class User extends FirestoreModel with ChangeNotifier {
       friends.add(u);
     }
 
+    for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
+      Post p = Post(id: post.id);
+      await p.loadData();
+      p.addListener(notifyListeners);
+      posts.add(p);
+    }
+
     for (DocumentReference<Map<String, dynamic>> note in data["notes"]) {
       Note n = Note(id: note.id);
       await n.loadData();
@@ -167,6 +174,8 @@ class User extends FirestoreModel with ChangeNotifier {
 
   void addBook(Book book) {
     if (!books.contains(book)) {
+      book.readingStatus = 'Unread';
+      book.isPublic = true;
       book.create();
       book.addListener(notifyListeners);
       Post newPost = Post.fromArgs(
@@ -187,12 +196,8 @@ class User extends FirestoreModel with ChangeNotifier {
 
   void deleteBook(String volumeId) {
     books.removeWhere((book) => book.volumeId == volumeId);
-    posts.removeWhere((post) => post.book.volumeId == volumeId);
     doc?.update({
       "library": books.map((book) => book.doc).toList(),
-    });
-    doc?.update({
-      "posts": posts.map((post) => post.doc).toList(),
     });
     notifyListeners();
   }

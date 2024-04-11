@@ -22,52 +22,87 @@ class LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     // User myUser = Provider.of<User>(context, listen: true);
 
-    return Scaffold(
-      body: SafeArea(
-        child: widget.owner.books.isEmpty
-            ? const Center(child: Text('Nothing in the library'))
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context)
-                          .size
-                          .height, // Adjust this height as needed
-                      child: GridView.count(
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Disable scrolling of GridView
-                        crossAxisCount: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? 2
-                            : 4,
-                        childAspectRatio: 3 / 4,
-                        shrinkWrap: true, // Wrap the GridView inside a SizedBox
-                        children: List.generate(widget.owner.books.length, (index) {
-                          return GestureDetector(
-                            child: ChangeNotifierProvider<Book>.value(
-                              value: widget.owner.books[index],
-                              child: BookTile(book: widget.owner.books[index]),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChangeNotifierProvider<Book>.value(
-                                    value: widget.owner.books[index],
-                                    child: DetailsView(owner: widget.owner),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
+    if (widget.owner.books.isEmpty) {
+      return const Center(child: Text('Nothing in the library'));
+    }
+
+    return GridView.count(
+      // physics:
+      //     const NeverScrollableScrollPhysics(), // Disable scrolling of GridView
+      crossAxisCount: MediaQuery.of(context).orientation ==
+              Orientation.portrait
+          ? 2
+          : 4,
+      childAspectRatio: 3 / 4,
+      shrinkWrap: true, // Wrap the GridView inside a SizedBox
+      children: List.generate(widget.owner.books.length, (index) {
+        return GestureDetector(
+          child: ChangeNotifierProvider<Book>.value(
+            value: widget.owner.books[index],
+            child: BookTile(book: widget.owner.books[index]),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ChangeNotifierProvider<Book>.value(
+                  value: widget.owner.books[index],
+                  child: DetailsView(owner: widget.owner),
                 ),
               ),
-      ),
+            );
+          },
+        );
+      }),
     );
+
+    // return Scaffold(
+    //   body: SafeArea(
+    //     child: widget.owner.books.isEmpty
+    //         ? const Center(child: Text('Nothing in the library'))
+    //         : SingleChildScrollView(
+    //             child: Column(
+    //               children: [
+    //                 SizedBox(
+    //                   height: MediaQuery.of(context)
+    //                       .size
+    //                       .height, // Adjust this height as needed
+    //                   child: GridView.count(
+    //                     physics:
+    //                         const NeverScrollableScrollPhysics(), // Disable scrolling of GridView
+    //                     crossAxisCount: MediaQuery.of(context).orientation ==
+    //                             Orientation.portrait
+    //                         ? 2
+    //                         : 4,
+    //                     childAspectRatio: 3 / 4,
+    //                     shrinkWrap: true, // Wrap the GridView inside a SizedBox
+    //                     children: List.generate(widget.owner.books.length, (index) {
+    //                       return GestureDetector(
+    //                         child: ChangeNotifierProvider<Book>.value(
+    //                           value: widget.owner.books[index],
+    //                           child: BookTile(book: widget.owner.books[index]),
+    //                         ),
+    //                         onTap: () {
+    //                           Navigator.push(
+    //                             context,
+    //                             MaterialPageRoute(
+    //                               builder: (context) =>
+    //                                   ChangeNotifierProvider<Book>.value(
+    //                                 value: widget.owner.books[index],
+    //                                 child: DetailsView(owner: widget.owner),
+    //                               ),
+    //                             ),
+    //                           );
+    //                         },
+    //                       );
+    //                     }),
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //   ),
+    // );
   }
 }
