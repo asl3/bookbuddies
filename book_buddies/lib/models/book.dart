@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'firestore_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book extends FirestoreModel with ChangeNotifier {
   late String volumeId;
@@ -10,6 +11,7 @@ class Book extends FirestoreModel with ChangeNotifier {
   late String readingStatus;
   late int rating;
   late bool isPublic;
+  DateTime? finishedAt;
 
   Book({required super.id}) : super(collection: "books");
 
@@ -22,6 +24,7 @@ class Book extends FirestoreModel with ChangeNotifier {
     required this.readingStatus,
     required this.rating,
     required this.isPublic,
+    required this.finishedAt,
   }) : super(id: null, collection: "books");
 
   @override
@@ -35,12 +38,16 @@ class Book extends FirestoreModel with ChangeNotifier {
     readingStatus = data["readingStatus"];
     rating = data["rating"];
     isPublic = data["isPublic"];
+
+    Timestamp? f = data["finishedAt"];
+    if (f != null) {
+      finishedAt = f.toDate();
+    }
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      // "volumeId": volumeId,
+    Map<String, dynamic> map = {
       "title": title,
       "author": author,
       "genre": genre,
@@ -49,6 +56,12 @@ class Book extends FirestoreModel with ChangeNotifier {
       "rating": rating,
       "isPublic": isPublic,
     };
+
+    if (finishedAt != null) {
+      map["finishedAt"] = Timestamp.fromDate(finishedAt!);
+    }
+
+    return map;
   }
 
   void toggleVisiblity(bool isPublic) {
@@ -66,6 +79,12 @@ class Book extends FirestoreModel with ChangeNotifier {
   void setReadingStatus(String readingStatus) {
     this.readingStatus = readingStatus;
     doc?.update({"readingStatus": readingStatus});
+
+    if (readingStatus == "Completed") {
+      finishedAt = DateTime.now();
+      doc?.update({"finishedAt": Timestamp.fromDate(finishedAt!)});
+    }
+
     notifyListeners();
   }
 

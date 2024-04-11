@@ -80,7 +80,8 @@ class SearchPageState extends State<SearchPage> {
                               .volumeInfo
                               .averageRating
                               .round(),
-                          isPublic: true);
+                          isPublic: true,
+                          finishedAt: null);
                       return ChangeNotifierProvider<models.Book>.value(
                         value: currBook,
                         child: local_book_tile.BookTile(book: currBook),
