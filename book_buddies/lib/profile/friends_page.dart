@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:book_buddies/models/user.dart';
 import 'package:provider/provider.dart';
 import 'friends_search_page.dart';
+import '../friend_view.dart';
 
 class FriendsPage extends StatefulWidget {
   const FriendsPage({super.key});
@@ -35,6 +36,14 @@ class _FriendsPageState extends State<FriendsPage> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(user.friends[index].email),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FriendView(owner: user.friends[index])
+                        ),
+                      );
+                    }
                   );
                 },
               ),

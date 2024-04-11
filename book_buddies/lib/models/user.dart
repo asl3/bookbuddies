@@ -80,12 +80,46 @@ class User extends FirestoreModel with ChangeNotifier {
       friends.add(u);
     }
 
+    for (DocumentReference<Map<String, dynamic>> post in data["posts"]) {
+      Post p = Post(id: post.id);
+      await p.loadData();
+      p.addListener(notifyListeners);
+      posts.add(p);
+    }
+
     for (DocumentReference<Map<String, dynamic>> note in data["notes"]) {
       Note n = Note(id: note.id);
       await n.loadData();
       n.addListener(notifyListeners);
       notes.add(n);
     }
+  }
+
+  Future<int> loadLibrary() async {
+    if (id == null) return 0;
+
+    books.clear();
+    notes.clear();
+
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore.instance
+      .collection("users")
+      .doc(id)
+      .get();
+    Map<String, dynamic> data = doc.data()!;
+
+    for (DocumentReference<Map<String, dynamic>> book in data['library']) {
+      Book b = Book(id: book.id);
+      await b.loadData();
+      books.add(b);
+    }
+
+    for (DocumentReference<Map<String, dynamic>> note in data['notes']) {
+      Note n = Note(id: note.id);
+      await n.loadData();
+      notes.add(n);
+    }
+
+    return 1;
   }
 
   Future<void> refreshPosts(User user) async {
@@ -140,6 +174,8 @@ class User extends FirestoreModel with ChangeNotifier {
 
   void addBook(Book book) {
     if (!books.contains(book)) {
+      book.readingStatus = 'Unread';
+      book.isPublic = true;
       book.create();
       book.addListener(notifyListeners);
       Post newPost = Post.fromArgs(
@@ -163,8 +199,6 @@ class User extends FirestoreModel with ChangeNotifier {
     posts.removeWhere((post) => post.book.volumeId == volumeId);
     doc?.update({
       "library": books.map((book) => book.doc).toList(),
-    });
-    doc?.update({
       "posts": posts.map((post) => post.doc).toList(),
     });
     notifyListeners();
