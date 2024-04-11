@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:book_buddies/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'indicator.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -24,71 +25,111 @@ class _StatsPageState extends State<StatsPage> {
     getGenreData(user);
     getMonthData(user);
 
+    Widget pie = titledChart("Genres in Collection", pieChart());
+    Widget bar = titledChart("Books Finished by Month", barChart());
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Stats'),
         ),
-        body: SafeArea(
-            child: AspectRatio(
-                aspectRatio: 1,
-                // child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Genres in Your Collection',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      Expanded(
-                          child: AspectRatio(
-                              aspectRatio: 1,
-                              child: PieChart(
-                                PieChartData(
-                                  borderData: FlBorderData(
-                                    show: false,
-                                  ),
-                                  sectionsSpace: 0,
-                                  centerSpaceRadius: 0,
-                                  sections: genreData,
-                                ),
-                              ))),
-                      Text(
-                        'Books Finished Last Year',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      Expanded(
-                          child: AspectRatio(
-                        aspectRatio: 1,
-                        child: BarChart(
-                          BarChartData(
-                            barGroups: monthData,
-                            titlesData: FlTitlesData(
-                              show: true,
-                              rightTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              topTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: getMonths,
-                                  reservedSize: 38,
+        body: OrientationBuilder(
+            builder: (context, orientation) => SafeArea(
+                child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: orientation == Orientation.portrait
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(flex: 3, child: pie),
+                                    Expanded(
+                                        flex: 1,
+                                        child:
+                                            makeIndicators()), // Adjusting size
+                                  ],
                                 ),
                               ),
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: getHeights,
-                                  reservedSize: 38,
+                              Expanded(child: bar),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Expanded(child: pie),
+                                    makeIndicators(), // Not using Expanded here to control layout
+                                  ],
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ))
-                    ]))));
+                              Expanded(child: bar),
+                            ],
+                          )))));
+  }
+
+  Widget titledChart(String title, Widget chart) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ),
+        Expanded(child: chart),
+      ],
+    );
+  }
+
+  Widget pieChart() {
+    return Expanded(
+        child: PieChart(
+      PieChartData(
+        borderData: FlBorderData(
+          show: false,
+        ),
+        sectionsSpace: 0,
+        centerSpaceRadius: 0,
+        sections: genreData,
+      ),
+    ));
+  }
+
+  Widget barChart() {
+    return Expanded(
+      child: BarChart(
+        BarChartData(
+          barGroups: monthData,
+          titlesData: FlTitlesData(
+            show: true,
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: getMonths,
+                reservedSize: 38,
+              ),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: getHeights,
+                reservedSize: 38,
+              ),
+            ),
+          ),
+          gridData: const FlGridData(show: true, drawVerticalLine: false),
+        ),
+      ),
+    );
   }
 
   void getGenreData(User user) {
@@ -191,5 +232,24 @@ class _StatsPageState extends State<StatsPage> {
       child: text,
       space: 10,
     );
+  }
+
+  Widget makeIndicators() {
+    List<Widget> indicators = [];
+    genreColors.forEach((key, value) {
+      indicators.add(Indicator(
+        color: value,
+        text: key,
+        isSquare: true,
+      ));
+      indicators.add(SizedBox(
+        height: 4,
+      ));
+    });
+
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: indicators);
   }
 }
