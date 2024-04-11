@@ -5,7 +5,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:latlong2/latlong.dart';
 
 class LibraryMapScreen extends StatefulWidget {
-  const LibraryMapScreen({Key? key}) : super(key: key);
+  const LibraryMapScreen({super.key});
 
   @override
   _LibraryMapScreenState createState() => _LibraryMapScreenState();
@@ -17,7 +17,7 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
   List<PlacesSearchResult>? libraryLocations;
   List<LatLng>? friendLocations;
   final _places =
-      GoogleMapsPlaces(apiKey: 'AIzaSyBykrZZvYjto9SpbbaAgHRVdqRfrlcraIc');
+      GoogleMapsPlaces(apiKey: 'AIzaSyDqtBQsYDmTHXK-vKYXqRN1l89ua8pfmpU');
 
   @override
   void initState() {
@@ -29,27 +29,22 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
     await _fetchUserLocation();
     if (userLocation != null) {
       await _fetchLibraryLocations();
-      if (libraryLocations != null) {
-        friendLocations = [
-          LatLng(
-              userLocation!.latitude + 0.20, userLocation!.longitude + 0.064),
-          LatLng(userLocation!.latitude - 0.12, userLocation!.longitude + 0.03),
-        ];
-      }
+      friendLocations = [
+        LatLng(userLocation!.latitude + 0.20, userLocation!.longitude + 0.064),
+        LatLng(userLocation!.latitude - 0.12, userLocation!.longitude + 0.03),
+      ];
     }
   }
 
   Future<void> _fetchLibraryLocations() async {
     try {
       final result = await _places.searchNearbyWithRadius(
-        Location(lat: userLocation!.latitude, lng: userLocation!.longitude),
-        5000,
-        type: "library",
-      );
+          Location(lat: userLocation!.latitude, lng: userLocation!.longitude),
+          5000,
+          keyword: 'library');
       if (result.status == "OK") {
         setState(() {
           libraryLocations = result.results;
-          print('Library locations: $libraryLocations');
         });
       } else {
         throw Exception(result.errorMessage);
@@ -89,7 +84,7 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Library Locations'),
+        title: const Text('Libraries and Friends Near Me'),
       ),
       body: userLocation == null
           ? const Center(
@@ -100,6 +95,10 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
               options: MapOptions(
                 center: userLocation!,
                 zoom: 10,
+                interactiveFlags:
+                    InteractiveFlag.pinchZoom | InteractiveFlag.doubleTapZoom,
+                maxZoom: 20,
+                minZoom: 3,
               ),
               children: [
                 TileLayer(

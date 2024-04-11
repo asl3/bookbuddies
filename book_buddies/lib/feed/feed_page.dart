@@ -21,7 +21,7 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
 
-    List<PostTile> _loadPosts() {
+    List<PostTile> loadPosts() {
       List<PostTile> posts = [];
 
       for (Post post in myUser.posts) {
@@ -43,7 +43,7 @@ class _FeedPageState extends State<FeedPage> {
       future: myUser.updateFeed(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<PostTile> posts = _loadPosts();
+          List<PostTile> posts = loadPosts();
           return Scaffold(
             appBar: AppBar(
               title: const Text('Feed'),
