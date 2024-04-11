@@ -23,52 +23,42 @@ class _DetailsViewState extends State<DetailsView> {
     final bool isCurrentOwner = Provider.of<User>(context) == widget.owner;
     final bool canAccessJournal = isCurrentOwner || book.isPublic;
 
-    if (canAccessJournal) {
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(book.title),
-            centerTitle: true,
-            bottom: const TabBar(
-              tabs: [
-                Tab(
-                  text: 'Info',
-                  icon: Icon(Icons.info),
-                ),
-                Tab(text: 'Journal', icon: Icon(Icons.notes)),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              InfoTab(book: book, owner: widget.owner),
-              JournalTab(book: book, owner: widget.owner),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(book.title),
+          centerTitle: true,
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                text: 'Info',
+                icon: Icon(Icons.info),
+              ),
+              Tab(text: 'Journal', icon: Icon(Icons.notes)),
             ],
           ),
-          floatingActionButton: isCurrentOwner ? FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider<Book>.value(
-                      value: book,
-                      child: const AddNoteForm(),
-                    ),
-                  ));
-            },
-            tooltip: 'Add Note',
-            child: const Icon(Icons.add),
-          ) : null,
-        ));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(book.title),
-        centerTitle: true,
-      ),
-      body: InfoTab(book: book, owner: widget.owner),
-    );
+        ),
+        body: TabBarView(
+          children: [
+            InfoTab(book: book, owner: widget.owner),
+            JournalTab(book: book, owner: widget.owner, canAccess: canAccessJournal),
+          ],
+        ),
+        floatingActionButton: isCurrentOwner ? FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider<Book>.value(
+                    value: book,
+                    child: const AddNoteForm(),
+                  ),
+                ));
+          },
+          tooltip: 'Add Note',
+          child: const Icon(Icons.add),
+        ) : null,
+      ));
   }
 }

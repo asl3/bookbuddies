@@ -84,6 +84,7 @@ class _InfoTabState extends State<InfoTab> {
                           child: DropdownMenu(
                             initialSelection: widget.book.readingStatus,
                             controller: readingStatusController,
+                            enabled: isCurrentOwner,
                             onSelected: isCurrentOwner ? (String? readingStatus) {
                               myUser.updateReadingStatus(
                                   readingStatusController.text, widget.book);
@@ -119,6 +120,7 @@ class _InfoTabState extends State<InfoTab> {
                                   [Colors.red]
                                 ],
                                 labels: const ['Public', 'Private'],
+                                changeOnTap: isCurrentOwner,
                                 onToggle: isCurrentOwner ? (index) {
                                   widget.book.toggleVisiblity(index == 0);
                                 } : null,

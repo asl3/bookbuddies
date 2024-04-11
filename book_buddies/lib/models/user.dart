@@ -88,6 +88,33 @@ class User extends FirestoreModel with ChangeNotifier {
     }
   }
 
+  Future<int> loadLibrary() async {
+    if (id == null) return 0;
+
+    books.clear();
+    notes.clear();
+
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore.instance
+      .collection("users")
+      .doc(id)
+      .get();
+    Map<String, dynamic> data = doc.data()!;
+
+    for (DocumentReference<Map<String, dynamic>> book in data['library']) {
+      Book b = Book(id: book.id);
+      await b.loadData();
+      books.add(b);
+    }
+
+    for (DocumentReference<Map<String, dynamic>> note in data['notes']) {
+      Note n = Note(id: note.id);
+      await n.loadData();
+      notes.add(n);
+    }
+
+    return 1;
+  }
+
   Future<void> refreshPosts(User user) async {
     user.posts.clear(); // Need to pass in user to use native notifyListeners
 
