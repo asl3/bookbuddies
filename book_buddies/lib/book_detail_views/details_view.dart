@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:book_buddies/models/book.dart';
+import 'package:book_buddies/models/user.dart';
 import 'info_tab.dart';
 import 'journal_tab.dart';
 import 'package:provider/provider.dart';
 import 'forms/add_note_form.dart';
 
 class DetailsView extends StatefulWidget {
-  const DetailsView({super.key});
+  final User owner;
+
+  const DetailsView({super.key, required this.owner});
 
   @override
   State<DetailsView> createState() => _DetailsViewState();
@@ -17,7 +20,11 @@ class _DetailsViewState extends State<DetailsView> {
   Widget build(BuildContext context) {
     final Book book = Provider.of<Book>(context);
 
-    return DefaultTabController(
+    final bool isCurrentOwner = Provider.of<User>(context) == widget.owner;
+    final bool canAccessJournal = isCurrentOwner || book.isPublic;
+
+    if (canAccessJournal) {
+      return DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
@@ -35,11 +42,11 @@ class _DetailsViewState extends State<DetailsView> {
           ),
           body: TabBarView(
             children: [
-              InfoTab(book: book),
-              JournalTab(book: book),
+              InfoTab(book: book, owner: widget.owner),
+              JournalTab(book: book, owner: widget.owner),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: isCurrentOwner ? FloatingActionButton(
             onPressed: () {
               Navigator.push(
                   context,
@@ -52,7 +59,16 @@ class _DetailsViewState extends State<DetailsView> {
             },
             tooltip: 'Add Note',
             child: const Icon(Icons.add),
-          ),
+          ) : null,
         ));
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(book.title),
+        centerTitle: true,
+      ),
+      body: InfoTab(book: book, owner: widget.owner),
+    );
   }
 }

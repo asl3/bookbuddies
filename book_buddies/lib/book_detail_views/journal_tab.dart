@@ -7,9 +7,10 @@ import 'note_tile.dart';
 import 'package:book_buddies/models/user.dart';
 
 class JournalTab extends StatefulWidget {
-  const JournalTab({super.key, required this.book});
+  const JournalTab({super.key, required this.book, required this.owner});
 
   final Book book;
+  final User owner;
 
   @override
   State<JournalTab> createState() => _JournalTabState();
@@ -19,7 +20,9 @@ class _JournalTabState extends State<JournalTab> {
   @override
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
-    List<Note> journal = myUser.journal(widget.book);
+
+    List<Note> journal = widget.owner.journal(widget.book);
+    final bool isCurrentOwner = myUser == widget.owner;
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
@@ -40,7 +43,7 @@ class _JournalTabState extends State<JournalTab> {
               MaterialPageRoute(
                 builder: (context) => ChangeNotifierProvider<Note>.value(
                   value: journal[index],
-                  child: const NoteView(),
+                  child: NoteView(canEdit: isCurrentOwner),
                 ),
               ),
             );

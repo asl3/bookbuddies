@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:book_buddies/models/note.dart';
 
 class NoteView extends StatefulWidget {
-  const NoteView({super.key});
+  const NoteView({super.key, required this.canEdit});
+
+  final bool canEdit;
 
   @override
   State<NoteView> createState() => _NoteViewState();
@@ -30,7 +32,7 @@ class _NoteViewState extends State<NoteView> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.canEdit ? FloatingActionButton(
         onPressed: () {
           Navigator.push(
               context,
@@ -43,7 +45,7 @@ class _NoteViewState extends State<NoteView> {
         },
         tooltip: 'Edit Note',
         child: const Icon(Icons.edit),
-      ),
+      ) : null,
     );
   }
 }

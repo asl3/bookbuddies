@@ -9,7 +9,9 @@ import 'package:book_buddies/models/book.dart';
 var logger = Logger();
 
 class LibraryPage extends StatefulWidget {
-  const LibraryPage({super.key});
+  final User owner; // the owner of the library, may not be self
+
+  const LibraryPage({super.key, required this.owner});
 
   @override
   LibraryPageState createState() => LibraryPageState();
@@ -18,11 +20,12 @@ class LibraryPage extends StatefulWidget {
 class LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    User myUser = Provider.of<User>(context, listen: true);
+    // User myUser = Provider.of<User>(context, listen: true);
+
     return Scaffold(
       body: SafeArea(
-        child: myUser.books.isEmpty
-            ? const Center(child: Text('Nothing in your library'))
+        child: widget.owner.books.isEmpty
+            ? const Center(child: Text('Nothing in the library'))
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -39,11 +42,11 @@ class LibraryPageState extends State<LibraryPage> {
                             : 4,
                         childAspectRatio: 3 / 4,
                         shrinkWrap: true, // Wrap the GridView inside a SizedBox
-                        children: List.generate(myUser.books.length, (index) {
+                        children: List.generate(widget.owner.books.length, (index) {
                           return GestureDetector(
                             child: ChangeNotifierProvider<Book>.value(
-                              value: myUser.books[index],
-                              child: BookTile(book: myUser.books[index]),
+                              value: widget.owner.books[index],
+                              child: BookTile(book: widget.owner.books[index]),
                             ),
                             onTap: () {
                               Navigator.push(
@@ -51,8 +54,8 @@ class LibraryPageState extends State<LibraryPage> {
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       ChangeNotifierProvider<Book>.value(
-                                    value: myUser.books[index],
-                                    child: const DetailsView(),
+                                    value: widget.owner.books[index],
+                                    child: DetailsView(owner: widget.owner),
                                   ),
                                 ),
                               );

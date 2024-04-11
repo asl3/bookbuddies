@@ -6,9 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:book_buddies/models/user.dart';
 
 class InfoTab extends StatefulWidget {
-  const InfoTab({super.key, required this.book});
+  const InfoTab({super.key, required this.book, required this.owner});
 
   final Book book;
+  final User owner;
 
   @override
   State<InfoTab> createState() => _InfoTabState();
@@ -26,6 +27,8 @@ class _InfoTabState extends State<InfoTab> {
   @override
   Widget build(BuildContext context) {
     User myUser = Provider.of<User>(context, listen: true);
+
+    final bool isCurrentOwner = myUser == widget.owner;
 
     return Padding(
       padding: const EdgeInsets.all(30),
@@ -81,10 +84,10 @@ class _InfoTabState extends State<InfoTab> {
                           child: DropdownMenu(
                             initialSelection: widget.book.readingStatus,
                             controller: readingStatusController,
-                            onSelected: (String? readingStatus) {
+                            onSelected: isCurrentOwner ? (String? readingStatus) {
                               myUser.updateReadingStatus(
                                   readingStatusController.text, widget.book);
-                            },
+                            } : null,
                             dropdownMenuEntries: const [
                               DropdownMenuEntry(
                                   value: 'Unread', label: 'Unread'),
@@ -116,9 +119,9 @@ class _InfoTabState extends State<InfoTab> {
                                   [Colors.red]
                                 ],
                                 labels: const ['Public', 'Private'],
-                                onToggle: (index) {
+                                onToggle: isCurrentOwner ? (index) {
                                   widget.book.toggleVisiblity(index == 0);
-                                },
+                                } : null,
                               ),
                             ],
                           ),
@@ -144,6 +147,7 @@ class _InfoTabState extends State<InfoTab> {
                             Icons.star,
                             color: Colors.amber,
                           ),
+                          ignoreGestures: !isCurrentOwner,
                           onRatingUpdate: (rating) {
                             widget.book.toggleRating(rating.toInt());
                           },
