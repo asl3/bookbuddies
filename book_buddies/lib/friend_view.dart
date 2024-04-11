@@ -17,7 +17,7 @@ class FriendViewState extends State<FriendView> {
     return FutureBuilder<int>(
       future: widget.owner.loadLibrary(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
             appBar: AppBar(
               title: Text(widget.owner.displayName),

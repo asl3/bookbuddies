@@ -34,7 +34,7 @@ class LibraryPageState extends State<LibraryPage> {
           ? 2
           : 4,
       childAspectRatio: 3 / 4,
-      shrinkWrap: true, // Wrap the GridView inside a SizedBox
+      // shrinkWrap: true, // Wrap the GridView inside a SizedBox
       children: List.generate(widget.owner.books.length, (index) {
         return GestureDetector(
           child: ChangeNotifierProvider<Book>.value(
@@ -56,6 +56,8 @@ class LibraryPageState extends State<LibraryPage> {
         );
       }),
     );
+
+    // OLD IMPLEMENTATION BELOW
 
     // return Scaffold(
     //   body: SafeArea(

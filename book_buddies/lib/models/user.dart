@@ -196,8 +196,10 @@ class User extends FirestoreModel with ChangeNotifier {
 
   void deleteBook(String volumeId) {
     books.removeWhere((book) => book.volumeId == volumeId);
+    posts.removeWhere((post) => post.book.volumeId == volumeId);
     doc?.update({
       "library": books.map((book) => book.doc).toList(),
+      "posts": posts.map((post) => post.doc).toList(),
     });
     notifyListeners();
   }
