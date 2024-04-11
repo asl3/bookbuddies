@@ -50,6 +50,8 @@ dependencies:
   firebase_core: ^2.27.1
   firebase_auth: ^4.18.0
   cloud_firestore: ^4.15.10
+  google_maps_flutter: ^2.6.0
+  google_maps_webservice: ^0.0.20-nullsafety.5
 
 dev_dependencies:
   flutter_test:

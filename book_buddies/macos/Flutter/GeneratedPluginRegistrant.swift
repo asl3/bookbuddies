@@ -5,9 +5,9 @@
 import FlutterMacOS
 import Foundation
 
+import cloud_firestore
 import firebase_auth
 import firebase_core
-import cloud_firestore
 import geolocator_apple
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {

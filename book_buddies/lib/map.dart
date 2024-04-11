@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:latlong2/latlong.dart';
 
 class LibraryMapScreen extends StatefulWidget {
-  const LibraryMapScreen({super.key});
+  const LibraryMapScreen({Key? key}) : super(key: key);
 
   @override
   _LibraryMapScreenState createState() => _LibraryMapScreenState();
@@ -13,27 +14,49 @@ class LibraryMapScreen extends StatefulWidget {
 class _LibraryMapScreenState extends State<LibraryMapScreen> {
   LatLng? userLocation;
   MapController mapController = MapController();
-  List<LatLng>? libraryLocations;
+  List<PlacesSearchResult>? libraryLocations;
   List<LatLng>? friendLocations;
+  final _places =
+      GoogleMapsPlaces(apiKey: 'AIzaSyBykrZZvYjto9SpbbaAgHRVdqRfrlcraIc');
 
   @override
   void initState() {
     super.initState();
-    _fetchUserLocation().then((_) {
-      if (userLocation != null) {
-        libraryLocations = [
-          LatLng(userLocation!.latitude + 0.05, userLocation!.longitude + 0.05),
-          LatLng(userLocation!.latitude - 0.07, userLocation!.longitude + 0.02),
-          LatLng(
-              userLocation!.latitude - 0.068, userLocation!.longitude - 0.017),
-        ];
+    _initializeState();
+  }
+
+  Future<void> _initializeState() async {
+    await _fetchUserLocation();
+    if (userLocation != null) {
+      await _fetchLibraryLocations();
+      if (libraryLocations != null) {
         friendLocations = [
           LatLng(
               userLocation!.latitude + 0.20, userLocation!.longitude + 0.064),
           LatLng(userLocation!.latitude - 0.12, userLocation!.longitude + 0.03),
         ];
       }
-    });
+    }
+  }
+
+  Future<void> _fetchLibraryLocations() async {
+    try {
+      final result = await _places.searchNearbyWithRadius(
+        Location(lat: userLocation!.latitude, lng: userLocation!.longitude),
+        5000,
+        type: "library",
+      );
+      if (result.status == "OK") {
+        setState(() {
+          libraryLocations = result.results;
+          print('Library locations: $libraryLocations');
+        });
+      } else {
+        throw Exception(result.errorMessage);
+      }
+    } catch (e) {
+      print('Error fetching library locations: $e');
+    }
   }
 
   @override
@@ -104,7 +127,8 @@ class _LibraryMapScreenState extends State<LibraryMapScreen> {
                       ...libraryLocations!.map((location) => Marker(
                             width: 80.0,
                             height: 80.0,
-                            point: location,
+                            point: LatLng(location.geometry!.location.lat,
+                                location.geometry!.location.lng),
                             builder: (ctx) => const Icon(Icons.library_books,
                                 color: Colors.blue),
                           )),
