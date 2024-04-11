@@ -11,45 +11,18 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
+  Map<String, double> dataMap = {};
+  Map<String, Color> genreColors = {};
+  List<PieChartSectionData> genreData = [];
+  List<Map<String, int>> booksPerMonth = [];
+  List<BarChartGroupData> monthData = [];
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context, listen: true);
 
-    Map<String, double> dataMap = {};
-    for (var book in user.books) {
-      dataMap[book.genre] = (dataMap[book.genre] ?? 0) + 1;
-    }
-
-    Map<String, Color> genreColors = {};
-    for (var genre in dataMap.keys) {
-      genreColors[genre] =
-          Colors.primaries[dataMap.keys.toList().indexOf(genre)];
-    }
-
-    List<PieChartSectionData> genreData = [];
-    dataMap.forEach((key, value) {
-      genreData.add(generateSectionData(value, genreColors[key]!));
-    });
-
-    List<int> booksPerMonth = List.filled(12, 0);
-    DateTime now = DateTime.now();
-    int currentMonth = now.year * 12 + now.month;
-    for (var book in user.books) {
-      if (book.finishedAt != null) {
-        DateTime finishedAt = book.finishedAt!;
-        int finishedMonth = finishedAt.year * 12 + finishedAt.month;
-        if (currentMonth - finishedMonth < 12) {
-          booksPerMonth[currentMonth - finishedMonth]++;
-        }
-      }
-    }
-
-    print(booksPerMonth);
-
-    List<BarChartGroupData> monthData = [];
-    for (int i = 0; i < 12; i++) {
-      monthData.add(generateGroupData(i, booksPerMonth[i]));
-    }
+    getGenreData(user);
+    getMonthData(user);
 
     return Scaffold(
         appBar: AppBar(
@@ -93,6 +66,48 @@ class _StatsPageState extends State<StatsPage> {
                     ]))));
   }
 
+  void getGenreData(User user) {
+    dataMap = {};
+    for (var book in user.books) {
+      dataMap[book.genre] = (dataMap[book.genre] ?? 0) + 1;
+    }
+
+    genreColors = {};
+    for (var genre in dataMap.keys) {
+      genreColors[genre] =
+          Colors.primaries[dataMap.keys.toList().indexOf(genre)];
+    }
+
+    genreData = [];
+    dataMap.forEach((key, value) {
+      genreData.add(generateSectionData(value, genreColors[key]!));
+    });
+  }
+
+  void getMonthData(User user) {
+    booksPerMonth = [];
+    for (int i = 0; i < 12; i++) {
+      booksPerMonth.add({});
+    }
+    DateTime now = DateTime.now();
+    int currentMonth = now.year * 12 + now.month;
+    for (var book in user.books) {
+      if (book.finishedAt != null) {
+        DateTime finishedAt = book.finishedAt!;
+        int finishedMonth = finishedAt.year * 12 + finishedAt.month;
+        if (currentMonth - finishedMonth < 12) {
+          var map = booksPerMonth[12 - (currentMonth - finishedMonth) - 1];
+          map[book.genre] = (map[book.genre] ?? 0) + 1;
+        }
+      }
+    }
+
+    monthData = [];
+    for (int i = 0; i < 12; i++) {
+      monthData.add(generateGroupData(i, booksPerMonth[i]));
+    }
+  }
+
   PieChartSectionData generateSectionData(double value, Color color) {
     return PieChartSectionData(
       value: value,
@@ -104,16 +119,16 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 
-  BarChartGroupData generateGroupData(int x, int y) {
+  BarChartGroupData generateGroupData(int x, Map<String, int> data) {
+    double y = 0;
+
+    List<BarChartRodStackItem> stack = [];
+    data.forEach((key, value) {
+      stack.add(BarChartRodStackItem(y, y + value, genreColors[key]!));
+      y += value;
+    });
+
     return BarChartGroupData(
-      x: x,
-      barRods: [
-        BarChartRodData(
-          toY: y.toDouble(),
-          color: Colors.blue,
-          width: 22,
-        ),
-      ],
-    );
+        x: x, barRods: [BarChartRodData(toY: y, rodStackItems: stack)]);
   }
 }
