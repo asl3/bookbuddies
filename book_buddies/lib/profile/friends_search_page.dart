@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:book_buddies/models/user.dart';
 import 'package:provider/provider.dart';
+import '../friend_view.dart';
 
 class FriendsSearchPage extends StatefulWidget {
   const FriendsSearchPage({super.key});
@@ -79,10 +80,16 @@ class _FriendsSearchPageState extends State<FriendsSearchPage> {
                     title: Text(friend.displayName),
                     subtitle: Text(friend.email),
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'You selected: ${friend.displayName} (${friend.email})'),
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     content: Text(
+                      //         'You selected: ${friend.displayName} (${friend.email})'),
+                      //   ),
+                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FriendView(owner: friend)
                         ),
                       );
                     },

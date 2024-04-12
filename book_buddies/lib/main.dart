@@ -85,6 +85,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User myUser = Provider.of<User>(context, listen: true);
+
     return FutureBuilder(
         future: FirebaseMessaging.instance.getToken(),
         builder: (context, snapshot) => MaterialApp(
@@ -105,13 +107,13 @@ class MainScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  body: const TabBarView(
+                  body: TabBarView(
                     children: [
-                      Center(child: SearchPage()),
-                      Center(child: LibraryPage()),
-                      Center(child: FeedPage()),
-                      Center(child: LibraryMapScreen()),
-                      Center(child: ProfilePage()),
+                      const Center(child: SearchPage()),
+                      Center(child: LibraryPage(owner: myUser)),
+                      const Center(child: FeedPage()),
+                      const Center(child: LibraryMapScreen()),
+                      const Center(child: ProfilePage()),
                     ],
                   ),
                 ),
