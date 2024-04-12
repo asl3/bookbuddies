@@ -25,7 +25,12 @@ class _StatsPageState extends State<StatsPage> {
     getGenreData(user);
     getMonthData(user);
 
-    Widget pie = titledChart("Genres in Collection", pieChart());
+    Widget pie = titledChart(
+        "Genres in Collection",
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Expanded(child: pieChart()), makeIndicators()],
+        ));
     Widget bar = titledChart("Books Finished by Month", barChart());
 
     return Scaffold(
@@ -35,22 +40,14 @@ class _StatsPageState extends State<StatsPage> {
         body: OrientationBuilder(
             builder: (context, orientation) => SafeArea(
                 child: Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Flex(
                         direction: orientation == Orientation.portrait
                             ? Axis.vertical
                             : Axis.horizontal,
                         children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: pie),
-                                makeIndicators(), // Adjusting size
-                              ],
-                            ),
-                          ),
-                          Expanded(child: bar),
+                          Expanded(child: pie),
+                          Expanded(child: bar)
                         ])))));
   }
 
@@ -59,9 +56,10 @@ class _StatsPageState extends State<StatsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
         Expanded(child: chart),
       ],
@@ -164,7 +162,7 @@ class _StatsPageState extends State<StatsPage> {
       color: color,
       title: '${value.toInt()}',
       radius: 80,
-      titleStyle: TextStyle(
+      titleStyle: const TextStyle(
           fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
@@ -189,7 +187,7 @@ class _StatsPageState extends State<StatsPage> {
       fontSize: 14,
     );
 
-    final String months = 'JFMAMJJASOND';
+    const String months = 'JFMAMJJASOND';
     final String month = months.substring(value.toInt(), value.toInt() + 1);
 
     Widget text = Text(month, style: style);
@@ -213,8 +211,8 @@ class _StatsPageState extends State<StatsPage> {
     Widget text = Text(height, style: style);
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: text,
       space: 10,
+      child: text,
     );
   }
 
@@ -226,7 +224,7 @@ class _StatsPageState extends State<StatsPage> {
         text: key,
         isSquare: true,
       ));
-      indicators.add(SizedBox(
+      indicators.add(const SizedBox(
         height: 4,
       ));
     });
