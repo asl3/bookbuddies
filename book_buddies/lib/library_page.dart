@@ -10,7 +10,7 @@ var logger = Logger();
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
-
+  static const route='/library-page';
   @override
   LibraryPageState createState() => LibraryPageState();
 }
