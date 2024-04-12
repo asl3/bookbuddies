@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-
 import '../library_page.dart';
 import '../main.dart';
 
@@ -12,7 +11,6 @@ Future backgroundHandler(RemoteMessage msg) async {
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
-  
 
   Future<void> initNotifications() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
@@ -32,11 +30,13 @@ class FirebaseApi {
   }
 
   void handleMessage(RemoteMessage? msg) {
-    if(msg == null) return;
+    if (msg == null) return;
     navigatorKey.currentState?.pushNamed(LibraryPage.route);
   }
+
   Future initPushNotifications() async {
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -44,6 +44,7 @@ class FirebaseApi {
 
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-    FirebaseMessaging.onBackgroundMessage((message) => backgroundHandler(message));
+    FirebaseMessaging.onBackgroundMessage(
+        (message) => backgroundHandler(message));
   }
 }

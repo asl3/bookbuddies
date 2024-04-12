@@ -28,7 +28,6 @@ Future<void> main() async {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   Future<FirebaseApp> _initializeFirebase() async {
@@ -90,36 +89,37 @@ class MainScreen extends StatelessWidget {
     return FutureBuilder(
         future: FirebaseMessaging.instance.getToken(),
         builder: (context, snapshot) => MaterialApp(
-              home: DefaultTabController(
-                length: 5,
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Book Buddies'),
-                    bottom: const TabBar(
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.center,
-                      tabs: [
-                        Tab(text: "Search"),
-                        Tab(text: "My Library"),
-                        Tab(text: "Social"),
-                        Tab(text: "Map"),
-                        Tab(text: "Profile"),
+                home: DefaultTabController(
+                  length: 5,
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Book Buddies'),
+                      bottom: const TabBar(
+                        isScrollable: true,
+                        tabAlignment: TabAlignment.center,
+                        tabs: [
+                          Tab(text: "Search"),
+                          Tab(text: "My Library"),
+                          Tab(text: "Social"),
+                          Tab(text: "Map"),
+                          Tab(text: "Profile"),
+                        ],
+                      ),
+                    ),
+                    body: TabBarView(
+                      children: [
+                        const Center(child: SearchPage()),
+                        Center(child: LibraryPage(owner: myUser)),
+                        const Center(child: FeedPage()),
+                        const Center(child: LibraryMapScreen()),
+                        const Center(child: ProfilePage()),
                       ],
                     ),
                   ),
-                  body: TabBarView(
-                    children: [
-                      const Center(child: SearchPage()),
-                      Center(child: LibraryPage(owner: myUser)),
-                      const Center(child: FeedPage()),
-                      const Center(child: LibraryMapScreen()),
-                      const Center(child: ProfilePage()),
-                    ],
-                  ),
                 ),
-              ),
-              navigatorKey: navigatorKey,
-              routes: {LibraryPage.route: (context) => LibraryPage(owner: myUser)}
-            ));
+                navigatorKey: navigatorKey,
+                routes: {
+                  LibraryPage.route: (context) => LibraryPage(owner: myUser)
+                }));
   }
 }

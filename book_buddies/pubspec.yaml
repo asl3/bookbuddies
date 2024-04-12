@@ -54,6 +54,7 @@ dependencies:
   google_maps_webservice: ^0.0.20-nullsafety.5
   pie_chart: ^5.4.0
   fl_chart: ^0.67.0
+  firebase_messaging: ^14.8.1
 
 dev_dependencies:
   flutter_test:

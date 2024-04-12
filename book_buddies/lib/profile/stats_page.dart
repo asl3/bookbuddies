@@ -67,8 +67,7 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   Widget pieChart() {
-    return Expanded(
-        child: PieChart(
+    return PieChart(
       PieChartData(
         borderData: FlBorderData(
           show: false,
@@ -77,39 +76,37 @@ class _StatsPageState extends State<StatsPage> {
         centerSpaceRadius: 0,
         sections: genreData,
       ),
-    ));
+    );
   }
 
   Widget barChart() {
-    return Expanded(
-      child: BarChart(
-        BarChartData(
-          barGroups: monthData,
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: getMonths,
-                reservedSize: 38,
-              ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: getHeights,
-                reservedSize: 38,
-              ),
+    return BarChart(
+      BarChartData(
+        barGroups: monthData,
+        titlesData: FlTitlesData(
+          show: true,
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: getMonths,
+              reservedSize: 38,
             ),
           ),
-          gridData: const FlGridData(show: true, drawVerticalLine: false),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: getHeights,
+              reservedSize: 38,
+            ),
+          ),
         ),
+        gridData: const FlGridData(show: true, drawVerticalLine: false),
       ),
     );
   }
