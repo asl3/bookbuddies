@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../utils.dart';
 import 'login.dart';
 import 'friends_page.dart';
+import 'stats_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -74,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 24),
               buildName(user),
-              const SizedBox(height: 24),
+              // const SizedBox(height: 24),
 
               InkWell(
                 onTap: () {
@@ -115,9 +116,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               //maybe put some metrics regarding books read?
-              const SizedBox(height: 30),
+              // const SizedBox(height: 30),
+              buildStats(),
+              // const SizedBox(height: 30),
               buildAbout(user),
-              const SizedBox(height: 30),
+              // const SizedBox(height: 30),
               // buildLibrary(),
               buildLogout()
             ],
@@ -133,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
           await auth.signOut();
           Provider.of<User>(context, listen: false).setId(null);
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
         },
         style: TextButton.styleFrom(
             backgroundColor: Colors.redAccent.shade700,
@@ -183,21 +186,46 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 
-  // Widget buildLibrary() => Container(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: const Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             'Library',
-  //             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-  //           ),
-  //           SizedBox(height: 16),
-  //           SizedBox(
-  //             height: 1000,
-  //             child: LibraryPage(),
-  //           ),
-  //         ],
-  //       ),
-  //     );
+  Widget buildLibrary() => Container(
+        padding: const EdgeInsets.all(16.0),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Library',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            SizedBox(
+              height: 1000,
+              child: LibraryPage(),
+            ),
+          ],
+        ),
+      );
+
+  Widget buildStats() => InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const StatsPage()),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: const Row(
+            children: [
+              Text(
+                'Stats',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Icon(
+                Icons.arrow_right,
+                color: Colors.black,
+                size: 25,
+              ),
+            ],
+          ),
+        ),
+      );
 }
