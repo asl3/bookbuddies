@@ -119,7 +119,7 @@ class MainScreen extends StatelessWidget {
                 ),
               ),
               navigatorKey: navigatorKey,
-              routes: {LibraryPage.route: (context) => const LibraryPage()}
+              routes: {LibraryPage.route: (context) => LibraryPage(owner: myUser)}
             ));
   }
 }
