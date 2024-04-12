@@ -186,23 +186,23 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 
-  Widget buildLibrary() => Container(
-        padding: const EdgeInsets.all(16.0),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Library',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16),
-            SizedBox(
-              height: 1000,
-              child: LibraryPage(),
-            ),
-          ],
-        ),
-      );
+  // Widget buildLibrary() => Container(
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: const Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             'Library',
+  //             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  //           ),
+  //           SizedBox(height: 16),
+  //           SizedBox(
+  //             height: 1000,
+  //             child: LibraryPage(),
+  //           ),
+  //         ],
+  //       ),
+  //     );
 
   Widget buildStats() => InkWell(
         onTap: () {
