@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'library_page.dart';
 import 'map.dart';
+import 'notifications/notif.dart';
 import 'profile/profile_page.dart';
 import 'profile/login.dart';
 import 'search_page.dart';
@@ -10,8 +11,15 @@ import 'feed/feed_page.dart';
 import 'models/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseApi().initNotifications();
   runApp(
     ChangeNotifierProvider<User>.value(
       value: User(id: null, loadFull: true),
@@ -19,6 +27,7 @@ Future<void> main() async {
     ),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -50,12 +59,14 @@ class MyApp extends StatelessWidget {
                   }
                   if (auth.FirebaseAuth.instance.currentUser != null) {
                     return FutureBuilder(
-                      future: initializeUser(auth.FirebaseAuth.instance.currentUser!.uid),
+                      future: initializeUser(
+                          auth.FirebaseAuth.instance.currentUser!.uid),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return const MainScreen();
                         } else {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                       },
                     );
@@ -74,35 +85,41 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
-        length: 5,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Book Buddies'),
-            bottom: const TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.center,
-              tabs: [
-                Tab(text: "Search"),
-                Tab(text: "My Library"),
-                Tab(text: "Social"),
-                Tab(text: "Map"),
-                Tab(text: "Profile"),
-              ],
-            ),
-          ),
-          body: const TabBarView(
-            children: [
-              Center(child: SearchPage()),
-              Center(child: LibraryPage()),
-              Center(child: FeedPage()),
-              Center(child: LibraryMapScreen()),
-              Center(child: ProfilePage()),
-            ],
-          ),
-        ),
-      ),
-    );
+    User myUser = Provider.of<User>(context, listen: true);
+
+    return FutureBuilder(
+        future: FirebaseMessaging.instance.getToken(),
+        builder: (context, snapshot) => MaterialApp(
+              home: DefaultTabController(
+                length: 5,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Book Buddies'),
+                    bottom: const TabBar(
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.center,
+                      tabs: [
+                        Tab(text: "Search"),
+                        Tab(text: "My Library"),
+                        Tab(text: "Social"),
+                        Tab(text: "Map"),
+                        Tab(text: "Profile"),
+                      ],
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: [
+                      const Center(child: SearchPage()),
+                      Center(child: LibraryPage(owner: myUser)),
+                      const Center(child: FeedPage()),
+                      const Center(child: LibraryMapScreen()),
+                      const Center(child: ProfilePage()),
+                    ],
+                  ),
+                ),
+              ),
+              navigatorKey: navigatorKey,
+              routes: {LibraryPage.route: (context) => LibraryPage(owner: myUser)}
+            ));
   }
 }

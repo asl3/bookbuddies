@@ -5,7 +5,9 @@ import 'package:book_buddies/models/note.dart';
 import 'package:book_buddies/models/user.dart';
 
 class NoteTile extends StatelessWidget {
-  const NoteTile({super.key});
+  final bool canDelete;
+
+  const NoteTile({super.key, required this.canDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +17,12 @@ class NoteTile extends StatelessWidget {
       builder: (context, state, child) => ListTile(
         title: Text(state.title),
         subtitle: Text(DateFormat('yMd').format(state.updatedAt)),
-        trailing: IconButton(
+        trailing: canDelete ? IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             myUser.deleteNoteFromJournal(state.id!);
           },
-        ),
+        ) : null,
       ),
     );
   }
