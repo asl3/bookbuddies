@@ -36,38 +36,22 @@ class _StatsPageState extends State<StatsPage> {
             builder: (context, orientation) => SafeArea(
                 child: Padding(
                     padding: EdgeInsets.all(20),
-                    child: orientation == Orientation.portrait
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(flex: 3, child: pie),
-                                    Expanded(
-                                        flex: 1,
-                                        child:
-                                            makeIndicators()), // Adjusting size
-                                  ],
-                                ),
-                              ),
-                              Expanded(child: bar),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Expanded(child: pie),
-                                    makeIndicators(), // Not using Expanded here to control layout
-                                  ],
-                                ),
-                              ),
-                              Expanded(child: bar),
-                            ],
-                          )))));
+                    child: Flex(
+                        direction: orientation == Orientation.portrait
+                            ? Axis.vertical
+                            : Axis.horizontal,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: pie),
+                                makeIndicators(), // Adjusting size
+                              ],
+                            ),
+                          ),
+                          Expanded(child: bar),
+                        ])))));
   }
 
   Widget titledChart(String title, Widget chart) {
